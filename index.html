@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Union Connect Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+  html {
+    /* 
+      Fluid Typography:
+      This scales the base font size smoothly with the viewport width.
+      - Minimum size is 1rem (typically 16px), ensuring readability on small screens.
+      - Maximum size is 1.5rem (typically 24px), preventing text from getting too large on wide screens.
+      - The preferred size (0.5rem + 1.25vw) grows with the screen width (vw).
+      Because Tailwind uses `rem` units extensively, this single change makes the entire UI scale proportionally.
+    */
+    font-size: clamp(1rem, 0.5rem + 1.25vw, 1.5rem);
+  }
+</style>
+<link rel="stylesheet" href="/index.css">
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@18.2.0",
+    "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+    "react-dom/": "https://esm.sh/react-dom@18.2.0/",
+    "react/": "https://esm.sh/react@18.2.0/",
+    "idb": "https://esm.sh/idb@7.1.1"
+  }
+}
+</script>
+  <script type="module" crossorigin src="/assets/index-Ppo2t1OS.js"></script>
+</head>
+  <body class="bg-green-50">
+    <div id="root"></div>
+  </body>
+</html>
