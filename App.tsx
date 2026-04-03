@@ -93,24 +93,24 @@ function App() {
     useEffect(() => {
         const init = async () => {
             try {
-                const [loadedSurveys, events] = await Promise.all([
+                const [loadedSurveys, events, acts] = await Promise.all([
                     api.getSurveys(),
-                    api.getCalendarEvents()
+                    api.getCalendarEvents(),
+                    api.getAnnouncements()
                 ]);
                 if (loadedSurveys.length > 0) setSurveys(loadedSurveys as Survey[]);
                 else setSurveys(initialSurveys);
 
                 setCalendarEvents(events as CalendarEvent[]);
+                setAnnouncements(acts);
 
                 const session = loadSession();
                 if (session && session.user) {
                     setCurrentUser(session.user);
                     registerFCM(session.user.id);
-                    const [acts, myGrievances] = await Promise.all([
-                        api.getAnnouncements(),
+                    const [myGrievances] = await Promise.all([
                         api.getGrievances(session.user.role === 'ADMIN' ? undefined : session.user.id)
                     ]);
-                    setAnnouncements(acts);
                     setGrievances(myGrievances as Grievance[]);
                     if (session.user.role === 'ADMIN') {
                         const [pending, approved] = await Promise.all([
