@@ -2,6 +2,8 @@ import React, { useState, createContext, useContext, useMemo, useEffect, Suspens
 import { User, Survey, UserRole, Announcement, CalendarEvent, Grievance } from './types';
 import Header from './components/Header';
 import LandingPage from './components/LandingPage';
+import BottomNav from './components/BottomNav';
+import ErrorBoundary from './components/ErrorBoundary';
 import {
     loadSession, saveSession, clearSession,
     api, messaging
@@ -69,11 +71,24 @@ function App() {
     const [calendarEvents, setCalendarEvents] = useState<CalendarEvent[]>([]);
     const [grievances, setGrievances] = useState<Grievance[]>([]);
     const [users, setUsers] = useState<User[]>([]);
+    const [activeTab, setActiveTab] = useState('dashboard');
 
     useEffect(() => {
         document.documentElement.classList.toggle('dark', isDarkMode);
         localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
     }, [isDarkMode]);
+
+    useEffect(() => {
+        const titleMap: Record<string, string> = {
+            'dashboard': 'My Dashboard | IPREU',
+            'calendar': 'Union Calendar | IPREU',
+            'grievances': 'Secure Grievances | IPREU',
+            'overview': 'Admin Overview | IPREU',
+            'members': 'Manage Users | IPREU',
+            'announcements': 'Broadcast | IPREU',
+        };
+        document.title = titleMap[activeTab] || 'IPREU Union Connect';
+    }, [activeTab]);
 
     useEffect(() => {
         const init = async () => {
@@ -120,11 +135,10 @@ function App() {
             const permission = await Notification.requestPermission();
             if (permission === 'granted') {
                 const token = await getToken(messaging, {
-                    vapidKey: 'BKZqsvNJwZbljTyY0T6ho_GruW2LiC8WBEre2uMqg6A-67sBHoF2RIg6VCX2BLMs0LVolggQTCap4zwDgedyKjI' // Placeholder
+                    vapidKey: 'BKZqsvNJwZbljTyY0T6ho_GruW2LiC8WBEre2uMqg6A-67sBHoF2RIg6VCX2BLMs0LVolggQTCap4zwDgedyKjI'
                 });
                 if (token) {
                     await api.saveFcmToken(userId, token);
-                    console.log("FCM Token saved successfully.");
                 }
             }
         } catch (error) {
@@ -132,11 +146,9 @@ function App() {
         }
     };
 
-    // Listen for foreground messages
     useEffect(() => {
         if (!messaging) return;
         const unsubscribe = onMessage(messaging, (payload) => {
-            console.log('Foreground message:', payload);
             alert(`Notification: ${payload.notification?.title}\n${payload.notification?.body}`);
         });
         return () => unsubscribe();
@@ -274,8 +286,8 @@ function App() {
         }
 
         switch (currentUser.role) {
-            case UserRole.ADMIN: return <AdminDashboard />;
-            case UserRole.MEMBER: return <MemberDashboard />;
+            case UserRole.ADMIN: return <AdminDashboard activeTab={activeTab as any} setActiveTab={setActiveTab} />;
+            case UserRole.MEMBER: return <MemberDashboard activeTab={activeTab} setActiveTab={setActiveTab} />;
             default: return <Auth onBack={() => setShowAuth(false)} />;
         }
     };

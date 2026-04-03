@@ -763,9 +763,13 @@ const EliteOverview: React.FC = () => {
 };
 
 // ─── Admin Dashboard (Main) ─────────────────────────────────────────────────
-const AdminDashboard: React.FC = () => {
+interface AdminDashboardProps {
+    activeTab: 'overview' | 'members' | 'surveys' | 'announcements' | 'calendar' | 'grievances';
+    setActiveTab: (tab: any) => void;
+}
+
+const AdminDashboard: React.FC<AdminDashboardProps> = ({ activeTab, setActiveTab }) => {
     const { users, surveys, announcements, calendarEvents, grievances, approveRegistration, rejectRegistration, deleteSurvey } = useAppContext();
-    const [activeTab, setActiveTab] = useState<'overview' | 'members' | 'surveys' | 'announcements' | 'calendar' | 'grievances'>('overview');
     const [selectedMember, setSelectedMember] = useState<User | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [currentTime, setCurrentTime] = useState(new Date());

@@ -147,8 +147,13 @@ const GrievanceForm: React.FC<{ onSubmit: (subject: string, desc: string, cat: s
 
 
 // Main Member Dashboard Component
-const MemberDashboard: React.FC = () => {
+interface MemberDashboardProps {
+    activeTab: string;
+}
+
+const MemberDashboard: React.FC<MemberDashboardProps> = ({ activeTab }) => {
     const { surveys, currentUser, submitVote, announcements, calendarEvents, grievances, submitGrievance } = useAppContext();
+
 
     if (!currentUser) return null;
 
@@ -166,171 +171,198 @@ const MemberDashboard: React.FC = () => {
 
     return (
         <div className="space-y-12 animate-fade-in">
-            {/* Greeting & ID Card Row */}
-            <div className="grid grid-cols-1 xl:grid-cols-5 gap-8 items-stretch">
-                {/* Left: Greeting */}
-                <div className="xl:col-span-3 bg-gradient-to-br from-orange-600 to-orange-500 rounded-3xl p-8 md:p-10 text-white shadow-xl flex flex-col justify-center relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-20 -mt-20 blur-3xl group-hover:scale-110 transition-transform duration-700" />
-                    <div className="relative z-10">
-                        <h1 className="text-4xl md:text-5xl font-display font-bold mb-4 tracking-tight">
-                            {greeting}, <span className="text-orange-100">{currentUser.employeeName.split(' ')[0]}</span>! <span className="animate-bounce inline-block">👋</span>
-                        </h1>
-                        <p className="text-orange-50 text-lg md:text-xl max-w-lg leading-relaxed opacity-90">
-                            Welcome to your secure union portal. Manage your profile, participate in surveys, and stay connected.
+            {/* Home Dashboard: Greeting, ID Card, and Announcements */}
+            {(activeTab === 'dashboard' || activeTab === 'overview') && (
+                <>
+                <div className="grid grid-cols-1 xl:grid-cols-5 gap-8 items-stretch">
+                    {/* Left: Greeting */}
+                    <div className="xl:col-span-3 bg-gradient-to-br from-orange-600 to-orange-500 rounded-3xl p-8 md:p-10 text-white shadow-xl flex flex-col justify-center relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-20 -mt-20 blur-3xl group-hover:scale-110 transition-transform duration-700" />
+                        <div className="relative z-10">
+                            <h1 className="text-4xl md:text-5xl font-display font-bold mb-4 tracking-tight">
+                                {greeting}, <span className="text-orange-100">{currentUser.employeeName.split(' ')[0]}</span>! <span className="animate-bounce inline-block">👋</span>
+                            </h1>
+                            <p className="text-orange-50 text-lg md:text-xl max-w-lg leading-relaxed opacity-90">
+                                Welcome to your secure union portal. Manage your profile, participate in surveys, and stay connected.
+                            </p>
+                        </div>
+                        <div className="mt-10 flex flex-wrap items-center gap-4 relative z-10">
+                            <div className="bg-white/10 backdrop-blur-md px-6 py-2.5 rounded-full border border-white/20 text-sm font-bold shadow-sm">
+                                Status: <span className="text-white ml-1">Active Member</span>
+                            </div>
+                            <div className="bg-white/10 backdrop-blur-md px-6 py-2.5 rounded-full border border-white/20 text-sm font-bold shadow-sm">
+                                Union ID: <span className="text-white ml-1">#{currentUser.id.substring(0,6).toUpperCase()}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Right: Digital ID Card */}
+                    <div className="xl:col-span-2 flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-900/50 rounded-3xl p-8 border border-gray-100 dark:border-gray-800 shadow-inner">
+                        <p className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] mb-6">Digital Membership ID</p>
+                        <MembershipCard user={currentUser} logoUrl="/logo.png" />
+                        <p className="text-[10px] text-gray-400 mt-6 italic text-center max-w-[200px] leading-relaxed">
+                            Scan to verify membership at any union office or event.
                         </p>
                     </div>
-                    <div className="mt-10 flex flex-wrap items-center gap-4 relative z-10">
-                        <div className="bg-white/10 backdrop-blur-md px-6 py-2.5 rounded-full border border-white/20 text-sm font-bold shadow-sm">
-                            Status: <span className="text-white ml-1">Active Member</span>
-                        </div>
-                        <div className="bg-white/10 backdrop-blur-md px-6 py-2.5 rounded-full border border-white/20 text-sm font-bold shadow-sm">
-                            Union ID: <span className="text-white ml-1">#{currentUser.id.substring(0,6).toUpperCase()}</span>
-                        </div>
-                    </div>
                 </div>
 
-                {/* Right: Digital ID Card */}
-                <div className="xl:col-span-2 flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-900/50 rounded-3xl p-8 border border-gray-100 dark:border-gray-800 shadow-inner">
-                    <p className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] mb-6">Digital Membership ID</p>
-                    <MembershipCard user={currentUser} logoUrl="/logo.png" />
-                    <p className="text-[10px] text-gray-400 mt-6 italic text-center max-w-[200px] leading-relaxed">
-                        Scan to verify membership at any union office or event.
-                    </p>
-                </div>
-            </div>
-
-            <div>
-                 <div className="flex items-center gap-3 mb-6">
-                    <MegaphoneIcon className="w-8 h-8 text-orange-600"/>
-                    <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Latest Announcements</h2>
-                </div>
-                 {announcements.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {announcements.map(ann => (
-                            <div key={ann.id} className="relative bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border-l-4 border-orange-500 hover:shadow-md transition-shadow group overflow-hidden">
-                                {isNew(ann.createdAt) && (
-                                    <div className="absolute top-4 right-4 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full border border-orange-200 dark:border-orange-900/50">
-                                        New
-                                    </div>
-                                )}
-                                <h3 className="font-bold text-lg text-gray-800 dark:text-gray-100 pr-16">{ann.title}</h3>
-                                <p className="text-sm text-gray-600 dark:text-gray-400 mt-2 whitespace-pre-wrap leading-relaxed line-clamp-3">{ann.content}</p>
-                                {ann.attachment && (
-                                    <div className="mt-4 flex flex-wrap gap-2">
-                                        <a href={ann.attachment.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-xs font-medium text-orange-600 hover:text-orange-800 bg-orange-50 dark:bg-orange-900/20 px-3 py-1 rounded-full transition-colors">
-                                            <PaperClipIcon className="w-4 h-4" />
-                                            <span>{ann.attachment.name}</span>
-                                        </a>
-                                    </div>
-                                )}
-                            </div>
-                        ))}
-                    </div>
-                ) : (
-                    <div className="bg-white dark:bg-gray-900 text-center py-10 px-8 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
-                         <p className="text-gray-500">No recent announcements</p>
-                    </div>
-                )}
-            </div>
-
-            {/* Union Calendar & Grievances Row */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Calendar Column */}
-                <div className="lg:col-span-1 space-y-6">
-                    <div className="flex items-center gap-3">
-                        <ClockIcon className="w-8 h-8 text-orange-600"/>
-                        <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Union Calendar</h2>
-                    </div>
-                    <div className="space-y-4">
-                        {calendarEvents.length > 0 ? (
-                            calendarEvents.slice(0, 5).sort((a,b) => a.date.localeCompare(b.date)).map(event => (
-                                <div key={event.id} className="bg-white dark:bg-gray-900 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 hover:border-orange-200 transition-colors">
-                                    <div className="flex gap-4">
-                                        <div className="flex-shrink-0 w-12 h-12 bg-orange-50 dark:bg-orange-900/20 rounded-lg flex flex-col items-center justify-center text-orange-600 dark:text-orange-400 border border-orange-100 dark:border-orange-900/30">
-                                            <span className="text-[10px] font-bold uppercase">{new Date(event.date).toLocaleDateString(undefined, { month: 'short' })}</span>
-                                            <span className="text-lg font-bold leading-none">{new Date(event.date).getDate()}</span>
-                                        </div>
-                                        <div>
-                                            <h4 className="font-bold text-gray-800 dark:text-gray-100 text-sm">{event.title}</h4>
-                                            <p className="text-[10px] text-gray-500 mt-0.5">{event.startTime} • {event.location || 'Online / TBA'}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))
-                        ) : (
-                            <p className="text-gray-500 bg-white dark:bg-gray-900 p-8 rounded-xl border border-dashed dark:border-gray-800 text-center italic text-sm">No upcoming events scheduled.</p>
-                        )}
-                    </div>
-                </div>
-
-                {/* Grievance Column */}
-                <div className="lg:col-span-2 space-y-6">
-                    <div className="flex items-center gap-3">
+                <div>
+                    <div className="flex items-center gap-3 mb-6">
                         <MegaphoneIcon className="w-8 h-8 text-orange-600"/>
-                        <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Grievance Redressal</h2>
+                        <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Latest Announcements</h2>
                     </div>
-                    <GrievanceForm onSubmit={submitGrievance} />
-                    
-                    {grievances.length > 0 && (
-                        <div className="mt-8 space-y-4">
-                            <h3 className="font-bold text-gray-800 dark:text-gray-100 flex items-center gap-2">
-                                <span className="w-2 h-2 bg-orange-500 rounded-full"></span>
-                                Your Recent Submissions
-                            </h3>
-                            {grievances.map(g => (
-                                <div key={g.id} className="bg-white dark:bg-gray-900 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
-                                    <div className="flex justify-between items-start mb-2">
-                                        <h4 className="font-bold text-gray-800 dark:text-gray-100 text-sm">{g.subject}</h4>
-                                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                                            g.status === 'NEW' ? 'bg-orange-100 text-orange-700' : 'bg-green-100 text-green-700'
-                                        }`}>
-                                            {g.status}
-                                        </span>
-                                    </div>
-                                    <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-2 italic">"{g.description}"</p>
-                                    {g.status === 'RESOLVED' && (
-                                        <div className="mt-3 p-3 bg-green-50 dark:bg-green-900/10 rounded-lg border border-green-100 dark:border-green-900/30">
-                                            <p className="text-[10px] font-bold text-green-700 dark:text-green-400">ADMIN RESPONSE:</p>
-                                            <p className="text-xs text-green-800 dark:text-green-300 mt-1">{g.response}</p>
+                    {announcements.length > 0 ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {announcements.map(ann => (
+                                <div key={ann.id} className="relative bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border-l-4 border-orange-500 hover:shadow-md transition-shadow group overflow-hidden">
+                                    {isNew(ann.createdAt) && (
+                                        <div className="absolute top-4 right-4 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full border border-orange-200 dark:border-orange-900/50">
+                                            New
+                                        </div>
+                                    )}
+                                    <h3 className="font-bold text-lg text-gray-800 dark:text-gray-100 pr-16">{ann.title}</h3>
+                                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-2 whitespace-pre-wrap leading-relaxed line-clamp-3">{ann.content}</p>
+                                    {ann.attachment && (
+                                        <div className="mt-4 flex flex-wrap gap-2">
+                                            <a href={ann.attachment.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-xs font-medium text-orange-600 hover:text-orange-800 bg-orange-50 dark:bg-orange-900/20 px-3 py-1 rounded-full transition-colors">
+                                                <PaperClipIcon className="w-4 h-4" />
+                                                <span>{ann.attachment.name}</span>
+                                            </a>
                                         </div>
                                     )}
                                 </div>
                             ))}
                         </div>
+                    ) : (
+                        <div className="bg-white dark:bg-gray-900 text-center py-10 px-8 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
+                            <p className="text-gray-500">No recent announcements</p>
+                        </div>
                     )}
                 </div>
-            </div>
+                </>
+            )}
 
-            <div className="animate-fade-in [animation-delay:200ms]">
-                 <div className="flex items-center gap-3 mb-4">
-                    <ClipboardListIcon className="w-8 h-8 text-orange-600"/>
-                    <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 uppercase tracking-tight">Available Surveys</h2>
-                </div>
-                {availableSurveys.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {availableSurveys.map(survey => (
-                            <SurveyCard key={survey.id} survey={survey} onSubmit={submitVote} />
-                        ))}
+            {/* Calendar Section */}
+            {activeTab === 'calendar' && (
+                <div className="space-y-6 animate-slide-up">
+                    <div className="flex items-center gap-3">
+                        <ClockIcon className="w-8 h-8 text-orange-600"/>
+                        <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Union Calendar</h2>
                     </div>
-                ) : (
-                    <div className="bg-white dark:bg-gray-900 text-center p-12 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 italic">
-                         <p className="text-gray-500">No new surveys at the moment. Check back later!</p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {calendarEvents.length > 0 ? (
+                            calendarEvents.sort((a,b) => a.date.localeCompare(b.date)).map(event => (
+                                <div key={event.id} className="bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 hover:border-orange-200 transition-all hover:shadow-md">
+                                    <div className="flex gap-5">
+                                        <div className="flex-shrink-0 w-16 h-16 bg-orange-50 dark:bg-orange-900/20 rounded-2xl flex flex-col items-center justify-center text-orange-600 dark:text-orange-400 border border-orange-100 dark:border-orange-900/30">
+                                            <span className="text-xs font-bold uppercase">{new Date(event.date).toLocaleDateString(undefined, { month: 'short' })}</span>
+                                            <span className="text-2xl font-bold leading-none">{new Date(event.date).getDate()}</span>
+                                        </div>
+                                        <div className="flex-1">
+                                            <h4 className="font-bold text-gray-800 dark:text-gray-100 text-lg mb-1">{event.title}</h4>
+                                            <div className="space-y-1">
+                                                <p className="text-xs text-gray-500 flex items-center gap-2">
+                                                    <ClockIcon className="w-3 h-3" /> {event.startTime}
+                                                </p>
+                                                <p className="text-xs text-gray-500 flex items-center gap-2">
+                                                    <span className="w-3 h-3 border rounded-full text-center leading-none text-[8px] font-bold">L</span> {event.location || 'Online / TBA'}
+                                                </p>
+                                            </div>
+                                            <p className="text-xs text-orange-700 bg-orange-100 dark:bg-orange-900/30 px-2 py-0.5 rounded-full inline-block mt-3 font-medium uppercase tracking-tighter">
+                                                {event.category || 'Event'}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="col-span-full py-20 text-center">
+                                <p className="text-gray-500 italic">No upcoming events scheduled at this time.</p>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
+
+            {/* Grievance Section */}
+            {activeTab === 'grievances' && (
+                <div className="space-y-8 animate-slide-up">
+                    <div className="flex items-center gap-3">
+                        <MegaphoneIcon className="w-8 h-8 text-orange-600"/>
+                        <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Grievance Redressal</h2>
+                    </div>
+                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                        <div>
+                             <GrievanceForm onSubmit={submitGrievance} />
+                        </div>
+                        <div className="space-y-4">
+                            <h3 className="font-bold text-gray-800 dark:text-gray-100 flex items-center gap-2 mb-4">
+                                <span className="w-2 h-2 bg-orange-500 rounded-full"></span>
+                                Submission History
+                            </h3>
+                            {grievances.length > 0 ? grievances.map(g => (
+                                <div key={g.id} className="bg-white dark:bg-gray-900 p-5 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
+                                    <div className="flex justify-between items-start mb-3">
+                                        <h4 className="font-bold text-gray-800 dark:text-gray-100 text-sm">{g.subject}</h4>
+                                        <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full ${
+                                            g.status === 'NEW' ? 'bg-orange-100 text-orange-700' : 'bg-green-100 text-green-700'
+                                        }`}>
+                                            {g.status}
+                                        </span>
+                                    </div>
+                                    <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-3 leading-relaxed mb-4">"{g.description}"</p>
+                                    {g.status === 'RESOLVED' && (
+                                        <div className="p-4 bg-green-50 dark:bg-green-900/10 rounded-lg border border-green-100 dark:border-green-900/30">
+                                            <p className="text-[10px] font-bold text-green-700 dark:text-green-400 uppercase tracking-widest mb-1">Official Response</p>
+                                            <p className="text-xs text-green-800 dark:text-green-300 italic">"{g.response}"</p>
+                                        </div>
+                                    )}
+                                </div>
+                            )) : (
+                                <div className="p-12 text-center bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-dashed dark:border-gray-800">
+                                    <p className="text-sm text-gray-400">No grievances submitted yet.</p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Surveys Section (Only in Home tab for Member) */}
+            {(activeTab === 'dashboard' || activeTab === 'overview') && (
+                <>
+                <div className="animate-fade-in [animation-delay:200ms]">
+                    <div className="flex items-center gap-3 mb-4">
+                        <ClipboardListIcon className="w-8 h-8 text-orange-600"/>
+                        <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 uppercase tracking-tight">Available Surveys</h2>
+                    </div>
+                    {availableSurveys.length > 0 ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {availableSurveys.map(survey => (
+                                <SurveyCard key={survey.id} survey={survey} onSubmit={submitVote} />
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="bg-white dark:bg-gray-900 text-center p-12 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 italic">
+                            <p className="text-gray-500">No new surveys at the moment. Check back later!</p>
+                        </div>
+                    )}
+                </div>
+
+                {votedSurveys.length > 0 && (
+                    <div className="animate-fade-in [animation-delay:400ms] mt-12">
+                        <div className="flex items-center gap-3 mb-4">
+                            <CheckCircleIcon className="w-8 h-8 text-green-600"/>
+                            <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 uppercase tracking-tight">Completed Surveys</h2>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {votedSurveys.map(survey => (
+                            <VotedSurveyCard key={survey.id} survey={survey} userVoteOptionId={survey.votes[currentUser.id]} />
+                            ))}
+                        </div>
                     </div>
                 )}
-            </div>
-
-            {votedSurveys.length > 0 && (
-                <div className="animate-fade-in [animation-delay:400ms]">
-                    <div className="flex items-center gap-3 mb-4">
-                        <CheckCircleIcon className="w-8 h-8 text-green-600"/>
-                        <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 uppercase tracking-tight">Completed Surveys</h2>
-                    </div>
-                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {votedSurveys.map(survey => (
-                           <VotedSurveyCard key={survey.id} survey={survey} userVoteOptionId={survey.votes[currentUser.id]} />
-                        ))}
-                    </div>
-                </div>
+                </>
             )}
         </div>
     );
