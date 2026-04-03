@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://ipreuprpc.github.io/sitemap.xml
