@@ -20,14 +20,14 @@ export default defineConfig({
         display: 'standalone',
         icons: [
           {
-            src: 'https://via.placeholder.com/192.png?text=IPREU+App',
+            src: '/icon-192.svg',
             sizes: '192x192',
-            type: 'image/png'
+            type: 'image/svg+xml'
           },
           {
-            src: 'https://via.placeholder.com/512.png?text=IPREU+App',
+            src: '/icon-512.svg',
             sizes: '512x512',
-            type: 'image/png',
+            type: 'image/svg+xml',
             purpose: 'any maskable'
           }
         ]
