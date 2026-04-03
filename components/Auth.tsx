@@ -5,18 +5,16 @@ import { User, UserRole } from '../types';
 
 
 const Auth: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
-    const [view, setView] = useState<'login' | 'register' | 'status' | 'adminLogin'>('login');
+    const [view, setView] = useState<'login' | 'register' | 'adminLogin'>('login');
 
     const renderView = () => {
         switch (view) {
             case 'register': return <RegistrationForm onToggle={() => setView('login')} />;
-            case 'status': return <StatusCheckForm onToggle={() => setView('login')} />;
             case 'adminLogin': return <AdminLoginForm onToggle={() => setView('login')} />;
             case 'login':
             default:
                 return <LoginForm
                     onToggleRegister={() => setView('register')}
-                    onToggleStatus={() => setView('status')}
                     onToggleAdminLogin={() => setView('adminLogin')}
                 />;
         }
@@ -62,37 +60,40 @@ const Auth: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
     );
 };
 
-const LoginForm: React.FC<{ onToggleRegister: () => void; onToggleStatus: () => void; onToggleAdminLogin: () => void; }> = ({ onToggleRegister, onToggleStatus, onToggleAdminLogin }) => {
+const LoginForm: React.FC<{ onToggleRegister: () => void; onToggleAdminLogin: () => void; }> = ({ onToggleRegister, onToggleAdminLogin }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
-    const { memberLogin, getUserStatus } = useAppContext();
+    const [isPending, setIsPending] = useState(false);
+    const { memberLogin } = useAppContext();
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         setError('');
+        setIsPending(false);
 
-        try {
-            const { status } = await getUserStatus(email);
-
-            if (status === UserRole.PENDING) {
-                setError('Your application is still pending approval. Please check back later.');
-                return;
-            }
-
-            const success = await memberLogin(email, password);
-            if (!success) {
-                setError('Invalid Email or password. Please check your credentials or register.');
-            }
-        } catch (err: any) {
-            setError(err.message || 'An error occurred. Please check your Email or register.');
+        const res = await memberLogin(email, password);
+        if (res.success) {
+            // App will re-render and show dashboard
+        } else if (res.pending) {
+            setIsPending(true);
+        } else {
+            setError(res.error || 'Login failed');
         }
     };
 
     return (
-        <>
+        <div className="animate-fade-in">
             <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Member Login</h2>
+            
+            {isPending && (
+                <div className="bg-orange-50 border-l-4 border-orange-500 p-4 mb-6 rounded-r-lg animate-pulse">
+                    <p className="text-sm text-orange-800 font-medium">Application Under Review</p>
+                    <p className="text-xs text-orange-700 mt-1">We've received your registration. Our executives are currently verifying your details. You'll be able to login once approved.</p>
+                </div>
+            )}
+
             {error && <p className="bg-red-100 text-red-700 p-3 rounded-md mb-4 text-sm">{error}</p>}
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
@@ -122,10 +123,9 @@ const LoginForm: React.FC<{ onToggleRegister: () => void; onToggleStatus: () => 
             </form>
             <div className="mt-6 space-y-2 text-center text-sm text-gray-600">
                 <p>Not a member yet? <button onClick={onToggleRegister} className="font-medium text-orange-600 hover:text-orange-500">Register here</button></p>
-                <p>Waiting for approval? <button onClick={onToggleStatus} className="font-medium text-orange-600 hover:text-orange-500">Check your status</button></p>
                 <p>Are you an administrator? <button onClick={onToggleAdminLogin} className="font-medium text-orange-600 hover:text-orange-500">Admin Login</button></p>
             </div>
-        </>
+        </div>
     );
 };
 
@@ -139,11 +139,9 @@ const AdminLoginForm: React.FC<{ onToggle: () => void }> = ({ onToggle }) => {
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         setError('');
-        try {
-            const success = await adminLogin(email, password);
-            if (!success) setError('Invalid Admin Email or password.');
-        } catch (err: any) {
-            setError(err.message || 'Login failed.');
+        const res = await adminLogin(email, password);
+        if (!res.success) {
+            setError(res.error || 'Admin login failed');
         }
     };
 
@@ -314,65 +312,5 @@ const RegistrationForm: React.FC<{ onToggle: () => void }> = ({ onToggle }) => {
         </>
     );
 };
-
-const StatusCheckForm: React.FC<{ onToggle: () => void }> = ({ onToggle }) => {
-    const [email, setEmail] = useState('');
-    const [statusMessage, setStatusMessage] = useState({ type: '', text: '' });
-    const { getUserStatus } = useAppContext();
-
-    const handleSubmit = async (e: FormEvent) => {
-        e.preventDefault();
-        setStatusMessage({ type: '', text: '' });
-        if (!email.trim()) return;
-
-        try {
-            const { status, user } = await getUserStatus(email);
-
-            switch (status) {
-                case UserRole.MEMBER:
-                case UserRole.ADMIN:
-                    setStatusMessage({ type: 'success', text: `Congratulations, ${user?.employeeName}! Your application has been approved. You can now log in.` });
-                    break;
-                case UserRole.PENDING:
-                    setStatusMessage({ type: 'info', text: `Hi ${user?.employeeName}, your application is still under review. Please check back later.` });
-                    break;
-                case 'NOT_FOUND':
-                    setStatusMessage({ type: 'error', text: 'We could not find an application with this Email Address.' });
-                    break;
-            }
-        } catch (err: any) {
-            setStatusMessage({ type: 'error', text: 'We could not find an application with this Email Address.' });
-        }
-    };
-
-    return (
-        <>
-            <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Check Application Status</h2>
-            {statusMessage.text && (
-                <p className={`${statusMessage.type === 'success' ? 'bg-green-100 text-green-700' :
-                    statusMessage.type === 'info' ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-red-100 text-red-700'
-                    } p-3 rounded-md mb-4 text-sm`}>{statusMessage.text}</p>
-            )}
-            <form onSubmit={handleSubmit} className="space-y-6">
-                <div>
-                    <label htmlFor="status-email" className="block text-sm font-medium text-gray-700">Email Address</label>
-                    <input
-                        id="status-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required
-                        className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
-                        placeholder="Enter your registered email"
-                    />
-                </div>
-                <button type="submit" className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
-                    Check Status
-                </button>
-            </form>
-            <p className="mt-6 text-center text-sm text-gray-600">
-                <button onClick={onToggle} className="font-medium text-orange-600 hover:text-orange-500">Back to Login</button>
-            </p>
-        </>
-    );
-};
-
 
 export default Auth;

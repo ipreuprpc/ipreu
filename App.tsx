@@ -1,14 +1,15 @@
-import React, { useState, createContext, useContext, useMemo, useEffect } from 'react';
+import React, { useState, createContext, useContext, useMemo, useEffect, Suspense, lazy } from 'react';
 import { User, Survey, UserRole, Announcement } from './types';
 import Header from './components/Header';
-import Auth from './components/Auth';
-import AdminDashboard from './components/AdminDashboard';
-import MemberDashboard from './components/MemberDashboard';
 import LandingPage from './components/LandingPage';
 import {
     loadSession, saveSession, clearSession,
     api
 } from './services/storage';
+
+const Auth = lazy(() => import('./components/Auth'));
+const AdminDashboard = lazy(() => import('./components/AdminDashboard'));
+const MemberDashboard = lazy(() => import('./components/MemberDashboard'));
 
 const initialSurveys: Survey[] = [
     {
@@ -27,8 +28,8 @@ interface AppContextType {
     users: User[];
     surveys: Survey[];
     announcements: Announcement[];
-    memberLogin: (email: string, password?: string) => Promise<boolean>;
-    adminLogin: (email: string, password?: string) => Promise<boolean>;
+    memberLogin: (email: string, password?: string) => Promise<{ success: boolean; pending?: boolean; error?: string }>;
+    adminLogin: (email: string, password?: string) => Promise<{ success: boolean; error?: string }>;
     logout: () => void;
     register: (newUser: Omit<User, 'id' | 'role'>) => Promise<boolean>;
     approveRegistration: (id: string) => Promise<void>;
@@ -36,7 +37,6 @@ interface AppContextType {
     createSurvey: (survey: Omit<Survey, 'id' | 'votes'>) => void;
     deleteSurvey: (id: string) => Promise<void>;
     submitVote: (surveyId: string, optionId: string) => void;
-    getUserStatus: (email: string) => Promise<{ status: UserRole | 'NOT_FOUND'; user: User | null }>;
     createAnnouncement: (title: string, content: string, driveAttachment?: Announcement['attachment'] | null) => Promise<void>;
     updateAnnouncement: (id: string, title: string, content: string) => Promise<void>;
     deleteAnnouncement: (announcementId: string) => Promise<void>;
@@ -101,27 +101,38 @@ function App() {
             setAnnouncements(acts);
         },
         memberLogin: async (email: string, password?: string) => {
-            const res = await api.login(email, password) as unknown as { token: string, user: User };
-            if (res.token && res.user && res.user.role === 'MEMBER') {
-                setCurrentUser(res.user);
-                saveSession(res.token, res.user);
-                return true;
+            try {
+                const res = await api.login(email, password) as unknown as { token: string, user: User };
+                if (res.token && res.user && res.user.role === 'MEMBER') {
+                    setCurrentUser(res.user);
+                    saveSession(res.token, res.user);
+                    return { success: true };
+                }
+                return { success: false, error: 'Access denied. Only members can login here.' };
+            } catch (err: any) {
+                if (err.message?.includes('pending approval')) {
+                    return { success: false, pending: true };
+                }
+                return { success: false, error: err.message || 'Login failed' };
             }
-            return false;
         },
         adminLogin: async (email: string, password?: string) => {
-            const res = await api.login(email, password) as unknown as { token: string, user: User };
-            if (res.token && res.user && res.user.role === 'ADMIN') {
-                setCurrentUser(res.user);
-                saveSession(res.token, res.user);
-                const [pending, approved] = await Promise.all([
-                    api.getPendingUsers(),
-                    api.getApprovedUsers()
-                ]);
-                setUsers([...pending, ...approved]);
-                return true;
+            try {
+                const res = await api.login(email, password) as unknown as { token: string, user: User };
+                if (res.token && res.user && res.user.role === 'ADMIN') {
+                    setCurrentUser(res.user);
+                    saveSession(res.token, res.user);
+                    const [pending, approved] = await Promise.all([
+                        api.getPendingUsers(),
+                        api.getApprovedUsers()
+                    ]);
+                    setUsers([...pending, ...approved]);
+                    return { success: true };
+                }
+                return { success: false, error: 'Access denied. Only admins can login here.' };
+            } catch (err: any) {
+                return { success: false, error: err.message || 'Admin login failed' };
             }
-            return false;
         },
         logout: () => {
             setCurrentUser(null);
@@ -160,15 +171,6 @@ function App() {
                 return s;
             }));
         },
-        getUserStatus: async (email: string) => {
-            try {
-                const res = await api.getStatus(email);
-                return { status: res.status as UserRole, user: res.user };
-            } catch (e: any) {
-                if (e.message === 'NOT_FOUND') return { status: 'NOT_FOUND' as const, user: null };
-                throw e;
-            }
-        },
         createAnnouncement: async (title: string, content: string, driveAttachment?: Announcement['attachment'] | null) => {
             const res = await api.createAnnouncement({ title, content, attachment: driveAttachment ?? undefined });
             setAnnouncements(prev => [res as Announcement, ...prev]);
@@ -206,10 +208,16 @@ function App() {
 
     return (
         <AppContext.Provider value={contextValue}>
-            <div className="min-h-screen font-sans">
+            <div className="min-h-screen font-sans bg-gray-50/30">
                 <Header />
                 <main className="container mx-auto p-4 md:p-8">
-                    {renderContent()}
+                    <Suspense fallback={
+                        <div className="min-h-[50vh] flex items-center justify-center">
+                            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-orange-600"></div>
+                        </div>
+                    }>
+                        {renderContent()}
+                    </Suspense>
                 </main>
             </div>
         </AppContext.Provider>

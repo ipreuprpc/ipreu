@@ -95,14 +95,6 @@ export const api = {
     return true;
   },
 
-  getStatus: async (email: string) => {
-    const q = query(collection(db, 'users'), where('email', '==', email.toLowerCase()));
-    const snapshot = await getDocs(q);
-    if (snapshot.empty) return { status: 'NOT_FOUND', user: null };
-    const data = snapshot.docs[0].data();
-    return { status: data.role, user: { id: snapshot.docs[0].id, ...data } };
-  },
-
   getAnnouncements: async () => {
     // Limits fetching to 30 most recent announcements to drastically save read limits on dashboard loads
     const q = query(collection(db, 'announcements'), orderBy('createdAt', 'desc'), limit(30));
