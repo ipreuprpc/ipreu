@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
-import { getFirestore, collection, doc, setDoc, getDoc, getDocs, updateDoc, deleteDoc, query, where, orderBy, addDoc } from 'firebase/firestore';
+import { getFirestore, collection, doc, setDoc, getDoc, getDocs, updateDoc, deleteDoc, query, where, orderBy, addDoc, limit } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSy_mock_key",
@@ -14,6 +14,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+
 
 const STORAGE_KEY = 'uc_token';
 const USER_KEY = 'uc_user';
@@ -59,7 +60,7 @@ export const api = {
       throw new Error("User record not found in database.");
     }
 
-    const userData = { id: userDoc.id, ...userDoc.data() };
+    const userData = { id: userDoc.id, ...userDoc.data() } as any;
 
     if (userData.role === 'PENDING') {
       await signOut(auth);
@@ -103,19 +104,25 @@ export const api = {
   },
 
   getAnnouncements: async () => {
-    const q = query(collection(db, 'announcements'), orderBy('createdAt', 'desc'));
+    // Limits fetching to 30 most recent announcements to drastically save read limits on dashboard loads
+    const q = query(collection(db, 'announcements'), orderBy('createdAt', 'desc'), limit(30));
     const snapshot = await getDocs(q);
     return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   },
   createAnnouncement: async (announcement: any) => {
+    const createdAt = new Date().toISOString();
     const docRef = await addDoc(collection(db, 'announcements'), {
       ...announcement,
-      createdAt: new Date().toISOString()
+      createdAt,
     });
-    return { id: docRef.id, ...announcement };
+    return { id: docRef.id, ...announcement, createdAt };
   },
   deleteAnnouncement: async (id: string) => {
     await deleteDoc(doc(db, 'announcements', id));
+    return true;
+  },
+  updateAnnouncement: async (id: string, updates: any) => {
+    await updateDoc(doc(db, 'announcements', id), updates);
     return true;
   },
   getPendingUsers: async () => {
@@ -135,11 +142,25 @@ export const api = {
   rejectUser: async (id: string) => {
     await deleteDoc(doc(db, 'users', id));
     return true;
-  }
+  },
+  getSurveys: async () => {
+    const q = query(collection(db, 'surveys'));
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  },
+  createSurvey: async (survey: any) => {
+    const docRef = await addDoc(collection(db, 'surveys'), survey);
+    return { id: docRef.id, ...survey };
+  },
+  deleteSurvey: async (id: string) => {
+    await deleteDoc(doc(db, 'surveys', id));
+    return true;
+  },
+  updateSurvey: async (id: string, updates: any) => {
+    await updateDoc(doc(db, 'surveys', id), updates);
+    return true;
+  },
 };
 
-const mockSurveysKey = 'uc_mock_surveys';
 export const initDB = async () => { };
-export const loadSurveys = async () => JSON.parse(localStorage.getItem(mockSurveysKey) || '[]');
-export const saveSurveys = async (s: any) => localStorage.setItem(mockSurveysKey, JSON.stringify(s));
 export const enqueueSync = async () => { };

@@ -102,35 +102,79 @@ const MemberDashboard: React.FC = () => {
     const availableSurveys = surveys.filter(s => !s.votes[currentUser.id]);
     const votedSurveys = surveys.filter(s => !!s.votes[currentUser.id]);
 
+    const currentHour = new Date().getHours();
+    const greeting = currentHour < 12 ? 'Good morning' : currentHour < 18 ? 'Good afternoon' : 'Good evening';
+
+    const isNew = (createdAt?: string) => {
+        if (!createdAt) return false;
+        const oneDay = 24 * 60 * 60 * 1000;
+        return (new Date().getTime() - new Date(createdAt).getTime()) < oneDay;
+    };
+
     return (
-        <div className="space-y-12">
+        <div className="space-y-12 animate-fade-in">
+            {/* Greeting Header */}
+            <div className="bg-gradient-to-r from-orange-600 to-orange-500 rounded-2xl p-8 text-white shadow-xl flex flex-col md:flex-row items-center justify-between">
+                <div>
+                    <h1 className="text-3xl font-display font-bold mb-2">
+                        {greeting}, {currentUser.employeeName.split(' ')[0]}! <span className="animate-bounce inline-block">👋</span>
+                    </h1>
+                    <p className="text-orange-100">Welcome to your secure union portal. Here's what's happening today.</p>
+                </div>
+                <div className="mt-6 md:mt-0 bg-white/20 backdrop-blur-md px-6 py-3 rounded-lg border border-white/20 text-sm font-medium">
+                    Status: <span className="text-white font-bold ml-1">Active Member</span>
+                </div>
+            </div>
+
             <div>
-                 <div className="flex items-center gap-3 mb-4">
+                 <div className="flex items-center gap-3 mb-6">
                     <MegaphoneIcon className="w-8 h-8 text-orange-600"/>
                     <h2 className="text-2xl font-bold text-gray-800">Latest Announcements</h2>
                 </div>
                  {announcements.length > 0 ? (
                     <div className="space-y-4">
                         {announcements.map(ann => (
-                            <div key={ann.id} className="bg-white p-5 rounded-lg shadow border-l-4 border-orange-500">
-                                <h3 className="font-bold text-lg text-gray-800">{ann.title}</h3>
-                                <p className="text-sm text-gray-600 mt-2 whitespace-pre-wrap">{ann.content}</p>
+                            <div key={ann.id} className="relative bg-white p-6 rounded-xl shadow border-l-4 border-orange-500 hover:shadow-lg transition-shadow group overflow-hidden">
+                                {isNew(ann.createdAt) && (
+                                    <div className="absolute top-4 right-4 bg-orange-100 text-orange-700 text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full border border-orange-200">
+                                        New
+                                    </div>
+                                )}
+                                <h3 className="font-bold text-xl text-gray-800 pr-16">{ann.title}</h3>
+                                <p className="text-gray-600 mt-2 whitespace-pre-wrap leading-relaxed">{ann.content}</p>
                                 {ann.attachment && (
-                                    <div className="mt-4">
-                                        <a href={ann.attachment.dataUrl} download={ann.attachment.name}
+                                    <div className="mt-4 flex flex-wrap gap-2">
+                                        <a href={ann.attachment.url}
+                                           target="_blank"
+                                           rel="noopener noreferrer"
                                            className="inline-flex items-center gap-2 text-sm font-medium text-orange-600 hover:text-orange-800 bg-orange-100 hover:bg-orange-200 px-3 py-1 rounded-full transition-colors">
                                             <PaperClipIcon className="w-4 h-4" />
                                             <span>{ann.attachment.name}</span>
+                                            <span className="text-xs opacity-60">↗ Open</span>
                                         </a>
+                                        {ann.attachment.driveId && (
+                                            <a
+                                                href={`https://drive.google.com/uc?export=download&id=${ann.attachment.driveId}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="inline-flex items-center gap-1 text-xs font-medium text-gray-500 hover:text-gray-700 bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full transition-colors"
+                                            >
+                                                ↓ Download
+                                            </a>
+                                        )}
                                     </div>
                                 )}
-                                <p className="text-xs text-gray-400 mt-3 text-right">{new Date(ann.createdAt).toLocaleString()}</p>
+                                {ann.createdAt && <p className="text-xs text-gray-400 mt-3 text-right">{new Date(ann.createdAt).toLocaleString()}</p>}
                             </div>
                         ))}
                     </div>
                 ) : (
-                    <div className="bg-white text-center p-8 rounded-lg shadow">
-                         <p className="text-gray-500">No new announcements at the moment.</p>
+                    <div className="bg-white text-center py-16 px-8 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center justify-center">
+                         <div className="w-24 h-24 mb-4 text-gray-200">
+                            <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+                         </div>
+                         <p className="text-lg font-medium text-gray-600">No recent announcements</p>
+                         <p className="text-sm text-gray-400 mt-1">You're all caught up!</p>
                     </div>
                 )}
             </div>

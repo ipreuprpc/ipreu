@@ -3,9 +3,36 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Union Connect Portal</title>
+    <link rel="apple-touch-icon" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#ea580c" />
+    <meta name="description" content="IPREU Union Connect Portal - Empowering connectivity and securing document access for our members." />
+    
+    <!-- Open Graph Data -->
+    <meta property="og:title" content="IPREU Union Connect" />
+    <meta property="og:description" content="Empowering connectivity and securing document access for our members." />
+    <meta property="og:type" content="website" />
+    
+    <title>IPREU Union Connect</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              display: ['Outfit', 'sans-serif'],
+            }
+          }
+        }
+      }
+    </script>
   <script type="importmap">
 {
   "imports": {

@@ -10,6 +10,9 @@ export interface User {
   employeeNumber: string;
   employeeName: string;
   dob: string;
+  doj: string;
+  department: string;
+  unit: string;
   fatherName: string;
   motherName: string;
   nativePlace: string;
@@ -38,8 +41,9 @@ export interface Announcement {
   content: string;
   createdAt: string; // ISO date string
   attachment?: {
-    name: string;
-    type: string;
-    dataUrl: string; // Base64 encoded file
+    name: string;     // Display name shown to members
+    url: string;      // Google Drive share/preview URL
+    driveId?: string; // Extracted Drive file ID (enables direct download link)
   };
 }
+

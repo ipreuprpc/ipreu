@@ -4,8 +4,8 @@ import Header from './components/Header';
 import Auth from './components/Auth';
 import AdminDashboard from './components/AdminDashboard';
 import MemberDashboard from './components/MemberDashboard';
+import LandingPage from './components/LandingPage';
 import {
-    loadSurveys, saveSurveys,
     loadSession, saveSession, clearSession,
     api
 } from './services/storage';
@@ -34,9 +34,11 @@ interface AppContextType {
     approveRegistration: (id: string) => Promise<void>;
     rejectRegistration: (id: string) => Promise<void>;
     createSurvey: (survey: Omit<Survey, 'id' | 'votes'>) => void;
+    deleteSurvey: (id: string) => Promise<void>;
     submitVote: (surveyId: string, optionId: string) => void;
     getUserStatus: (email: string) => Promise<{ status: UserRole | 'NOT_FOUND'; user: User | null }>;
-    createAnnouncement: (title: string, content: string, file?: File | null) => Promise<void>;
+    createAnnouncement: (title: string, content: string, driveAttachment?: Announcement['attachment'] | null) => Promise<void>;
+    updateAnnouncement: (id: string, title: string, content: string) => Promise<void>;
     deleteAnnouncement: (announcementId: string) => Promise<void>;
     fetchAnnouncements: () => Promise<void>;
 }
@@ -50,6 +52,7 @@ export const useAppContext = () => {
 
 function App() {
     const [isLoading, setIsLoading] = useState(true);
+    const [showAuth, setShowAuth] = useState(false);
     const [currentUser, setCurrentUser] = useState<User | null>(null);
     const [surveys, setSurveys] = useState<Survey[]>([]);
     const [announcements, setAnnouncements] = useState<Announcement[]>([]);
@@ -58,11 +61,10 @@ function App() {
     useEffect(() => {
         const init = async () => {
             try {
-                const loadedSurveys = await loadSurveys();
+                const loadedSurveys = await api.getSurveys() as Survey[];
                 if (loadedSurveys.length > 0) setSurveys(loadedSurveys);
                 else {
                     setSurveys(initialSurveys);
-                    await saveSurveys(initialSurveys);
                 }
 
                 const session = loadSession();
@@ -85,11 +87,9 @@ function App() {
             }
         };
         init();
-    }, []);
 
-    useEffect(() => {
-        if (!isLoading) saveSurveys(surveys);
-    }, [surveys, isLoading]);
+
+    }, []);
 
     const contextValue = useMemo(() => ({
         currentUser,
@@ -101,7 +101,7 @@ function App() {
             setAnnouncements(acts);
         },
         memberLogin: async (email: string, password?: string) => {
-            const res = await api.login(email, password);
+            const res = await api.login(email, password) as unknown as { token: string, user: User };
             if (res.token && res.user && res.user.role === 'MEMBER') {
                 setCurrentUser(res.user);
                 saveSession(res.token, res.user);
@@ -110,7 +110,7 @@ function App() {
             return false;
         },
         adminLogin: async (email: string, password?: string) => {
-            const res = await api.login(email, password);
+            const res = await api.login(email, password) as unknown as { token: string, user: User };
             if (res.token && res.user && res.user.role === 'ADMIN') {
                 setCurrentUser(res.user);
                 saveSession(res.token, res.user);
@@ -139,19 +139,22 @@ function App() {
             await api.rejectUser(id);
             setUsers(prev => prev.filter(u => u.id !== id));
         },
-        createSurvey: (surveyData: Omit<Survey, 'id' | 'votes'>) => {
-            const newSurvey: Survey = {
-                ...surveyData,
-                id: `survey-${Date.now()}`,
-                votes: {},
-            };
-            setSurveys(prev => [newSurvey, ...prev]);
+        createSurvey: async (surveyData: Omit<Survey, 'id' | 'votes'>) => {
+            const newSurvey = await api.createSurvey({ ...surveyData, votes: {} });
+            setSurveys(prev => [newSurvey as Survey, ...prev]);
         },
-        submitVote: (surveyId: string, optionId: string) => {
+        deleteSurvey: async (id: string) => {
+            await api.deleteSurvey(id);
+            setSurveys(prev => prev.filter(s => s.id !== id));
+        },
+        submitVote: async (surveyId: string, optionId: string) => {
             if (!currentUser) return;
+            const survey = surveys.find(s => s.id === surveyId);
+            if (!survey || survey.votes[currentUser.id]) return;
+            const newVotes = { ...survey.votes, [currentUser.id]: optionId };
+            await api.updateSurvey(surveyId, { votes: newVotes });
             setSurveys(prev => prev.map(s => {
-                if (s.id === surveyId && !s.votes[currentUser.id]) {
-                    const newVotes = { ...s.votes, [currentUser.id]: optionId };
+                if (s.id === surveyId) {
                     return { ...s, votes: newVotes };
                 }
                 return s;
@@ -166,19 +169,13 @@ function App() {
                 throw e;
             }
         },
-        createAnnouncement: async (title: string, content: string, file?: File | null) => {
-            let attachmentData: Announcement['attachment'] | undefined = undefined;
-            if (file) {
-                const dataUrl = await new Promise<string>((resolve, reject) => {
-                    const reader = new FileReader();
-                    reader.onload = () => resolve(reader.result as string);
-                    reader.onerror = (error) => reject(error);
-                    reader.readAsDataURL(file);
-                });
-                attachmentData = { name: file.name, type: file.type, dataUrl: dataUrl };
-            }
-            const res = await api.createAnnouncement({ title, content, attachment: attachmentData });
-            setAnnouncements(prev => [res, ...prev]);
+        createAnnouncement: async (title: string, content: string, driveAttachment?: Announcement['attachment'] | null) => {
+            const res = await api.createAnnouncement({ title, content, attachment: driveAttachment ?? undefined });
+            setAnnouncements(prev => [res as Announcement, ...prev]);
+        },
+        updateAnnouncement: async (id: string, title: string, content: string) => {
+            await api.updateAnnouncement(id, { title, content });
+            setAnnouncements(prev => prev.map(ann => ann.id === id ? { ...ann, title, content } : ann));
         },
         deleteAnnouncement: async (announcementId: string) => {
             await api.deleteAnnouncement(announcementId);
@@ -187,11 +184,15 @@ function App() {
     }), [currentUser, users, surveys, announcements]);
 
     const renderContent = () => {
-        if (!currentUser) return <Auth />;
+        if (!currentUser) {
+            if (showAuth) return <Auth onBack={() => setShowAuth(false)} />;
+            return <LandingPage onLoginClick={() => setShowAuth(true)} />;
+        }
+
         switch (currentUser.role) {
             case UserRole.ADMIN: return <AdminDashboard />;
             case UserRole.MEMBER: return <MemberDashboard />;
-            default: return <Auth />;
+            default: return <Auth onBack={() => setShowAuth(false)} />;
         }
     };
 
