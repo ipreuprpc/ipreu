@@ -20,6 +20,7 @@ export interface User {
   caste?: string;
   mobileNumber: string;
   role: UserRole;
+  fcmToken?: string;
   password?: string; // Kept for form types but not persisted
 }
 
@@ -45,5 +46,30 @@ export interface Announcement {
     url: string;      // Google Drive share/preview URL
     driveId?: string; // Extracted Drive file ID (enables direct download link)
   };
+}
+
+export interface Grievance {
+  id: string;
+  userId: string;
+  userName: string;
+  category: string;
+  subject: string;
+  description: string;
+  status: 'NEW' | 'PROCESSING' | 'RESOLVED';
+  createdAt: string;
+  response?: string;
+  respondedAt?: string;
+}
+
+export interface CalendarEvent {
+  id: string;
+  title: string;
+  description: string;
+  date: string; // ISO date string
+  startTime: string;
+  endTime?: string;
+  location?: string;
+  category: 'MEETING' | 'HOLIDAY' | 'ELECTION' | 'SOCIAL' | 'OTHER';
+  createdAt: string;
 }
 

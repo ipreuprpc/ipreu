@@ -1,5 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
+import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 import { getFirestore, collection, doc, setDoc, getDoc, getDocs, updateDoc, deleteDoc, query, where, orderBy, addDoc, limit } from 'firebase/firestore';
 
 const firebaseConfig = {
@@ -14,6 +15,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+export const messaging = typeof window !== 'undefined' ? getMessaging(app) : null;
 
 
 const STORAGE_KEY = 'uc_token';
@@ -152,6 +154,42 @@ export const api = {
     await updateDoc(doc(db, 'surveys', id), updates);
     return true;
   },
+  getCalendarEvents: async () => {
+    const q = query(collection(db, 'calendar'), orderBy('date', 'asc'));
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  },
+  createCalendarEvent: async (event: any) => {
+    const docRef = await addDoc(collection(db, 'calendar'), event);
+    return { id: docRef.id, ...event };
+  },
+  deleteCalendarEvent: async (id: string) => {
+    await deleteDoc(doc(db, 'calendar', id));
+    return true;
+  },
+  getGrievances: async (userId?: string) => {
+    let q;
+    const grievancesRef = collection(db, 'grievances');
+    if (userId) {
+      q = query(grievancesRef, where('userId', '==', userId), orderBy('createdAt', 'desc'));
+    } else {
+      q = query(grievancesRef, orderBy('createdAt', 'desc'));
+    }
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(doc => ({ id: doc.id, ...(doc.data() as any) }));
+  },
+  createGrievance: async (grievance: any) => {
+    const docRef = await addDoc(collection(db, 'grievances'), grievance);
+    return { id: docRef.id, ...grievance };
+  },
+  updateGrievance: async (id: string, updates: any) => {
+    await updateDoc(doc(db, 'grievances', id), updates);
+    return true;
+  },
+  saveFcmToken: async (userId: string, token: string) => {
+    const userRef = doc(db, 'users', userId);
+    await updateDoc(userRef, { fcmToken: token });
+  }
 };
 
 export const initDB = async () => { };

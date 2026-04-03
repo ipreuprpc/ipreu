@@ -1,6 +1,6 @@
 import React, { useState, useEffect, FormEvent, useRef } from 'react';
 import { useAppContext } from '../App';
-import { User, UserRole, Survey, SurveyOption, Announcement } from '../types';
+import { User, UserRole, Survey, SurveyOption, Announcement, CalendarEvent, Grievance } from '../types';
 import { UserGroupIcon } from './icons/UserGroupIcon';
 import { ClipboardListIcon } from './icons/ClipboardListIcon';
 import { MegaphoneIcon } from './icons/MegaphoneIcon';
@@ -12,15 +12,15 @@ import { UserCheckIcon } from './icons/UserCheckIcon';
 import { XMarkIcon } from './icons/XMarkIcon';
 
 // ─── Stat Card ───────────────────────────────────────────────────────────────
-const StatCard: React.FC<{ title: string; value: number; icon: React.ReactNode }> = ({ title, value, icon }) => (
-    <div className="relative overflow-hidden bg-white p-5 rounded-xl shadow-lg border border-gray-100 flex items-center space-x-4 transition-transform hover:-translate-y-1 group">
-        <div className="absolute -right-4 -top-4 w-24 h-24 bg-gradient-to-br from-orange-50 to-orange-100 rounded-full opacity-50 group-hover:scale-150 transition-transform duration-500" />
-        <div className="bg-gradient-to-br from-orange-100 to-orange-50 p-3 rounded-full text-orange-600 shadow-inner relative z-10">
+const StatCard: React.FC<{ title: string; value: number; icon: React.ReactNode; color?: string }> = ({ title, value, icon, color = 'orange' }) => (
+    <div className="relative overflow-hidden bg-white dark:bg-gray-900 p-5 rounded-xl shadow-lg border border-gray-100 dark:border-gray-800 flex items-center space-x-4 transition-transform hover:-translate-y-1 group">
+        <div className={`absolute -right-4 -top-4 w-24 h-24 bg-${color}-50 dark:bg-${color}-900/10 rounded-full opacity-50 group-hover:scale-150 transition-transform duration-500`} />
+        <div className={`bg-${color}-100 dark:bg-${color}-900/30 p-3 rounded-full text-${color}-600 dark:text-${color}-400 shadow-inner relative z-10`}>
             {icon}
         </div>
         <div className="relative z-10">
-            <p className="text-sm text-gray-500 font-medium tracking-wide uppercase">{title}</p>
-            <p className="text-3xl font-display font-bold text-gray-800 tracking-tight">{value}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 font-medium tracking-wide uppercase">{title}</p>
+            <p className="text-3xl font-display font-bold text-gray-800 dark:text-gray-100 tracking-tight">{value}</p>
         </div>
     </div>
 );
@@ -447,6 +447,235 @@ const AnnouncementManager: React.FC = () => {
     );
 };
 
+// ─── Calendar Manager ────────────────────────────────────────────────────────
+const CalendarManager: React.FC = () => {
+    const { calendarEvents, createCalendarEvent, deleteCalendarEvent } = useAppContext();
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
+    const [date, setDate] = useState('');
+    const [startTime, setStartTime] = useState('');
+    const [location, setLocation] = useState('');
+    const [category, setCategory] = useState<CalendarEvent['category']>('MEETING');
+    const [isAdding, setIsAdding] = useState(false);
+
+    const handleSubmit = async (e: FormEvent) => {
+        e.preventDefault();
+        try {
+            await createCalendarEvent({ title, description, date, startTime, location, category });
+            setTitle(''); setDescription(''); setDate(''); setStartTime(''); setLocation(''); setCategory('MEETING');
+            setIsAdding(false);
+        } catch (err: any) {
+            alert(err.message || 'Failed to create event');
+        }
+    };
+
+    return (
+        <div className="space-y-6">
+            <div className="flex justify-between items-center">
+                <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">Union Calendar</h3>
+                <button
+                    onClick={() => setIsAdding(!isAdding)}
+                    className="px-4 py-2 bg-orange-600 text-white rounded-lg text-sm font-semibold hover:bg-orange-700 transition-colors"
+                >
+                    {isAdding ? 'Cancel' : '+ Add Event'}
+                </button>
+            </div>
+
+            {isAdding && (
+                <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md border dark:border-gray-800 space-y-4 animate-fade-in">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Event Title</label>
+                            <input type="text" value={title} onChange={e => setTitle(e.target.value)} required className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md text-gray-900 dark:text-gray-100 focus:ring-orange-500" />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Category</label>
+                            <select value={category} onChange={e => setCategory(e.target.value as any)} className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md text-gray-900 dark:text-gray-100 focus:ring-orange-500">
+                                <option value="MEETING">Meeting</option>
+                                <option value="HOLIDAY">Holiday</option>
+                                <option value="ELECTION">Election</option>
+                                <option value="SOCIAL">Social</option>
+                                <option value="OTHER">Other</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Date</label>
+                            <input type="date" value={date} onChange={e => setDate(e.target.value)} required className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md text-gray-900 dark:text-gray-100 focus:ring-orange-500" />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Start Time</label>
+                            <input type="time" value={startTime} onChange={e => setStartTime(e.target.value)} required className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md text-gray-900 dark:text-gray-100 focus:ring-orange-500" />
+                        </div>
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Location (Optional)</label>
+                        <input type="text" value={location} onChange={e => setLocation(e.target.value)} className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md text-gray-900 dark:text-gray-100 focus:ring-orange-500" />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
+                        <textarea value={description} onChange={e => setDescription(e.target.value)} rows={2} className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md text-gray-900 dark:text-gray-100 focus:ring-orange-500" />
+                    </div>
+                    <button type="submit" className="w-full py-2 bg-green-600 text-white rounded-md font-bold hover:bg-green-700 transition-colors">Publish Event</button>
+                </form>
+            )}
+
+            <div className="grid grid-cols-1 gap-4">
+                {calendarEvents.length > 0 ? (
+                    calendarEvents.slice().sort((a,b) => a.date.localeCompare(b.date)).map(event => (
+                        <div key={event.id} className="bg-white dark:bg-gray-900 p-4 rounded-lg shadow border-l-4 border-orange-500 flex justify-between items-center group">
+                            <div>
+                                <div className="flex items-center gap-2">
+                                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded uppercase ${
+                                        event.category === 'MEETING' ? 'bg-blue-100 text-blue-700' :
+                                        event.category === 'ELECTION' ? 'bg-red-100 text-red-700' :
+                                        event.category === 'HOLIDAY' ? 'bg-green-100 text-green-700' :
+                                        'bg-gray-100 text-gray-700'
+                                    }`}>
+                                        {event.category}
+                                    </span>
+                                    <h4 className="font-bold text-gray-800 dark:text-gray-100">{event.title}</h4>
+                                </div>
+                                <p className="text-xs text-gray-500 mt-1">
+                                    {new Date(event.date).toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' })} at {event.startTime}
+                                </p>
+                                {event.location && <p className="text-[10px] text-gray-400">📍 {event.location}</p>}
+                            </div>
+                            <button
+                                onClick={() => { if(confirm('Delete this event?')) deleteCalendarEvent(event.id); }}
+                                className="text-red-400 hover:text-red-600 p-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                                <TrashIcon className="w-5 h-5" />
+                            </button>
+                        </div>
+                    ))
+                ) : (
+                    <div className="text-center py-12 bg-white dark:bg-gray-900 rounded-lg border border-dashed dark:border-gray-800">
+                      <ClockIcon className="w-12 h-12 text-gray-300 mx-auto mb-2" />
+                      <p className="text-gray-500">No upcoming events scheduled.</p>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+};
+
+// ─── Grievance Inbox ────────────────────────────────────────────────────────
+const GrievanceInbox: React.FC = () => {
+    const { grievances, respondToGrievance } = useAppContext();
+    const [responseMap, setResponseMap] = useState<Record<string, string>>({});
+
+    const handleRespond = async (id: string) => {
+        const reply = responseMap[id];
+        if (!reply?.trim()) return;
+        try {
+            await respondToGrievance(id, reply);
+            setResponseMap(prev => {
+                const multi = { ...prev };
+                delete multi[id];
+                return multi;
+            });
+        } catch (err: any) {
+            alert(err.message || 'Failed to respond');
+        }
+    };
+
+    return (
+        <div className="space-y-6">
+            <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">Grievance Inbox</h3>
+            <div className="space-y-4">
+                {grievances.length > 0 ? (
+                    grievances.map(g => (
+                        <div key={g.id} className={`p-5 rounded-xl border transition-all ${
+                            g.status === 'NEW' ? 'bg-orange-50 border-orange-200 dark:bg-orange-900/10 dark:border-orange-900/30' : 'bg-white border-gray-100 dark:bg-gray-900 dark:border-gray-800'
+                        }`}>
+                            <div className="flex justify-between items-start mb-3">
+                                <div>
+                                    <div className="flex items-center gap-2">
+                                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                                            g.status === 'NEW' ? 'bg-orange-200 text-orange-800' : 'bg-green-100 text-green-700'
+                                        }`}>
+                                            {g.status}
+                                        </span>
+                                        <h4 className="font-bold text-gray-800 dark:text-gray-100">{g.subject}</h4>
+                                    </div>
+                                    <p className="text-xs text-gray-500 mt-0.5">From: <span className="font-semibold">{g.userName}</span> ({g.userId.substring(0,6)})</p>
+                                </div>
+                                <span className="text-[10px] text-gray-400 italic">{new Date(g.createdAt).toLocaleDateString()}</span>
+                            </div>
+                            <p className="text-sm text-gray-700 dark:text-gray-300 bg-white/50 dark:bg-gray-800/50 p-3 rounded-lg border dark:border-gray-700/50 mb-4 italic">"{g.description}"</p>
+                            
+                            {g.status === 'RESOLVED' ? (
+                                <div className="bg-green-50 dark:bg-green-900/10 p-3 rounded-lg border border-green-100 dark:border-green-900/30">
+                                    <p className="text-xs font-bold text-green-700 dark:text-green-400 mb-1">✅ Admin Response:</p>
+                                    <p className="text-sm text-green-800 dark:text-green-300">{g.response}</p>
+                                    <p className="text-[10px] text-green-600 mt-2 italic">Resolved on {new Date(g.respondedAt!).toLocaleDateString()}</p>
+                                </div>
+                            ) : (
+                                <div className="space-y-2">
+                                    <textarea
+                                        placeholder="Write your response here..."
+                                        value={responseMap[g.id] || ''}
+                                        onChange={e => setResponseMap(prev => ({ ...prev, [g.id]: e.target.value }))}
+                                        rows={2}
+                                        className="w-full px-3 py-2 text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-900 dark:text-gray-100 focus:ring-orange-500"
+                                    />
+                                    <button
+                                        onClick={() => handleRespond(g.id)}
+                                        className="px-4 py-1.5 bg-orange-600 text-white rounded-lg text-xs font-bold hover:bg-orange-700 transition-colors shadow-sm"
+                                    >
+                                        Send Reply & Mark Resolved
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    ))
+                ) : (
+                  <div className="text-center py-20 bg-white dark:bg-gray-900 rounded-xl border border-dashed dark:border-gray-800">
+                    <CheckCircleIcon className="w-12 h-12 text-green-500/30 mx-auto mb-2" />
+                    <p className="text-gray-500">No grievances reported. Excellent!</p>
+                  </div>
+                )}
+            </div>
+
+            {/* Notification Guide */}
+            <div className="mt-12 group">
+                <div className="p-6 rounded-2xl bg-orange-50 dark:bg-orange-950/20 border border-orange-100 dark:border-orange-900/30">
+                    <div className="flex items-center gap-3 mb-4">
+                        <div className="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900/50 flex items-center justify-center text-orange-600">
+                            <MegaphoneIcon className="w-6 h-6" />
+                        </div>
+                        <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100">Broadcast Push Notification</h3>
+                    </div>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
+                        To send a broadcast message to all members' phones, use the <strong>Firebase Console Cloud Messaging</strong> tab. This is a <strong>Free Forever</strong> service that allows you to send unlimited push notifications.
+                    </p>
+                    <div className="space-y-3">
+                        <div className="flex items-start gap-3">
+                            <div className="w-5 h-5 rounded-full bg-white dark:bg-gray-800 border dark:border-gray-700 flex items-center justify-center text-[10px] font-bold text-orange-600 mt-0.5">1</div>
+                            <p className="text-xs text-gray-700 dark:text-gray-300">Go to <strong>Messaging</strong> in your Firebase Console.</p>
+                        </div>
+                        <div className="flex items-start gap-3">
+                            <div className="w-5 h-5 rounded-full bg-white dark:bg-gray-800 border dark:border-gray-700 flex items-center justify-center text-[10px] font-bold text-orange-600 mt-0.5">2</div>
+                            <p className="text-xs text-gray-700 dark:text-gray-300">Click <strong>"New campaign"</strong> &rarr; <strong>"Notifications"</strong>.</p>
+                        </div>
+                        <div className="flex items-start gap-3">
+                            <div className="w-5 h-5 rounded-full bg-white dark:bg-gray-800 border dark:border-gray-700 flex items-center justify-center text-[10px] font-bold text-orange-600 mt-0.5">3</div>
+                            <p className="text-xs text-gray-700 dark:text-gray-300">Enter your Title and Message, then target your Web app.</p>
+                        </div>
+                    </div>
+                    <button 
+                        onClick={() => window.open('https://console.firebase.google.com/', '_blank')}
+                        className="mt-6 inline-flex items-center gap-2 px-6 py-2 bg-orange-600 text-white rounded-lg text-sm font-bold hover:bg-orange-700 transition-all shadow-md group-hover:scale-105"
+                    >
+                        Open Firebase Console
+                        <span className="text-xs">↗</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 // ─── Member Details Modal ─────────────────────────────────────────────────────
 const MemberDetailsModal: React.FC<{ member: User; onClose: () => void }> = ({ member, onClose }) => (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50" onClick={onClose}>
@@ -475,10 +704,68 @@ const MemberDetailsModal: React.FC<{ member: User; onClose: () => void }> = ({ m
     </div>
 );
 
+// ─── Elite Overview Widget ──────────────────────────────────────────────────
+const EliteOverview: React.FC = () => {
+    const { users, grievances, calendarEvents } = useAppContext();
+    const approvedMembers = users.filter(u => u.role === 'MEMBER');
+    const openGrievances = grievances.filter(g => g.status === 'NEW').length;
+    const activeNotifications = approvedMembers.filter(u => u.fcmToken).length;
+    const upcomingEvents = calendarEvents.length;
+
+    return (
+        <div className="space-y-8 animate-fade-in">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <StatCard title="Total Members" value={approvedMembers.length} icon={<UserCheckIcon className="w-6 h-6" />} color="blue" />
+                <StatCard title="Push Reach" value={activeNotifications} icon={<MegaphoneIcon className="w-6 h-6" />} color="orange" />
+                <StatCard title="Open Grievances" value={openGrievances} icon={<ClipboardListIcon className="w-6 h-6" />} color="red" />
+                <StatCard title="Calendar Events" value={upcomingEvents} icon={<ClockIcon className="w-6 h-6" />} color="green" />
+            </div>
+
+            <div className="bg-white dark:bg-gray-900 p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800">
+                 <div className="flex items-center gap-4 mb-6">
+                    <div className="p-3 bg-orange-600 rounded-xl text-white shadow-lg shadow-orange-600/20">
+                        <MegaphoneIcon className="w-6 h-6" />
+                    </div>
+                    <div>
+                        <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">Elite Platform Status</h3>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">Your union communication infrastructure is active and healthy.</p>
+                    </div>
+                 </div>
+
+                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50 border dark:border-gray-700/50">
+                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Push Notifications</p>
+                        <div className="flex items-center gap-2">
+                             <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                             <span className="text-sm font-bold text-gray-700 dark:text-gray-300">FCM Operational</span>
+                        </div>
+                    </div>
+                    <div className="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50 border dark:border-gray-700/50">
+                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Member ID System</p>
+                        <div className="flex items-center gap-2">
+                             <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+                             <span className="text-sm font-bold text-gray-700 dark:text-gray-300">QR Engine Active</span>
+                        </div>
+                    </div>
+                    <div className="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50 border dark:border-gray-700/50">
+                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Grievance Hub</p>
+                        <div className="flex items-center gap-2">
+                             <div className={`w-2 h-2 rounded-full ${openGrievances > 0 ? 'bg-orange-500' : 'bg-green-500'}`}></div>
+                             <span className="text-sm font-bold text-gray-700 dark:text-gray-300">
+                                {openGrievances} pending action
+                             </span>
+                        </div>
+                    </div>
+                 </div>
+            </div>
+        </div>
+    );
+};
+
 // ─── Admin Dashboard (Main) ─────────────────────────────────────────────────
 const AdminDashboard: React.FC = () => {
-    const { users, surveys, announcements, approveRegistration, rejectRegistration, deleteSurvey } = useAppContext();
-    const [activeTab, setActiveTab] = useState<'overview' | 'members' | 'surveys' | 'announcements'>('overview');
+    const { users, surveys, announcements, calendarEvents, grievances, approveRegistration, rejectRegistration, deleteSurvey } = useAppContext();
+    const [activeTab, setActiveTab] = useState<'overview' | 'members' | 'surveys' | 'announcements' | 'calendar' | 'grievances'>('overview');
     const [selectedMember, setSelectedMember] = useState<User | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [currentTime, setCurrentTime] = useState(new Date());
@@ -500,7 +787,9 @@ const AdminDashboard: React.FC = () => {
         { id: 'overview' as const, label: 'Overview', icon: <UserGroupIcon className="w-5 h-5" /> },
         { id: 'members' as const, label: 'Members', icon: <UserCheckIcon className="w-5 h-5" /> },
         { id: 'surveys' as const, label: 'Surveys', icon: <ClipboardListIcon className="w-5 h-5" /> },
-        { id: 'announcements' as const, label: 'Announcements', icon: <MegaphoneIcon className="w-5 h-5" /> },
+        { id: 'announcements' as const, label: 'Notices', icon: <MegaphoneIcon className="w-5 h-5" /> },
+        { id: 'calendar' as const, label: 'Calendar', icon: <ClockIcon className="w-5 h-5" /> },
+        { id: 'grievances' as const, label: 'Messages', icon: <MegaphoneIcon className="w-5 h-5" /> },
     ];
 
     return (
@@ -534,16 +823,11 @@ const AdminDashboard: React.FC = () => {
             {/* Overview */}
             {activeTab === 'overview' && (
                 <div className="space-y-6">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <StatCard title="Total Members" value={approvedMembers.length} icon={<UserGroupIcon className="w-6 h-6 text-orange-600" />} />
-                        <StatCard title="Pending Approvals" value={pendingMembers.length} icon={<ClockIcon className="w-6 h-6 text-orange-600" />} />
-                        <StatCard title="Active Surveys" value={surveys.length} icon={<ClipboardListIcon className="w-6 h-6 text-orange-600" />} />
-                        <StatCard title="Announcements" value={announcements.length} icon={<MegaphoneIcon className="w-6 h-6 text-orange-600" />} />
-                    </div>
+                    <EliteOverview />
 
                     {pendingMembers.length > 0 && (
-                        <div>
-                            <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                        <div className="animate-fade-in">
+                            <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
                                 <ClockIcon className="w-5 h-5 text-orange-600" />
                                 Pending Approvals ({pendingMembers.length})
                             </h2>
@@ -561,8 +845,8 @@ const AdminDashboard: React.FC = () => {
                     )}
 
                     {pendingMembers.length === 0 && (
-                        <div className="bg-white rounded-lg shadow p-8 text-center">
-                            <CheckCircleIcon className="w-12 h-12 text-green-500 mx-auto mb-3" />
+                        <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm p-8 text-center border border-gray-100 dark:border-gray-800 animate-fade-in">
+                            <CheckCircleIcon className="w-12 h-12 text-green-500/30 mx-auto mb-3" />
                             <p className="text-gray-500">No pending approvals. All caught up!</p>
                         </div>
                     )}
@@ -656,6 +940,12 @@ const AdminDashboard: React.FC = () => {
 
             {/* Announcements */}
             {activeTab === 'announcements' && <AnnouncementManager />}
+
+            {/* Calendar */}
+            {activeTab === 'calendar' && <CalendarManager />}
+
+            {/* Grievances */}
+            {activeTab === 'grievances' && <GrievanceInbox />}
 
             {/* Member Details Modal */}
             {selectedMember && (

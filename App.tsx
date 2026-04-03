@@ -1,11 +1,12 @@
 import React, { useState, createContext, useContext, useMemo, useEffect, Suspense, lazy } from 'react';
-import { User, Survey, UserRole, Announcement } from './types';
+import { User, Survey, UserRole, Announcement, CalendarEvent, Grievance } from './types';
 import Header from './components/Header';
 import LandingPage from './components/LandingPage';
 import {
     loadSession, saveSession, clearSession,
-    api
+    api, messaging
 } from './services/storage';
+import { getToken, onMessage } from 'firebase/messaging';
 
 const Auth = lazy(() => import('./components/Auth'));
 const AdminDashboard = lazy(() => import('./components/AdminDashboard'));
@@ -25,9 +26,13 @@ const initialSurveys: Survey[] = [
 
 interface AppContextType {
     currentUser: User | null;
+    isDarkMode: boolean;
+    toggleDarkMode: () => void;
     users: User[];
     surveys: Survey[];
     announcements: Announcement[];
+    calendarEvents: CalendarEvent[];
+    grievances: Grievance[];
     memberLogin: (email: string, password?: string) => Promise<{ success: boolean; pending?: boolean; error?: string }>;
     adminLogin: (email: string, password?: string) => Promise<{ success: boolean; error?: string }>;
     logout: () => void;
@@ -41,6 +46,10 @@ interface AppContextType {
     updateAnnouncement: (id: string, title: string, content: string) => Promise<void>;
     deleteAnnouncement: (announcementId: string) => Promise<void>;
     fetchAnnouncements: () => Promise<void>;
+    createCalendarEvent: (event: Omit<CalendarEvent, 'id' | 'createdAt'>) => Promise<void>;
+    deleteCalendarEvent: (id: string) => Promise<void>;
+    submitGrievance: (subject: string, description: string, category: string) => Promise<void>;
+    respondToGrievance: (id: string, response: string) => Promise<void>;
 }
 
 const AppContext = createContext<AppContextType | null>(null);
@@ -53,25 +62,41 @@ export const useAppContext = () => {
 function App() {
     const [isLoading, setIsLoading] = useState(true);
     const [showAuth, setShowAuth] = useState(false);
+    const [isDarkMode, setIsDarkMode] = useState(() => localStorage.getItem('theme') === 'dark');
     const [currentUser, setCurrentUser] = useState<User | null>(null);
     const [surveys, setSurveys] = useState<Survey[]>([]);
     const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+    const [calendarEvents, setCalendarEvents] = useState<CalendarEvent[]>([]);
+    const [grievances, setGrievances] = useState<Grievance[]>([]);
     const [users, setUsers] = useState<User[]>([]);
+
+    useEffect(() => {
+        document.documentElement.classList.toggle('dark', isDarkMode);
+        localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+    }, [isDarkMode]);
 
     useEffect(() => {
         const init = async () => {
             try {
-                const loadedSurveys = await api.getSurveys() as Survey[];
-                if (loadedSurveys.length > 0) setSurveys(loadedSurveys);
-                else {
-                    setSurveys(initialSurveys);
-                }
+                const [loadedSurveys, events] = await Promise.all([
+                    api.getSurveys(),
+                    api.getCalendarEvents()
+                ]);
+                if (loadedSurveys.length > 0) setSurveys(loadedSurveys as Survey[]);
+                else setSurveys(initialSurveys);
+
+                setCalendarEvents(events as CalendarEvent[]);
 
                 const session = loadSession();
                 if (session && session.user) {
                     setCurrentUser(session.user);
-                    const acts = await api.getAnnouncements();
+                    registerFCM(session.user.id);
+                    const [acts, myGrievances] = await Promise.all([
+                        api.getAnnouncements(),
+                        api.getGrievances(session.user.role === 'ADMIN' ? undefined : session.user.id)
+                    ]);
                     setAnnouncements(acts);
+                    setGrievances(myGrievances as Grievance[]);
                     if (session.user.role === 'ADMIN') {
                         const [pending, approved] = await Promise.all([
                             api.getPendingUsers(),
@@ -87,15 +112,45 @@ function App() {
             }
         };
         init();
+    }, []);
 
+    const registerFCM = async (userId: string) => {
+        if (!messaging) return;
+        try {
+            const permission = await Notification.requestPermission();
+            if (permission === 'granted') {
+                const token = await getToken(messaging, {
+                    vapidKey: 'BKZqsvNJwZbljTyY0T6ho_GruW2LiC8WBEre2uMqg6A-67sBHoF2RIg6VCX2BLMs0LVolggQTCap4zwDgedyKjI' // Placeholder
+                });
+                if (token) {
+                    await api.saveFcmToken(userId, token);
+                    console.log("FCM Token saved successfully.");
+                }
+            }
+        } catch (error) {
+            console.error("FCM Registration failed:", error);
+        }
+    };
 
+    // Listen for foreground messages
+    useEffect(() => {
+        if (!messaging) return;
+        const unsubscribe = onMessage(messaging, (payload) => {
+            console.log('Foreground message:', payload);
+            alert(`Notification: ${payload.notification?.title}\n${payload.notification?.body}`);
+        });
+        return () => unsubscribe();
     }, []);
 
     const contextValue = useMemo(() => ({
-        currentUser,
-        users,
-        surveys,
-        announcements,
+        currentUser: currentUser,
+        isDarkMode: isDarkMode,
+        toggleDarkMode: () => setIsDarkMode(prev => !prev),
+        users: users,
+        surveys: surveys,
+        announcements: announcements,
+        calendarEvents: calendarEvents,
+        grievances: grievances,
         fetchAnnouncements: async () => {
             const acts = await api.getAnnouncements();
             setAnnouncements(acts);
@@ -183,7 +238,34 @@ function App() {
             await api.deleteAnnouncement(announcementId);
             setAnnouncements(prev => prev.filter(ann => ann.id !== announcementId));
         },
-    }), [currentUser, users, surveys, announcements]);
+        createCalendarEvent: async (event: Omit<CalendarEvent, 'id' | 'createdAt'>) => {
+            const res = await api.createCalendarEvent({ ...event, createdAt: new Date().toISOString() });
+            setCalendarEvents(prev => [...prev, res as CalendarEvent]);
+        },
+        deleteCalendarEvent: async (id: string) => {
+            await api.deleteCalendarEvent(id);
+            setCalendarEvents(prev => prev.filter(e => e.id !== id));
+        },
+        submitGrievance: async (subject: string, description: string, category: string) => {
+            if (!currentUser) return;
+            const newGrievance: Omit<Grievance, 'id'> = {
+                userId: currentUser.id,
+                userName: currentUser.employeeName,
+                subject,
+                description,
+                category,
+                status: 'NEW',
+                createdAt: new Date().toISOString()
+            };
+            const res = await api.createGrievance(newGrievance);
+            setGrievances(prev => [res as Grievance, ...prev]);
+        },
+        respondToGrievance: async (id: string, response: string) => {
+            const updates = { response, respondedAt: new Date().toISOString(), status: 'RESOLVED' as const };
+            await api.updateGrievance(id, updates);
+            setGrievances(prev => prev.map(g => g.id === id ? { ...g, ...updates } : g));
+        },
+    }), [currentUser, users, surveys, announcements, calendarEvents, grievances, isDarkMode]);
 
     const renderContent = () => {
         if (!currentUser) {
@@ -200,7 +282,7 @@ function App() {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-green-50">
+            <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-600"></div>
             </div>
         );
@@ -208,7 +290,7 @@ function App() {
 
     return (
         <AppContext.Provider value={contextValue}>
-            <div className="min-h-screen font-sans bg-gray-50/30">
+            <div className="min-h-screen font-sans bg-gray-50/30 dark:bg-gray-950 transition-colors duration-300">
                 <Header />
                 <main className="container mx-auto p-4 md:p-8">
                     <Suspense fallback={
