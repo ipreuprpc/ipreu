@@ -77,15 +77,11 @@ export const api = {
     if (!userData.password) throw new Error("Password required");
     if (!userData.email) throw new Error("Email required");
 
-    // Ensure email isn't already used
-    const q = query(collection(db, 'users'), where('email', '==', userData.email.toLowerCase()));
-    const snap = await getDocs(q);
-    if (!snap.empty) throw new Error("An account with this email already exists.");
-
-    const userCredential = await createUserWithEmailAndPassword(auth, userData.email, userData.password);
+    const email = userData.email.toLowerCase().trim();
+    const userCredential = await createUserWithEmailAndPassword(auth, email, userData.password);
 
     const { password, ...detailsToSave } = userData;
-    detailsToSave.email = userData.email.toLowerCase();
+    detailsToSave.email = email;
 
     await setDoc(doc(db, 'users', userCredential.user.uid), {
       ...detailsToSave,

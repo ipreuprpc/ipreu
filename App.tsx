@@ -3,6 +3,7 @@ import { User, Survey, UserRole, Announcement, CalendarEvent, Grievance } from '
 import Header from './components/Header';
 import LandingPage from './components/LandingPage';
 import BottomNav from './components/BottomNav';
+import BrandingBadge from './components/BrandingBadge';
 import ErrorBoundary from './components/ErrorBoundary';
 import {
     loadSession, saveSession, clearSession,
@@ -73,7 +74,7 @@ function App() {
     const [users, setUsers] = useState<User[]>([]);
     const [activeTab, setActiveTab] = useState('dashboard');
 
-    useEffect(() => {
+    React.useLayoutEffect(() => {
         document.documentElement.classList.toggle('dark', isDarkMode);
         localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
     }, [isDarkMode]);
@@ -93,25 +94,25 @@ function App() {
     useEffect(() => {
         const init = async () => {
             try {
-                const [loadedSurveys, events, acts] = await Promise.all([
-                    api.getSurveys(),
-                    api.getCalendarEvents(),
-                    api.getAnnouncements()
-                ]);
-                if (loadedSurveys.length > 0) setSurveys(loadedSurveys as Survey[]);
-                else setSurveys(initialSurveys);
-
-                setCalendarEvents(events as CalendarEvent[]);
-                setAnnouncements(acts);
-
                 const session = loadSession();
                 if (session && session.user) {
                     setCurrentUser(session.user);
                     registerFCM(session.user.id);
-                    const [myGrievances] = await Promise.all([
+
+                    const [loadedSurveys, events, acts, myGrievances] = await Promise.all([
+                        api.getSurveys(),
+                        api.getCalendarEvents(),
+                        api.getAnnouncements(),
                         api.getGrievances(session.user.role === 'ADMIN' ? undefined : session.user.id)
                     ]);
+
+                    if (loadedSurveys.length > 0) setSurveys(loadedSurveys as Survey[]);
+                    else setSurveys(initialSurveys);
+
+                    setCalendarEvents(events as CalendarEvent[]);
+                    setAnnouncements(acts);
                     setGrievances(myGrievances as Grievance[]);
+
                     if (session.user.role === 'ADMIN') {
                         const [pending, approved] = await Promise.all([
                             api.getPendingUsers(),
@@ -119,6 +120,10 @@ function App() {
                         ]);
                         setUsers([...pending, ...approved]);
                     }
+                } else {
+                    // Start with default surveys for unauthenticated users if needed, 
+                    // or just leave them empty.
+                    setSurveys(initialSurveys);
                 }
             } catch (error) {
                 console.error("Failed to load data:", error);
@@ -304,7 +309,7 @@ function App() {
         <AppContext.Provider value={contextValue}>
             <div className="min-h-screen font-sans bg-gray-50/30 dark:bg-gray-950 transition-colors duration-300">
                 <Header />
-                <main className="container mx-auto p-4 md:p-8">
+                <main className="container mx-auto p-4 md:p-8 pb-32">
                     <Suspense fallback={
                         <div className="min-h-[50vh] flex items-center justify-center">
                             <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-orange-600"></div>
@@ -313,6 +318,13 @@ function App() {
                         {renderContent()}
                     </Suspense>
                 </main>
+                {currentUser && (
+                    <footer className="w-full py-12 bg-white/5 dark:bg-black/20 border-t border-gray-200 dark:border-gray-800 backdrop-blur-sm mt-auto">
+                        <div className="container mx-auto px-4">
+                            <BrandingBadge />
+                        </div>
+                    </footer>
+                )}
             </div>
         </AppContext.Provider>
     );

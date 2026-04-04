@@ -7,12 +7,12 @@ const Header: React.FC = () => {
   const { currentUser, logout, isDarkMode, toggleDarkMode } = useAppContext();
 
   return (
-    <header className="sticky top-0 z-40 glass-nav dark:bg-gray-900/80 border-b dark:border-gray-800 transition-colors duration-300">
+    <header className="sticky top-0 z-40 glass-nav dark:bg-black/90 dark:border-white/10 transition-colors duration-300">
       <div className="container mx-auto px-4 py-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <UserGroupIcon className="h-8 w-8 text-orange-600 animate-fade-in" />
-            <h1 className="text-xl md:text-2xl font-display font-bold text-gray-800 dark:text-gray-100 tracking-tight">
+          <div className="flex items-center space-x-4 group cursor-pointer">
+            <UserGroupIcon className="h-10 w-10 text-[#014737] dark:text-[#00c4a7] animate-fade-in group-hover:scale-110 transition-transform" />
+            <h1 className="text-2xl md:text-3xl font-display font-black text-[#014737] dark:text-[#00c4a7] tracking-tighter">
               Union Connect <span className="text-orange-600">Portal</span>
             </h1>
           </div>
@@ -20,7 +20,7 @@ const Header: React.FC = () => {
             {/* Dark Mode Toggle */}
             <button
               onClick={toggleDarkMode}
-              className="p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-all duration-200"
+              className="p-3 rounded-xl text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-all duration-300 border border-transparent hover:border-gray-200 dark:hover:border-gray-700"
               title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
             >
               {isDarkMode ? (
@@ -33,8 +33,8 @@ const Header: React.FC = () => {
             {currentUser && (
               <>
                 <div className="hidden sm:flex flex-col items-end">
-                   <span className="text-sm text-gray-600 dark:text-gray-400 leading-tight">
-                     Welcome, <span className="font-semibold text-gray-900 dark:text-gray-100">{currentUser.employeeName}</span>
+                   <span className="text-sm text-gray-700 dark:text-gray-300 leading-tight">
+                     Welcome, <span className="font-bold text-gray-900 dark:text-white">{currentUser.employeeName}</span>
                    </span>
                    <span className={`text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full mt-0.5 ${
                       currentUser.role === UserRole.ADMIN 

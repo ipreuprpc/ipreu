@@ -22,10 +22,6 @@ export const EXECUTIVE_MEMBERS = [
   { id: 11, name: "Mohit Kajal", post: "Executive Member" },
   { id: 12, name: "Naveen Kumar", post: "Executive Member" },
   { id: 13, name: "Pardeep", post: "Executive Member" },
-  // Placeholders for future members
-  { id: 14, name: "TBD", post: "Executive Member", isPlaceholder: true },
-  { id: 15, name: "TBD", post: "Executive Member", isPlaceholder: true },
-  { id: 16, name: "TBD", post: "Executive Member", isPlaceholder: true },
 ];
 
 export const UNION_CONTACT_INFO = {

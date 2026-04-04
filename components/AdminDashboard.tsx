@@ -1,6 +1,7 @@
 import React, { useState, useEffect, FormEvent, useRef } from 'react';
 import { useAppContext } from '../App';
 import { User, UserRole, Survey, SurveyOption, Announcement, CalendarEvent, Grievance } from '../types';
+import MembershipCard from './MembershipCard';
 import { UserGroupIcon } from './icons/UserGroupIcon';
 import { ClipboardListIcon } from './icons/ClipboardListIcon';
 import { MegaphoneIcon } from './icons/MegaphoneIcon';
@@ -686,19 +687,27 @@ const MemberDetailsModal: React.FC<{ member: User; onClose: () => void }> = ({ m
                     <XMarkIcon className="w-6 h-6" />
                 </button>
             </div>
-            <div className="space-y-2 text-sm text-gray-700">
-                <p><span className="font-semibold w-36 inline-block">Employee No:</span>{member.employeeNumber}</p>
-                <p><span className="font-semibold w-36 inline-block">Date of Birth:</span>{member.dob}</p>
-                <p><span className="font-semibold w-36 inline-block">Email:</span>{member.email}</p>
-                <p><span className="font-semibold w-36 inline-block">Mobile:</span>{member.mobileNumber}</p>
-                <p><span className="font-semibold w-36 inline-block">Native Place:</span>{member.nativePlace}</p>
-                <p><span className="font-semibold w-36 inline-block">State:</span>{member.state}</p>
-                <p><span className="font-semibold w-36 inline-block">PF No:</span>{member.pfNumber}</p>
-                <p><span className="font-semibold w-36 inline-block">Qualification:</span>{member.qualification}</p>
-                <p><span className="font-semibold w-36 inline-block">Role:</span><span className="capitalize">{member.role?.toLowerCase()}</span></p>
+            <div className="flex flex-col md:flex-row gap-6">
+                <div className="space-y-2 text-sm text-gray-700 flex-1">
+                    <p><span className="font-semibold w-32 inline-block">Employee No:</span>{member.employeeNumber}</p>
+                    <p><span className="font-semibold w-32 inline-block">Date of Birth:</span>{member.dob}</p>
+                    <p><span className="font-semibold w-32 inline-block">Email:</span>{member.email}</p>
+                    <p><span className="font-semibold w-32 inline-block">Mobile:</span>{member.mobileNumber}</p>
+                    <p><span className="font-semibold w-32 inline-block">Native Place:</span>{member.nativePlace}</p>
+                    <p><span className="font-semibold w-32 inline-block">State:</span>{member.state}</p>
+                    <p><span className="font-semibold w-32 inline-block">PF No:</span>{member.pfNumber}</p>
+                    <p><span className="font-semibold w-32 inline-block">Qualification:</span>{member.qualification}</p>
+                    <p><span className="font-semibold w-32 inline-block">Role:</span><span className="capitalize">{member.role?.toLowerCase()}</span></p>
+                </div>
+                <div className="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl border border-gray-100">
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Digital Membership ID</p>
+                    <div className="scale-90 origin-top">
+                        <MembershipCard user={member} logoUrl="/logo.png" />
+                    </div>
+                </div>
             </div>
-            <button onClick={onClose} className="mt-6 w-full py-2 px-4 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium text-gray-700 transition-colors">
-                Close
+            <button onClick={onClose} className="mt-6 w-full py-2 px-4 bg-orange-600 hover:bg-orange-700 rounded-lg text-sm font-bold text-white transition-colors shadow-lg">
+                Close Viewer
             </button>
         </div>
     </div>

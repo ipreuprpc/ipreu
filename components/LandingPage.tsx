@@ -7,6 +7,7 @@ import { CalendarIcon } from './icons/CalendarIcon';
 import { ClockIcon } from './icons/ClockIcon';
 import { PaperClipIcon } from './icons/PaperClipIcon';
 import { EXECUTIVE_MEMBERS, UNION_CONTACT_INFO } from '../constants';
+import BrandingBadge from './BrandingBadge';
 
 interface LandingPageProps {
     onLoginClick: () => void;
@@ -22,15 +23,15 @@ const FeatureCard: React.FC<{ icon: React.ReactNode; title: string; description:
     </div>
 );
 
-const LeadershipCard: React.FC<{ name: string; post: string; isPlaceholder?: boolean }> = ({ name, post, isPlaceholder }) => (
-    <div className={`p-4 rounded-xl border transition-all duration-300 ${isPlaceholder ? 'border-dashed border-gray-300 dark:border-gray-700 opacity-60' : 'bg-white dark:bg-gray-900 border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-md hover:border-orange-200 dark:hover:border-orange-900/50'}`}>
-        <div className="flex items-center gap-3">
-            <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold ${isPlaceholder ? 'bg-gray-100 dark:bg-gray-800 text-gray-400' : 'bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400'}`}>
-                {isPlaceholder ? '+' : name.split(' ').map(n => n[0]).join('').substring(0, 2)}
+const LeadershipCard: React.FC<{ name: string; post: string }> = ({ name, post }) => (
+    <div className="p-5 rounded-2xl border transition-all duration-300 bg-white dark:bg-gray-950 border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-xl hover:border-orange-200 dark:hover:border-orange-900/50 group">
+        <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-full flex items-center justify-center text-lg font-black bg-orange-100 dark:bg-orange-900/40 text-orange-600 dark:text-orange-400 group-hover:scale-110 transition-transform duration-300">
+                {name.split(' ').map(n => n[0]).join('').substring(0, 2)}
             </div>
             <div>
-                <p className={`font-bold text-sm ${isPlaceholder ? 'text-gray-400' : 'text-gray-800 dark:text-gray-100'}`}>{isPlaceholder ? 'Future Member' : name}</p>
-                <p className="text-[10px] uppercase tracking-wider text-gray-500 dark:text-gray-400 font-medium">{post}</p>
+                <p className="font-black text-xl text-gray-900 dark:text-gray-100 tracking-tight leading-tight mb-0.5">{name}</p>
+                <p className="text-xs uppercase tracking-widest text-gray-500 dark:text-gray-400 font-bold">{post}</p>
             </div>
         </div>
     </div>
@@ -50,49 +51,51 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
         <div className="min-h-[calc(100vh-80px)] flex flex-col justify-between -mt-4 md:-mt-8 -mx-4 md:-mx-8">
             
             {/* HERO SECTION */}
-            <section className="relative overflow-hidden bg-gradient-to-br from-gray-900 via-maroon-900 to-black text-white py-24 md:py-32 px-6 lg:px-12 flex items-center justify-center">
+            <section className="relative overflow-hidden bg-[#2D0606] text-white py-24 md:py-36 px-6 lg:px-12 flex items-center justify-center">
                 <style>{`
-                    .via-maroon-900 { --tw-gradient-to: #450a0a; --tw-gradient-stops: var(--tw-gradient-from), #450a0a, var(--tw-gradient-to); }
+                    .hero-gradient {
+                        background: radial-gradient(circle at top right, #4c0505 0%, #1a0202 70%, #000000 100%);
+                    }
                 `}</style>
+                <div className="absolute inset-0 hero-gradient opacity-90"></div>
                 
-                {/* Decorative Blobs */}
-                <div className="absolute top-0 left-0 w-96 h-96 bg-orange-600 rounded-full mix-blend-multiply filter blur-[128px] opacity-20 animate-blob"></div>
-                <div className="absolute top-0 right-0 w-96 h-96 bg-red-800 rounded-full mix-blend-multiply filter blur-[128px] opacity-20 animate-blob animation-delay-2000"></div>
-                <div className="absolute -bottom-32 left-1/2 w-96 h-96 bg-orange-700 rounded-full mix-blend-multiply filter blur-[128px] opacity-20 animate-blob animation-delay-4000"></div>
+                {/* Decorative Blobs - Moved slightly to avoid text overlay */}
+                <div className="absolute top-0 left-[-10%] w-[500px] h-[500px] bg-orange-600/10 rounded-full blur-[120px] animate-blob"></div>
+                <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-red-800/10 rounded-full blur-[120px] animate-blob animation-delay-2000"></div>
 
-                <div className="relative z-10 max-w-6xl mx-auto text-center space-y-8">
-                    <div className="inline-flex flex-col items-center gap-4 mb-4">
-                        <div className="px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs font-medium text-orange-200 shadow-xl flex items-center gap-2">
+                <div className="relative z-10 max-w-6xl mx-auto text-center space-y-10">
+                    <div className="inline-flex flex-col items-center gap-6">
+                        <div className="px-5 py-2 rounded-full bg-white/5 backdrop-blur-xl border border-white/10 text-xs font-bold text-orange-200 shadow-2xl flex items-center gap-2">
                             <span className="flex h-2 w-2 relative">
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                                 <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
                             </span>
-                            Active Centralized Member Hub
+                            SECURE CENTRALIZED MEMBER HUB
                         </div>
-                        <h2 className="text-xl md:text-3xl font-bold text-orange-400 font-display italic tracking-wide">
+                        <h2 className="text-3xl md:text-5xl font-black text-orange-500 font-display transition-all hover:scale-105 duration-300 drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)]">
                             {UNION_CONTACT_INFO.hindiName}
                         </h2>
                     </div>
                     
-                    <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-tight">
-                        Strength Through <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500 uppercase">Unity & Transparency</span>
+                    <h1 className="text-4xl md:text-6xl font-black tracking-tighter leading-[1.1] drop-shadow-2xl">
+                        Strength Through <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-600 uppercase">Unity & Transparency</span>
                     </h1>
                     
-                    <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto font-light leading-relaxed">
+                    <p className="text-xl md:text-2xl text-gray-200 max-w-4xl mx-auto font-medium leading-relaxed drop-shadow-lg">
                         The official digital home for {UNION_CONTACT_INFO.englishName}. 
-                        Affiliated with <span className="text-white font-semibold">{UNION_CONTACT_INFO.affiliation}</span>.
+                        Affiliated with <span className="text-white font-bold underline decoration-orange-500 decoration-2 underline-offset-4">{UNION_CONTACT_INFO.affiliation}</span>.
                     </p>
                     
-                    <div className="pt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <div className="pt-10 flex flex-col sm:flex-row items-center justify-center gap-6">
                         <button 
                             onClick={onLoginClick}
-                            className="w-full sm:w-auto px-10 py-4 bg-gradient-to-r from-orange-600 to-red-700 hover:from-orange-700 hover:to-red-800 text-white font-bold rounded-full shadow-2xl shadow-orange-900/40 transition-all hover:scale-105 active:scale-95 text-lg border border-white/10"
+                            className="w-full sm:w-auto px-12 py-5 bg-gradient-to-r from-orange-600 to-red-700 hover:from-orange-700 hover:to-red-800 text-white font-black rounded-2xl shadow-[0_20px_50px_rgba(185,28,28,0.3)] transition-all hover:-translate-y-1 active:scale-95 text-xl border border-white/20"
                         >
                             Access Member Portal &rarr;
                         </button>
                         <a 
                             href="#leadership"
-                            className="w-full sm:w-auto px-10 py-4 bg-white/5 hover:bg-white/10 text-white font-medium rounded-full backdrop-blur-md border border-white/20 transition-all text-lg"
+                            className="w-full sm:w-auto px-12 py-5 bg-white/5 hover:bg-white/10 text-white font-bold rounded-2xl backdrop-blur-xl border border-white/10 transition-all hover:-translate-y-1 text-xl"
                         >
                             View Executive Body
                         </a>
@@ -101,17 +104,17 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
             </section>
 
             {/* LIVE ACTIVITY SECTION */}
-            <section className="py-20 bg-gray-50 dark:bg-gray-950 relative z-20 border-b border-gray-100 dark:border-gray-900">
+            <section className="py-20 bg-slate-50 dark:bg-[#020617] relative z-20 border-b border-gray-100 dark:border-gray-900/50">
                 <div className="max-w-6xl mx-auto px-6 lg:px-12">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                         
                         {/* Upcoming Events */}
-                        <div className="space-y-6">
-                            <div className="flex items-center gap-3">
-                                <div className="p-2 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg">
-                                    <CalendarIcon className="w-6 h-6" />
+                        <div className="space-y-8">
+                            <div className="flex items-center gap-4">
+                                <div className="p-3 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl">
+                                    <CalendarIcon className="w-7 h-7" />
                                 </div>
-                                <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Union Calendar</h3>
+                                <h3 className="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-gray-100">Union Calendar</h3>
                             </div>
                             <div className="space-y-3">
                                 {upcomingEvents.length > 0 ? upcomingEvents.map(event => (
@@ -141,12 +144,12 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
                         </div>
 
                         {/* Announcements / Circulars */}
-                        <div className="space-y-6">
-                            <div className="flex items-center gap-3">
-                                <div className="p-2 bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 rounded-lg">
-                                    <MegaphoneIcon className="w-6 h-6" />
+                        <div className="space-y-8">
+                            <div className="flex items-center gap-4">
+                                <div className="p-3 bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 rounded-xl">
+                                    <MegaphoneIcon className="w-7 h-7" />
                                 </div>
-                                <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Latest Circulars</h3>
+                                <h3 className="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-gray-100">Latest Circulars</h3>
                             </div>
                             <div className="space-y-3">
                                 {latestAnnouncements.length > 0 ? latestAnnouncements.map(ann => (
@@ -180,71 +183,79 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
             </section>
 
             {/* LEADERSHIP SECTION */}
-            <section id="leadership" className="py-24 px-6 lg:px-12 bg-white dark:bg-gray-900 relative z-20">
+            <section id="leadership" className="py-24 px-6 lg:px-12 bg-white dark:bg-black relative z-20">
                 <div className="max-w-6xl mx-auto">
-                    <div className="text-center mb-16">
-                        <h2 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-4 font-display">Executive Body of <span className="text-orange-600 uppercase tracking-tighter">IPREU</span></h2>
-                        <div className="w-24 h-1.5 bg-gradient-to-r from-orange-400 to-red-800 mx-auto rounded-full mb-6"></div>
-                        <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">Serving with dedication, integrity, and a commitment to member welfare and industrial harmony.</p>
+                    <div className="text-center mb-20">
+                        <h2 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-6 font-display uppercase tracking-tight">Executive Body of <span className="text-orange-600">IPREU</span></h2>
+                        <div className="w-32 h-2 bg-gradient-to-r from-orange-400 to-red-800 mx-auto rounded-full mb-8 opacity-80"></div>
+                        <p className="text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">Serving with dedication, integrity, and a commitment to member welfare and industrial harmony.</p>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                         {EXECUTIVE_MEMBERS.map(member => (
-                            <LeadershipCard key={member.id} name={member.name} post={member.post} isPlaceholder={member.isPlaceholder} />
+                            <LeadershipCard key={member.id} name={member.name} post={member.post} />
                         ))}
                     </div>
                 </div>
             </section>
 
-            {/* QUICK STATS (DYNAMIC) */}
+            {/* QUICK STATS (ACTUAL) */}
             <section className="py-20 bg-gradient-to-br from-gray-900 to-black text-white overflow-hidden relative">
                  <div className="absolute top-0 right-0 w-64 h-64 bg-orange-600/10 rounded-full blur-[100px]"></div>
                  <div className="max-w-6xl mx-auto px-6 lg:px-12 relative z-10">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
-                        <div className="space-y-2">
-                             <p className="text-5xl font-extrabold text-orange-500 font-display">1,100+</p>
-                             <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Active Members</p>
+                        <div className="space-y-2 group">
+                             <p className="text-4xl md:text-5xl font-extrabold text-orange-500 font-display transition-transform group-hover:scale-110 duration-300">
+                                {users.filter(u => u.role !== 'PENDING').length || 1}
+                             </p>
+                             <p className="text-sm font-semibold text-gray-400 uppercase tracking-widest">Registered Members</p>
                         </div>
-                        <div className="space-y-2">
-                             <p className="text-5xl font-extrabold text-orange-500 font-display">{announcements.length + 42}</p>
-                             <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Digital Circulars</p>
+                        <div className="space-y-2 group">
+                             <p className="text-4xl md:text-5xl font-extrabold text-orange-500 font-display transition-transform group-hover:scale-110 duration-300">
+                                {announcements.length}
+                             </p>
+                             <p className="text-sm font-semibold text-gray-400 uppercase tracking-widest">Digital Circulars</p>
                         </div>
-                        <div className="space-y-2">
-                             <p className="text-5xl font-extrabold text-orange-500 font-display">100%</p>
-                             <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Resolved Grievances</p>
+                        <div className="space-y-2 group">
+                             <p className="text-4xl md:text-5xl font-extrabold text-orange-500 font-display transition-transform group-hover:scale-110 duration-300">
+                                {grievances.filter(g => g.status === 'RESOLVED').length}
+                             </p>
+                             <p className="text-sm font-semibold text-gray-400 uppercase tracking-widest">Resolved Grievances</p>
                         </div>
-                        <div className="space-y-2">
-                             <p className="text-5xl font-extrabold text-orange-500 font-display">No. {UNION_CONTACT_INFO.regdNo}</p>
-                             <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Registered Union</p>
+                        <div className="space-y-2 group">
+                             <p className="text-4xl md:text-5xl font-extrabold text-orange-500 font-display transition-transform group-hover:scale-110 duration-300">
+                                {UNION_CONTACT_INFO.regdNo}
+                             </p>
+                             <p className="text-sm font-semibold text-gray-400 uppercase tracking-widest">Registration No.</p>
                         </div>
                     </div>
                  </div>
             </section>
 
             {/* JOINING PATHWAY */}
-            <section className="py-24 px-6 lg:px-12 bg-white dark:bg-gray-900 relative z-20">
-                <div className="max-w-6xl mx-auto text-center mb-16">
-                    <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-6 font-display underline decoration-orange-500 decoration-4 underline-offset-8">How to Join IPREU</h2>
+            <section className="py-24 px-6 lg:px-12 bg-white dark:bg-black relative z-20">
+                <div className="max-w-6xl mx-auto text-center mb-20">
+                    <h2 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-8 font-display underline decoration-orange-500 decoration-4 underline-offset-12">How to Join IPREU</h2>
                 </div>
                 <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 relative">
                     <div className="absolute top-1/2 left-0 w-full h-1 bg-gray-100 dark:bg-gray-800 hidden md:block -z-10"></div>
                     
                     <div className="bg-white dark:bg-gray-950 p-8 rounded-2xl border dark:border-gray-800 text-center space-y-4 shadow-sm hover:shadow-xl transition-shadow">
                         <div className="w-12 h-12 bg-orange-600 text-white rounded-full flex items-center justify-center font-bold text-xl mx-auto shadow-lg shadow-orange-600/20">1</div>
-                        <h4 className="font-bold text-lg text-gray-900 dark:text-gray-100">Digital Registration</h4>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">Click Join and fill in your official employee details via our secure form.</p>
+                        <h4 className="font-bold text-xl text-gray-900 dark:text-gray-100">Digital Registration</h4>
+                        <p className="text-base text-gray-500 dark:text-gray-400">Click Join and fill in your official employee details via our secure form.</p>
                     </div>
 
                     <div className="bg-white dark:bg-gray-950 p-8 rounded-2xl border dark:border-gray-800 text-center space-y-4 shadow-sm hover:shadow-xl transition-shadow">
                         <div className="w-12 h-12 bg-orange-600 text-white rounded-full flex items-center justify-center font-bold text-xl mx-auto shadow-lg shadow-orange-600/20">2</div>
-                        <h4 className="font-bold text-lg text-gray-900 dark:text-gray-100">Admin Verification</h4>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">Your details will be reviewed by the Executive Body for union credentials.</p>
+                        <h4 className="font-bold text-xl text-gray-900 dark:text-gray-100">Admin Verification</h4>
+                        <p className="text-base text-gray-500 dark:text-gray-400">Your details will be reviewed by the Executive Body for union credentials.</p>
                     </div>
 
                     <div className="bg-white dark:bg-gray-950 p-8 rounded-2xl border dark:border-gray-800 text-center space-y-4 shadow-sm hover:shadow-xl transition-shadow">
                         <div className="w-12 h-12 bg-green-500 text-white rounded-full flex items-center justify-center font-bold text-xl mx-auto shadow-lg shadow-green-500/20">3</div>
-                        <h4 className="font-bold text-lg text-gray-900 dark:text-gray-100">Full Access</h4>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">Receive your digital ID card and gain access to voting, circulars, and more.</p>
+                        <h4 className="font-bold text-xl text-gray-900 dark:text-gray-100">Full Access</h4>
+                        <p className="text-base text-gray-500 dark:text-gray-400">Receive your digital ID card and gain access to voting, circulars, and more.</p>
                     </div>
                 </div>
                 <div className="mt-16 text-center">
@@ -283,9 +294,12 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
                         </ul>
                     </div>
                 </div>
-                <div className="max-w-6xl mx-auto mt-16 pt-8 border-t border-gray-800 text-[10px] uppercase tracking-widest flex flex-col md:flex-row justify-between items-center bg-gray-900 gap-4">
-                    <p>&copy; {new Date().getFullYear()} IPREU. All rights reserved. | Built for the Employees, by the Union.</p>
-                    <p className="text-orange-600 font-bold">Secure Private Network</p>
+                <div className="max-w-6xl mx-auto mt-12 pt-8 border-t border-gray-800/50 flex flex-col items-center gap-6">
+                    <BrandingBadge />
+                    <div className="flex flex-col md:flex-row justify-between items-center w-full gap-4 text-[10px] uppercase tracking-widest text-gray-500 font-medium">
+                        <p>&copy; {new Date().getFullYear()} IPREU. All rights reserved. | Built for the Employees, by the Union.</p>
+                        <p className="text-orange-600 font-bold px-3 py-1 bg-orange-600/5 rounded-full border border-orange-600/20">Secure Private Network</p>
+                    </div>
                 </div>
             </footer>
         </div>
