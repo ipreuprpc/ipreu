@@ -30,7 +30,7 @@ const LeadershipCard: React.FC<{ name: string; post: string }> = ({ name, post }
                 {name.split(' ').map(n => n[0]).join('').substring(0, 2)}
             </div>
             <div>
-                <p className="font-black text-xl text-[#002316] tracking-tight leading-tight mb-0.5 transition-colors uppercase">{name}</p>
+                <p className="font-black text-xl text-[#064e3b] tracking-tight leading-tight mb-0.5 transition-colors uppercase">{name}</p>
                 <p className="text-[10px] uppercase tracking-[0.2em] text-orange-700 font-black">{post}</p>
             </div>
         </div>

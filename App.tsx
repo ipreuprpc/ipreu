@@ -96,13 +96,19 @@ function App() {
 
     useEffect(() => {
         // Sync Firebase Auth state with UI state to prevent "Missing permissions" errors
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
+        const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (user) {
-                // If we have an auth user but no local currentUser, we should probably fetch it
-                // but for now we trust the localStorage session + auth sync
-                console.log("Firebase Auth synced:", user.uid);
-            } else {
-                console.log("Firebase Auth signed out");
+                // Keep UI in sync with Firebase Auth
+                if (!currentUser || currentUser.id !== user.uid) {
+                    console.log("Syncing currentUser with Auth UID:", user.uid);
+                    // Fetch or refresh the user data from Firestore if needed
+                    // For now, we rely on the init logic but we at least log the sync
+                }
+            } else if (currentUser) {
+                // If Auth was lost but UI thinks we are logged in, clear session
+                console.warn("Auth lost, clearing UI session");
+                setCurrentUser(null);
+                clearSession();
             }
         });
 
@@ -309,7 +315,12 @@ function App() {
             setCalendarEvents(prev => prev.filter(e => e.id !== id));
         },
         submitGrievance: async (subject: string, description: string, category: string) => {
-            if (!currentUser) return;
+            if (!currentUser || !auth.currentUser) {
+                throw new Error("Session expired. Please log in again to register a grievance.");
+            }
+            if (currentUser.id !== auth.currentUser.uid) {
+                throw new Error("Identity mismatch. Please log in again.");
+            }
             const newGrievance: Omit<Grievance, 'id'> = {
                 userId: currentUser.id,
                 userName: currentUser.employeeName,
