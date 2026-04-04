@@ -26,11 +26,11 @@ const FeatureCard: React.FC<{ icon: React.ReactNode; title: string; description:
 const LeadershipCard: React.FC<{ name: string; post: string }> = ({ name, post }) => (
     <div className="p-5 rounded-2xl border transition-all duration-300 bg-white dark:bg-gray-950 border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-xl hover:border-orange-200 dark:hover:border-orange-900/50 group">
         <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-full flex items-center justify-center text-lg font-black bg-gradient-to-br from-orange-100 to-orange-200 dark:from-orange-900/60 dark:to-orange-900/40 text-orange-600 dark:text-orange-400 group-hover:scale-110 shadow-sm border border-orange-100/50 dark:border-orange-800/30 transition-transform duration-300">
+            <div className="w-14 h-14 rounded-full flex items-center justify-center text-lg font-black bg-gradient-to-br from-emerald-100 to-emerald-200 dark:from-emerald-900/60 dark:to-emerald-900/40 text-emerald-700 dark:text-emerald-400 group-hover:scale-110 shadow-sm border border-emerald-100/50 dark:border-emerald-800/30 transition-transform duration-300">
                 {name.split(' ').map(n => n[0]).join('').substring(0, 2)}
             </div>
             <div>
-                <p className="font-black text-xl text-orange-700 dark:text-orange-500 tracking-tight leading-tight mb-0.5 group-hover:text-orange-600 transition-colors">{name}</p>
+                <p className="font-black text-xl text-emerald-900 dark:text-emerald-400 tracking-tight leading-tight mb-0.5 group-hover:text-emerald-700 transition-colors">{name}</p>
                 <p className="text-[10px] uppercase tracking-widest text-gray-500 dark:text-gray-400 font-bold">{post}</p>
             </div>
         </div>
