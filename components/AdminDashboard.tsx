@@ -11,6 +11,7 @@ import { ClockIcon } from './icons/ClockIcon';
 import { CheckCircleIcon } from './icons/CheckCircleIcon';
 import { UserCheckIcon } from './icons/UserCheckIcon';
 import { XMarkIcon } from './icons/XMarkIcon';
+import { SearchIcon } from './icons/SearchIcon';
 
 // ─── Stat Card ───────────────────────────────────────────────────────────────
 const StatCard: React.FC<{ title: string; value: number; icon: React.ReactNode; color?: string }> = ({ title, value, icon, color = 'orange' }) => (
@@ -20,8 +21,8 @@ const StatCard: React.FC<{ title: string; value: number; icon: React.ReactNode; 
             {icon}
         </div>
         <div className="relative z-10">
-            <p className="text-[10px] text-orange-900/40 font-black tracking-[0.2em] uppercase mb-1">{title}</p>
-            <p className="text-4xl font-black text-orange-950 tracking-tighter drop-shadow-sm">
+            <p className="text-[10px] text-[#002316]/70 font-black tracking-[0.2em] uppercase mb-1">{title}</p>
+            <p className="text-4xl font-black text-[#002316] tracking-tighter drop-shadow-sm">
                 {value}
             </p>
         </div>
@@ -41,7 +42,7 @@ const PendingMemberCard: React.FC<{
                 <span className="relative inline-flex rounded-full h-3 w-3 bg-orange-500"></span>
             </span>
         </div>
-        <h3 className="font-black text-xl text-orange-950 uppercase tracking-tight mb-1">{member.employeeName}</h3>
+        <h3 className="font-black text-xl text-[#002316] uppercase tracking-tight mb-1">{member.employeeName}</h3>
         <p className="text-[10px] font-black text-orange-600 uppercase tracking-widest mb-4">Emp ID: {member.employeeNumber}</p>
         
         <div className="space-y-2.5 mb-6">
@@ -72,64 +73,176 @@ const PendingMemberCard: React.FC<{
     </div>
 );
 
+const VoterListModal: React.FC<{ isOpen: boolean; onClose: () => void; title: string; voters: { name: string; empNo: string; dept: string }[] }> = ({ isOpen, onClose, title, voters }) => {
+    const [search, setSearch] = useState('');
+    if (!isOpen) return null;
+
+    const filtered = voters.filter(v => 
+        v.name.toLowerCase().includes(search.toLowerCase()) || 
+        v.empNo.toLowerCase().includes(search.toLowerCase())
+    );
+
+    return (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#002316]/60 backdrop-blur-sm animate-fade-in">
+            <div className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-2xl max-h-[80vh] flex flex-col overflow-hidden border border-orange-100">
+                <div className="p-8 border-b border-orange-50 flex justify-between items-center bg-[#fcfaf7]">
+                    <div>
+                        <h3 className="text-xl font-black text-[#002316] uppercase tracking-tight">{title}</h3>
+                        <p className="text-[10px] font-black text-orange-600 uppercase tracking-widest mt-1">{voters.length} Members in this category</p>
+                    </div>
+                    <button onClick={onClose} className="p-2 hover:bg-orange-100 rounded-full transition-colors text-orange-950">
+                        <XMarkIcon className="w-6 h-6" />
+                    </button>
+                </div>
+                <div className="p-6 bg-white shrink-0">
+                    <div className="relative">
+                        <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-orange-300" />
+                        <input 
+                            type="text" 
+                            placeholder="Find member by name or emp no..." 
+                            value={search}
+                            onChange={e => setSearch(e.target.value)}
+                            className="w-full pl-11 pr-4 py-3 bg-orange-50 border border-orange-100 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 text-[#002316] font-bold"
+                        />
+                    </div>
+                </div>
+                <div className="flex-grow overflow-y-auto p-6 pt-0 space-y-2">
+                    {filtered.length > 0 ? (
+                        filtered.map((v, i) => (
+                            <div key={i} className="flex items-center justify-between p-4 bg-orange-50/50 rounded-2xl border border-transparent hover:border-orange-200 transition-all group">
+                                <div>
+                                    <p className="font-black text-[#002316] group-hover:text-orange-600 transition-colors uppercase text-sm">{v.name}</p>
+                                    <p className="text-[10px] font-bold text-orange-900/40 uppercase tracking-widest mt-0.5">{v.dept}</p>
+                                </div>
+                                <div className="text-right">
+                                    <p className="font-mono text-xs font-black text-orange-700">{v.empNo}</p>
+                                </div>
+                            </div>
+                        ))
+                    ) : (
+                        <div className="py-20 text-center">
+                            <p className="text-orange-900/20 font-black uppercase tracking-widest">No matching members found</p>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};
+
 const SurveyResultCard: React.FC<{ survey: Survey }> = ({ survey }) => {
     const { users } = useAppContext();
-    const [showVoters, setShowVoters] = useState(false);
+    const [activeModal, setActiveModal] = useState<{ optionText: string; voters: any[] } | null>(null);
+    
     const allVotes = Object.values(survey.votes);
     const totalVotes = allVotes.length;
     const getCount = (optId: string) => allVotes.filter(v => v === optId).length;
 
-    const getVoterNamesForOption = (optId: string) => {
+    const getVoterDetailsForOption = (optId: string) => {
         return Object.entries(survey.votes)
             .filter(([_, votedOptId]) => votedOptId === optId)
-            .map(([userId, _]) => users.find(u => u.id === userId)?.employeeName || 'Unknown Member');
+            .map(([userId, _]) => {
+                const u = users.find(user => user.id === userId);
+                return {
+                    name: u?.employeeName || 'Unknown Member',
+                    empNo: u?.employeeNumber || 'N/A',
+                    dept: u?.department || 'Member'
+                };
+            });
+    };
+
+    const handleExport = () => {
+        const rows = [
+            ['Member Name', 'Employee Number', 'Department', 'Selected Choice'],
+            ...Object.entries(survey.votes).map(([uid, optId]) => {
+                const u = users.find(user => user.id === uid);
+                const opt = survey.options.find(o => o.id === optId);
+                return [
+                    u?.employeeName || 'Unknown',
+                    u?.employeeNumber || 'N/A',
+                    u?.department || 'N/A',
+                    opt?.text || 'N/A'
+                ];
+            })
+        ];
+
+        const csvContent = "data:text/csv;charset=utf-8," + rows.map(e => e.map(cell => `"${cell}"`).join(",")).join("\n");
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `survey_results_${survey.id.substring(0,6)}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     };
 
     return (
-        <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-orange-100">
-            <div className="flex justify-between items-start mb-8">
+        <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-orange-100 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-orange-50 rounded-full blur-3xl opacity-50 -mr-16 -mt-16 transition-transform group-hover:scale-150"></div>
+            
+            <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
                 <div>
-                    <h3 className="font-black text-2xl text-orange-950 uppercase tracking-tight leading-tight">{survey.question}</h3>
-                    <p className="text-[10px] font-black text-orange-600 uppercase tracking-widest mt-2">{totalVotes} Verified Votes Recorded</p>
+                    <h3 className="font-black text-2xl text-[#002316] uppercase tracking-tight leading-tight max-w-xl">{survey.question}</h3>
+                    <p className="text-[10px] font-black text-orange-600 uppercase tracking-widest mt-2 bg-orange-100 inline-block px-3 py-1 rounded-full">{totalVotes} Verified Votes Recorded</p>
                 </div>
                 <button 
-                  onClick={() => setShowVoters(!showVoters)}
-                  className="text-[9px] font-black text-orange-700 hover:text-orange-900 bg-orange-100 px-4 py-2 rounded-full border border-orange-200 transition-all flex items-center gap-2 uppercase tracking-widest shadow-sm"
+                  onClick={handleExport}
+                  className="shrink-0 text-[10px] font-black text-white bg-emerald-600 hover:bg-emerald-700 px-6 py-3 rounded-2xl transition-all flex items-center gap-2 uppercase tracking-widest shadow-lg shadow-emerald-600/20 active:scale-95"
                 >
-                  <UserGroupIcon className="w-3.5 h-3.5" />
-                  {showVoters ? 'Hide Voters' : 'Visualise Voters'}
+                  <PaperClipIcon className="w-4 h-4" />
+                  Export CSV Report
                 </button>
             </div>
 
-            <div className="space-y-8">
+            <div className="space-y-10 relative z-10">
                 {survey.options.map(option => {
                     const count = getCount(option.id);
                     const pct = totalVotes > 0 ? (count / totalVotes) * 100 : 0;
-                    const voterNames = getVoterNamesForOption(option.id);
+                    const voters = getVoterDetailsForOption(option.id);
                     
                     return (
-                        <div key={option.id}>
-                            <div className="flex justify-between items-center text-[11px] font-black uppercase tracking-widest mb-2.5">
-                                <span className="text-orange-900">{option.text}</span>
-                                <span className="text-orange-600">{count} Votes ({pct.toFixed(0)}%)</span>
-                            </div>
-                            <div className="w-full bg-orange-50 rounded-full h-3.5 shadow-inner p-0.5">
-                                <div className="bg-gradient-to-r from-orange-600 to-orange-400 h-2.5 rounded-full shadow-[0_0_15px_rgba(249,115,22,0.2)] transition-all duration-1000" style={{ width: `${pct}%` }} />
+                        <div key={option.id} className="group/row">
+                            <div className="flex justify-between items-end mb-3">
+                                <div>
+                                    <span className="text-[10px] font-black text-orange-800/60 uppercase tracking-widest mb-1 block">Option Category</span>
+                                    <p className="text-sm font-black text-[#002316] uppercase tracking-tight">{option.text}</p>
+                                </div>
+                                <div className="text-right">
+                                    <p className="text-lg font-black text-[#002316]">{pct.toFixed(1)}%</p>
+                                    <p className="text-[10px] font-bold text-orange-600 uppercase tracking-tighter">{count} Votes</p>
+                                </div>
                             </div>
                             
-                            {showVoters && voterNames.length > 0 && (
-                                <div className="flex flex-wrap gap-2 mt-4 ml-1 animate-fade-in">
-                                    {voterNames.map((name, i) => (
-                                        <span key={i} className="text-[9px] bg-orange-50 text-orange-800/60 px-3 py-1.5 rounded-xl border border-orange-100 font-black uppercase tracking-tighter">
-                                            {name}
-                                        </span>
-                                    ))}
+                            <div className="flex items-center gap-4">
+                                <div className="flex-grow bg-orange-50 rounded-2xl h-5 shadow-inner p-1 overflow-hidden">
+                                    <div 
+                                        className="bg-gradient-to-r from-orange-600 to-orange-400 h-full rounded-xl shadow-lg transition-all duration-1000 ease-out relative" 
+                                        style={{ width: `${pct}%` }}
+                                    >
+                                        <div className="absolute inset-0 bg-white/20 animate-pulse rounded-xl"></div>
+                                    </div>
                                 </div>
-                            )}
+                                
+                                <button 
+                                    onClick={() => setActiveModal({ optionText: option.text, voters })}
+                                    disabled={count === 0}
+                                    className="shrink-0 p-3 bg-white border border-orange-100 hover:border-orange-300 rounded-2xl text-orange-600 shadow-sm transition-all hover:-translate-y-0.5 disabled:opacity-20 active:scale-90"
+                                    title="View Voters"
+                                >
+                                    <UserGroupIcon className="w-5 h-5" />
+                                </button>
+                            </div>
                         </div>
                     );
                 })}
             </div>
+
+            <VoterListModal 
+                isOpen={!!activeModal}
+                onClose={() => setActiveModal(null)}
+                title={activeModal?.optionText || ''}
+                voters={activeModal?.voters || []}
+            />
         </div>
     );
 };
@@ -175,18 +288,18 @@ const SurveyCreator: React.FC = () => {
 
     return (
         <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-orange-100">
-            <h3 className="text-2xl font-black text-orange-950 mb-6 uppercase tracking-tight">Post New Strategic Survey</h3>
+            <h3 className="text-2xl font-black text-[#002316] mb-6 uppercase tracking-tight">Post New Strategic Survey</h3>
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
                     <label htmlFor="survey-question" className="block text-[10px] font-black text-orange-800/60 uppercase tracking-[0.2em] mb-2">Primary Question</label>
-                    <textarea id="survey-question" value={question} onChange={e => setQuestion(e.target.value)} required rows={2} className="mt-1 block w-full px-4 py-3 bg-orange-50 border-2 border-orange-100 rounded-2xl shadow-sm text-orange-950 focus:outline-none focus:border-orange-500 transition-all font-bold placeholder:text-orange-900/30" placeholder="What is the union's stance on..." />
+                    <textarea id="survey-question" value={question} onChange={e => setQuestion(e.target.value)} required rows={2} className="mt-1 block w-full px-4 py-3 bg-orange-50 border-2 border-orange-100 rounded-2xl shadow-sm text-[#002316] focus:outline-none focus:border-orange-500 transition-all font-bold placeholder:text-[#002316]/30" placeholder="What is the union's stance on..." />
                 </div>
                 <div>
                     <label className="block text-[10px] font-black text-orange-800/60 uppercase tracking-[0.2em] mb-3">Response Options</label>
                     <div className="space-y-3">
                         {options.map((option, index) => (
                             <div key={index} className="flex items-center gap-3">
-                                <input type="text" value={option} onChange={e => handleOptionChange(index, e.target.value)} required className="flex-grow px-4 py-3 bg-orange-50 border-2 border-orange-100 rounded-2xl shadow-sm text-orange-950 focus:outline-none focus:border-orange-500 transition-all font-bold placeholder:text-orange-900/30" placeholder={`Option ${index + 1}`} />
+                                <input type="text" value={option} onChange={e => handleOptionChange(index, e.target.value)} required className="flex-grow px-4 py-3 bg-orange-50 border-2 border-orange-100 rounded-2xl shadow-sm text-[#002316] focus:outline-none focus:border-orange-500 transition-all font-bold placeholder:text-[#002316]/30" placeholder={`Option ${index + 1}`} />
                                 <button type="button" onClick={() => removeOption(index)} disabled={options.length <= 2} className="p-3 text-red-400 hover:text-red-600 disabled:opacity-20 transition-colors">
                                     <TrashIcon className="w-5 h-5" />
                                 </button>
@@ -302,7 +415,7 @@ const AnnouncementManager: React.FC = () => {
             {/* ── Post / Edit Form ── */}
             <div className={`p-6 rounded-2xl shadow-xl transition-colors border ${editingId ? 'bg-orange-100 border-orange-300' : 'bg-white border-orange-100'}`}>
                 <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-xl font-black text-orange-950 uppercase tracking-tight">
+                    <h3 className="text-xl font-black text-[#002316] uppercase tracking-tight">
                         {editingId ? 'Refine Announcement' : 'Post New Official Notice'}
                     </h3>
                     {editingId && (
@@ -320,7 +433,7 @@ const AnnouncementManager: React.FC = () => {
                             value={title}
                             onChange={e => setTitle(e.target.value)}
                             required
-                            className="block w-full px-4 py-3 bg-orange-50 border border-orange-200 rounded-xl text-orange-950 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all font-bold placeholder:text-orange-900/30"
+                            className="block w-full px-4 py-3 bg-orange-50 border border-orange-200 rounded-xl text-[#002316] focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all font-bold placeholder:text-[#002316]/30"
                             placeholder="Immediate Action Required: ..."
                         />
                     </div>
@@ -338,7 +451,7 @@ const AnnouncementManager: React.FC = () => {
                             onChange={e => setContent(e.target.value)}
                             required
                             rows={4}
-                            className="block w-full px-4 py-3 bg-orange-50 border border-orange-200 rounded-xl text-orange-950 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all font-bold placeholder:text-orange-900/30"
+                            className="block w-full px-4 py-3 bg-orange-50 border border-orange-200 rounded-xl text-[#002316] focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all font-bold placeholder:text-[#002316]/30"
                             placeholder="Enter the official announcement details here..."
                         />
                     </div>
@@ -583,11 +696,11 @@ const CalendarManager: React.FC = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label className="block text-[10px] font-black text-orange-800/60 uppercase tracking-[0.2em] mb-1.5">Event Identity</label>
-                            <input type="text" value={title} onChange={e => setTitle(e.target.value)} required className="block w-full px-4 py-3 bg-orange-50 border border-orange-200 rounded-xl text-orange-950 focus:outline-none focus:ring-2 focus:ring-orange-500 font-bold" />
+                            <input type="text" value={title} onChange={e => setTitle(e.target.value)} required className="block w-full px-4 py-3 bg-orange-50 border border-orange-200 rounded-xl text-[#002316] focus:outline-none focus:ring-2 focus:ring-orange-500 font-bold" />
                         </div>
                         <div>
                             <label className="block text-[10px] font-black text-orange-800/60 uppercase tracking-[0.2em] mb-1.5">Action Category</label>
-                            <select value={category} onChange={e => setCategory(e.target.value as any)} className="block w-full px-4 py-3 bg-orange-50 border border-orange-200 rounded-xl text-orange-950 focus:outline-none focus:ring-2 focus:ring-orange-500 font-bold">
+                            <select value={category} onChange={e => setCategory(e.target.value as any)} className="block w-full px-4 py-3 bg-orange-50 border border-orange-200 rounded-xl text-[#002316] focus:outline-none focus:ring-2 focus:ring-orange-500 font-bold">
                                 <option value="MEETING">Strategic Meeting</option>
                                 <option value="HOLIDAY">Union Holiday</option>
                                 <option value="ELECTION">Referendum / Election</option>
@@ -597,16 +710,16 @@ const CalendarManager: React.FC = () => {
                         </div>
                         <div>
                             <label className="block text-[10px] font-black text-orange-800/60 uppercase tracking-[0.2em] mb-1.5">Target Date</label>
-                            <input type="date" value={date} onChange={e => setDate(e.target.value)} required className="block w-full px-4 py-3 bg-orange-50 border border-orange-200 rounded-xl text-orange-950 focus:outline-none focus:ring-2 focus:ring-orange-500 font-bold" />
+                            <input type="date" value={date} onChange={e => setDate(e.target.value)} required className="block w-full px-4 py-3 bg-orange-50 border border-orange-200 rounded-xl text-[#002316] focus:outline-none focus:ring-2 focus:ring-orange-500 font-bold" />
                         </div>
                         <div>
                             <label className="block text-[10px] font-black text-orange-800/60 uppercase tracking-[0.2em] mb-1.5">Commencement Time</label>
-                            <input type="time" value={startTime} onChange={e => setStartTime(e.target.value)} required className="block w-full px-4 py-3 bg-orange-50 border border-orange-200 rounded-xl text-orange-950 focus:outline-none focus:ring-2 focus:ring-orange-500 font-bold font-mono" />
+                            <input type="time" value={startTime} onChange={e => setStartTime(e.target.value)} required className="block w-full px-4 py-3 bg-orange-50 border border-orange-200 rounded-xl text-[#002316] focus:outline-none focus:ring-2 focus:ring-orange-500 font-bold font-mono" />
                         </div>
                     </div>
                     <div>
                         <label className="block text-[10px] font-black text-orange-800/60 uppercase tracking-[0.2em] mb-1.5">Strategic Location (Optional)</label>
-                        <input type="text" value={location} onChange={e => setLocation(e.target.value)} className="block w-full px-4 py-3 bg-orange-50 border border-orange-200 rounded-xl text-orange-950 focus:outline-none focus:ring-2 focus:ring-orange-500 font-bold" />
+                        <input type="text" value={location} onChange={e => setLocation(e.target.value)} className="block w-full px-4 py-3 bg-orange-50 border border-orange-200 rounded-xl text-[#002316] focus:outline-none focus:ring-2 focus:ring-orange-500 font-bold" />
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
@@ -684,7 +797,7 @@ const GrievanceInbox: React.FC = () => {
 
     return (
         <div className="space-y-6">
-            <h3 className="text-xl font-black text-orange-950 uppercase tracking-tight">Messages Hub / Grievances</h3>
+            <h3 className="text-xl font-black text-[#002316] uppercase tracking-tight">Messages Hub / Grievances</h3>
             <div className="space-y-4">
                 {grievances.length > 0 ? (
                     grievances.map(g => (
@@ -699,7 +812,7 @@ const GrievanceInbox: React.FC = () => {
                                         }`}>
                                             {g.status}
                                         </span>
-                                        <h4 className="font-bold text-orange-950">{g.subject}</h4>
+                                        <h4 className="font-bold text-[#002316]">{g.subject}</h4>
                                     </div>
                                     <p className="text-xs text-orange-900/60 mt-0.5">From: <span className="font-semibold">{g.userName}</span> ({g.userId.substring(0,6)})</p>
                                 </div>
@@ -720,7 +833,7 @@ const GrievanceInbox: React.FC = () => {
                                         value={responseMap[g.id] || ''}
                                         onChange={e => setResponseMap(prev => ({ ...prev, [g.id]: e.target.value }))}
                                         rows={2}
-                                        className="w-full px-3 py-2 text-sm bg-white border border-orange-200 rounded-lg text-orange-950 focus:ring-orange-500"
+                                        className="w-full px-3 py-2 text-sm bg-white border border-orange-200 rounded-lg text-[#002316] focus:ring-orange-500"
                                     />
                                     <button
                                         onClick={() => handleRespond(g.id)}
@@ -735,7 +848,7 @@ const GrievanceInbox: React.FC = () => {
                 ) : (
                   <div className="text-center py-20 bg-white rounded-xl border border-dashed border-orange-200">
                     <CheckCircleIcon className="w-12 h-12 text-orange-500/30 mx-auto mb-2" />
-                    <p className="text-orange-900/40">No grievances reported. Excellent!</p>
+                    <p className="text-[#002316]/60">No grievances reported. Excellent!</p>
                   </div>
                 )}
             </div>
@@ -748,7 +861,7 @@ const GrievanceInbox: React.FC = () => {
                             <MegaphoneIcon className="w-7 h-7" />
                         </div>
                         <div>
-                            <h3 className="text-xl font-black text-orange-950 uppercase tracking-tight">Broadcast Direct Communication</h3>
+                            <h3 className="text-xl font-black text-[#002316] uppercase tracking-tight">Broadcast Direct Communication</h3>
                             <p className="text-[10px] font-black text-orange-600 uppercase tracking-widest mt-1">Free Forever Push Infrastructure Active</p>
                         </div>
                     </div>
@@ -784,14 +897,14 @@ const GrievanceInbox: React.FC = () => {
 
 // ─── Member Details Modal ─────────────────────────────────────────────────────
 const MemberDetailsModal: React.FC<{ member: User; onClose: () => void }> = ({ member, onClose }) => (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-orange-950/40 backdrop-blur-sm" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#002316]/40 backdrop-blur-sm" onClick={onClose}>
         <div className="bg-white rounded-[2.5rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] max-w-2xl w-full p-8 border border-orange-100 overflow-hidden relative" onClick={e => e.stopPropagation()}>
             <div className="flex justify-between items-start mb-8">
                 <div>
-                     <h2 className="text-3xl font-black text-orange-950 uppercase tracking-tight">{member.employeeName}</h2>
-                     <p className="text-[10px] font-black text-orange-600 uppercase tracking-widest mt-1">Official Member Dossier</p>
+                        <h2 className="text-5xl font-black text-[#002316] uppercase tracking-tighter mb-2">Admin Command Center</h2>
+                        <p className="text-lg font-bold text-[#002316]/70 uppercase tracking-[0.3em]">IPREU Union Connect Portal</p>
                 </div>
-                <button onClick={onClose} className="p-2 bg-orange-50 text-orange-900/40 hover:text-orange-600 rounded-xl transition-all">
+                <button onClick={onClose} className="p-2 bg-orange-50 text-[#002316]/40 hover:text-orange-700 rounded-xl transition-all">
                     <XMarkIcon className="w-6 h-6" />
                 </button>
             </div>
@@ -844,7 +957,7 @@ const EliteOverview: React.FC = () => {
                         <MegaphoneIcon className="w-6 h-6" />
                     </div>
                     <div>
-                        <h3 className="text-xl font-bold text-orange-950">Elite Platform Status</h3>
+                        <h3 className="text-xl font-bold text-[#002316]">Elite Platform Status</h3>
                         <p className="text-sm text-orange-900/60">Your union communication infrastructure is active and healthy.</p>
                     </div>
                  </div>
@@ -914,7 +1027,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ activeTab, setActiveTab
     ];
 
     return (
-        <div className="min-h-screen bg-[#fcfaf7] p-6 lg:p-10 -mx-4 lg:-mx-8 -mt-8 text-orange-950">
+        <div className="min-h-screen bg-[#fcfaf7] p-6 lg:p-10 -mx-4 lg:-mx-8 -mt-8 text-[#002316]">
             <div className="max-w-7xl mx-auto space-y-10">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
                     {/* Navigation Tabs */}
@@ -926,7 +1039,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ activeTab, setActiveTab
                             className={`flex-1 min-w-[120px] flex items-center justify-center gap-2 py-3 px-6 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${
                                 activeTab === tab.id
                                     ? 'bg-orange-600 text-white shadow-lg shadow-orange-200 scale-[1.02]'
-                                    : 'text-orange-900/40 hover:text-orange-950 hover:bg-orange-50'
+                                    : 'text-[#002316]/60 hover:text-[#002316] hover:bg-orange-50'
                             }`}
                         >
                             {tab.icon}
@@ -953,7 +1066,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ activeTab, setActiveTab
 
                     {pendingMembers.length > 0 && (
                         <div className="animate-fade-in">
-                            <h2 className="text-xl font-bold text-orange-950 mb-4 flex items-center gap-2">
+                            <h2 className="text-xl font-bold text-[#002316] mb-4 flex items-center gap-2">
                                 <ClockIcon className="w-5 h-5 text-orange-600" />
                                 Pending Approvals ({pendingMembers.length})
                             </h2>
@@ -973,7 +1086,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ activeTab, setActiveTab
                     {pendingMembers.length === 0 && (
                         <div className="bg-white rounded-xl shadow-xl p-8 text-center border border-orange-100 animate-fade-in">
                             <CheckCircleIcon className="w-12 h-12 text-emerald-500/30 mx-auto mb-3" />
-                            <p className="text-orange-900/40">No pending approvals. All caught up!</p>
+                            <p className="text-[#002316]/60">No pending approvals. All caught up!</p>
                         </div>
                     )}
                 </div>
@@ -983,7 +1096,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ activeTab, setActiveTab
             {activeTab === 'members' && (
                 <div className="space-y-4">
                     <div className="flex items-center justify-between flex-wrap gap-3">
-                        <h2 className="text-xl font-bold text-orange-950">
+                        <h2 className="text-xl font-bold text-[#002316]">
                             Approved Members ({approvedMembers.length})
                         </h2>
                         <input
@@ -991,15 +1104,16 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ activeTab, setActiveTab
                             placeholder="Search members..."
                             value={searchTerm}
                             onChange={e => setSearchTerm(e.target.value)}
-                            className="px-4 py-2 bg-white border border-orange-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 w-60 text-orange-950 placeholder:text-orange-900/30 shadow-sm"
+                            className="px-4 py-2 bg-white border border-orange-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 w-60 text-[#002316] placeholder:text-[#002316]/30 shadow-sm"
                         />
                     </div>
 
                     {filteredMembers.length > 0 ? (
                         <div className="bg-white rounded-[2.5rem] shadow-xl border border-orange-100 overflow-hidden">
                             <table className="min-w-full divide-y divide-orange-50 text-sm">
-                                <thead className="bg-orange-50/50 text-orange-950">
+                                <thead className="bg-orange-50/50 text-[#002316]">
                                     <tr>
+                                        <th className="px-8 py-5 text-left text-[10px] font-black text-orange-800 uppercase tracking-[0.2em]">Member No</th>
                                         <th className="px-8 py-5 text-left text-[10px] font-black text-orange-800 uppercase tracking-[0.2em]">Full Name / Identity</th>
                                         <th className="px-8 py-5 text-left text-[10px] font-black text-orange-800 uppercase tracking-[0.2em] hidden md:table-cell">Emp No</th>
                                         <th className="px-8 py-5 text-left text-[10px] font-black text-orange-800 uppercase tracking-[0.2em] hidden lg:table-cell">Email Address</th>
@@ -1010,7 +1124,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ activeTab, setActiveTab
                                 <tbody className="divide-y divide-orange-50 bg-transparent">
                                     {filteredMembers.map(m => (
                                         <tr key={m.id} className="hover:bg-orange-50/30 transition-colors group">
-                                            <td className="px-8 py-5 font-bold text-orange-950 group-hover:text-orange-600 transition-colors">{m.employeeName}</td>
+                                            <td className="px-8 py-5 text-orange-950 font-mono text-[11px]">{m.memberNo || m.pfNumber || 'N/A'}</td>
+                                            <td className="px-8 py-5 font-bold text-[#002316] group-hover:text-orange-600 transition-colors">{m.employeeName}</td>
                                             <td className="px-8 py-5 text-orange-900/60 hidden md:table-cell font-mono">{m.employeeNumber}</td>
                                             <td className="px-8 py-5 text-orange-900/60 hidden lg:table-cell">{m.email}</td>
                                             <td className="px-8 py-5">
@@ -1037,7 +1152,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ activeTab, setActiveTab
                         </div>
                     ) : (
                         <div className="bg-white rounded-xl shadow-xl p-8 text-center border border-orange-100">
-                             <p className="text-orange-900/40 font-bold">No members found matching "{searchTerm}".</p>
+                             <p className="text-[#002316]/60 font-bold">No members found matching "{searchTerm}".</p>
                         </div>
                     )}
                 </div>
@@ -1062,7 +1177,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ activeTab, setActiveTab
                         ))
                     ) : (
                         <div className="bg-white rounded-xl shadow-xl p-8 text-center border border-orange-100">
-                             <p className="text-orange-900/40 font-bold">No active surveys found. Deploy one above.</p>
+                             <p className="text-[#002316]/60 font-bold">No active surveys found. Deploy one above.</p>
                         </div>
                     )}
                 </div>

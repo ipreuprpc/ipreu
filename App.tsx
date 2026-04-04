@@ -241,10 +241,6 @@ function App() {
             await api.register(newUser);
             return true;
         },
-        approveRegistration: async (id: string) => {
-            await api.approveUser(id);
-            setUsers(prev => prev.map(u => u.id === id ? { ...u, role: UserRole.MEMBER } : u));
-        },
         rejectRegistration: async (id: string) => {
             await api.rejectUser(id);
             setUsers(prev => prev.filter(u => u.id !== id));

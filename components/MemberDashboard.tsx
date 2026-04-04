@@ -127,16 +127,20 @@ const GrievanceForm: React.FC<{ onSubmit: (subject: string, desc: string, cat: s
     const [description, setDescription] = useState('');
     const [category, setCategory] = useState('GENERAL');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [successMsg, setSuccessMsg] = useState('');
+    const [errorMsg, setErrorMsg] = useState('');
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
+        setSuccessMsg('');
+        setErrorMsg('');
         try {
             await onSubmit(subject, description, category);
             setSubject(''); setDescription(''); setCategory('GENERAL');
-            alert('Grievance submitted successfully. The union admin will review it.');
+            setSuccessMsg('✅ Grievance submitted successfully. The union admin will review it shortly.');
         } catch (err: any) {
-            alert(err.message || 'Failed to submit grievance');
+            setErrorMsg(err.message || 'Failed to submit grievance. Please try again.');
         } finally {
             setIsSubmitting(false);
         }
@@ -148,16 +152,28 @@ const GrievanceForm: React.FC<{ onSubmit: (subject: string, desc: string, cat: s
                 <div className="p-3 bg-orange-600 rounded-xl text-white shadow-lg shadow-orange-600/20">
                     <MegaphoneIcon className="w-6 h-6" />
                 </div>
-                Transmit Secure Intelligence
+                Register Grievance
             </h3>
+
+            {successMsg && (
+                <div className="bg-green-50 border border-green-300 text-green-900 rounded-xl px-5 py-4 text-sm font-bold animate-fade-in">
+                    {successMsg}
+                </div>
+            )}
+            {errorMsg && (
+                <div className="bg-red-50 border border-red-300 text-red-800 rounded-xl px-5 py-4 text-sm font-bold">
+                    {errorMsg}
+                </div>
+            )}
+
             <div className="grid grid-cols-1 gap-6">
                 <div>
-                    <label className="block text-[10px] font-black text-orange-900/40 uppercase tracking-widest mb-1.5">Subject / Case Title</label>
-                    <input type="text" value={subject} onChange={e => setSubject(e.target.value)} required placeholder="e.g., Salary discrepancy" className="mt-1 block w-full px-4 py-3 bg-[#fcfaf7] border-2 border-transparent focus:border-orange-600 rounded-xl text-sm text-orange-950 outline-none transition-all font-bold" />
+                    <label className="block text-[10px] font-black text-orange-950/60 uppercase tracking-widest mb-1.5">Subject / Case Title</label>
+                    <input type="text" value={subject} onChange={e => setSubject(e.target.value)} required placeholder="e.g., Salary discrepancy" className="mt-1 block w-full px-4 py-3 bg-white border border-orange-200 focus:border-orange-600 rounded-xl text-sm text-orange-950 outline-none transition-all font-bold shadow-sm" />
                 </div>
                 <div>
-                    <label className="block text-[10px] font-black text-orange-900/40 uppercase tracking-widest mb-1.5">Category</label>
-                    <select value={category} onChange={e => setCategory(e.target.value)} className="mt-1 block w-full px-4 py-3 bg-[#fcfaf7] border-2 border-transparent focus:border-orange-600 rounded-xl text-sm text-orange-950 outline-none transition-all font-bold">
+                    <label className="block text-[10px] font-black text-orange-950/60 uppercase tracking-widest mb-1.5">Category</label>
+                    <select value={category} onChange={e => setCategory(e.target.value)} className="mt-1 block w-full px-4 py-3 bg-white border border-orange-200 focus:border-orange-600 rounded-xl text-sm text-orange-950 outline-none transition-all font-bold shadow-sm">
                         <option value="GENERAL">General Support</option>
                         <option value="SALARY">Salary / Benefits</option>
                         <option value="WORK_CONDITION">Work Conditions</option>
@@ -166,11 +182,11 @@ const GrievanceForm: React.FC<{ onSubmit: (subject: string, desc: string, cat: s
                 </div>
             </div>
             <div>
-                <label className="block text-[10px] font-black text-orange-900/40 uppercase tracking-widest mb-1.5">Detailed Description (Private)</label>
-                <textarea value={description} onChange={e => setDescription(e.target.value)} required rows={4} placeholder="Please provide all relevant details here..." className="mt-1 block w-full px-4 py-3 bg-[#fcfaf7] border-2 border-transparent focus:border-orange-600 rounded-xl text-sm text-orange-950 outline-none transition-all font-bold" />
+                <label className="block text-[10px] font-black text-orange-950/60 uppercase tracking-widest mb-1.5">Detailed Description (Private)</label>
+                <textarea value={description} onChange={e => setDescription(e.target.value)} required rows={4} placeholder="Please provide all relevant details here..." className="mt-1 block w-full px-4 py-3 bg-white border border-orange-200 focus:border-orange-600 rounded-xl text-sm text-orange-950 outline-none transition-all font-bold shadow-sm" />
             </div>
             <button type="submit" disabled={isSubmitting} className="w-full py-4 bg-orange-600 text-white rounded-2xl font-black uppercase tracking-[0.2em] hover:bg-orange-700 transition-all shadow-xl shadow-orange-600/20 active:scale-95 disabled:bg-orange-200">
-                {isSubmitting ? 'TRANSMITTING...' : 'INITIALIZE SECURE UPLOAD'}
+                {isSubmitting ? 'SUBMITTING...' : 'SUBMIT GRIEVANCE'}
             </button>
         </form>
     );
@@ -332,8 +348,8 @@ const MemberDashboard: React.FC<MemberDashboardProps> = ({ activeTab, setActiveT
                             <ClockIcon className="w-7 h-7"/>
                         </div>
                         <div>
-                            <h2 className="text-3xl font-black text-orange-950 tracking-tight leading-none uppercase">Strategic Calendar</h2>
-                            <p className="text-[10px] font-bold text-orange-900/40 uppercase tracking-widest mt-1.5">Official Union Schedules & Events</p>
+                            <h2 className="text-3xl font-black text-[#002316] tracking-tight leading-none uppercase">Union Intelligence Hub</h2>
+                            <p className="text-[10px] font-bold text-[#002316]/40 uppercase tracking-widest mt-1.5">Official Circulars & Strategic Bulletins</p>
                         </div>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-10">
@@ -347,13 +363,13 @@ const MemberDashboard: React.FC<MemberDashboardProps> = ({ activeTab, setActiveT
                                             <span className="text-[8px] font-black uppercase mt-1.5 opacity-40">{new Date(event.date).getFullYear()}</span>
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <h4 className="font-black text-orange-950 text-xl mb-3 pr-2 leading-tight uppercase group-hover:text-orange-600 transition-colors truncate">{event.title}</h4>
+                                            <h4 className="font-black text-[#002316] text-xl mb-3 pr-2 leading-tight uppercase group-hover:text-orange-600 transition-colors truncate">{event.title}</h4>
                                             <div className="space-y-2">
-                                                <div className="flex items-center gap-3 text-orange-900/40">
+                                                <div className="flex items-center gap-3 text-[#002316]/40">
                                                     <ClockIcon className="w-4 h-4 text-orange-600 opacity-60" /> 
                                                     <span className="text-[11px] font-bold uppercase">{event.startTime}</span>
                                                 </div>
-                                                <div className="flex items-center gap-3 text-orange-900/40">
+                                                <div className="flex items-center gap-3 text-[#002316]/40">
                                                     <div className="w-4 h-4 flex items-center justify-center"><span className="text-[10px] font-black text-orange-600">@</span></div>
                                                     <span className="text-[11px] font-bold uppercase truncate">{event.location || 'TBA'}</span>
                                                 </div>
@@ -369,7 +385,7 @@ const MemberDashboard: React.FC<MemberDashboardProps> = ({ activeTab, setActiveT
                             ))
                         ) : (
                             <div className="col-span-full py-32 text-center bg-[#fcfaf7] rounded-[3rem] border-2 border-dashed border-orange-100">
-                                <p className="text-xs font-black text-orange-900/20 uppercase tracking-[0.3em] italic">No upcoming strategic schedules available</p>
+                                <p className="text-xs font-black text-[#002316]/20 uppercase tracking-[0.3em] italic">No upcoming strategic schedules available</p>
                             </div>
                         )}
                     </div>
@@ -384,8 +400,8 @@ const MemberDashboard: React.FC<MemberDashboardProps> = ({ activeTab, setActiveT
                             <MegaphoneIcon className="w-7 h-7 rotate-12"/>
                         </div>
                         <div>
-                            <h2 className="text-3xl font-black text-orange-950 tracking-tight leading-none uppercase">Legal Support Hub</h2>
-                            <p className="text-[10px] font-bold text-orange-900/40 uppercase tracking-widest mt-1.5">Secure Grievance Redressal Mechanism</p>
+                            <h2 className="text-3xl font-black text-[#002316] tracking-tight leading-none uppercase">Public Grievance Redressal Hub</h2>
+                            <p className="text-[10px] font-bold text-[#002316]/70 uppercase tracking-widest mt-1.5">Secure Grievance Redressal Mechanism</p>
                         </div>
                     </div>
                     <div className="grid grid-cols-1 xl:grid-cols-2 gap-10">
@@ -394,23 +410,23 @@ const MemberDashboard: React.FC<MemberDashboardProps> = ({ activeTab, setActiveT
                         </div>
                         <div className="space-y-6">
                             <div className="flex items-center justify-between mb-4">
-                                <h3 className="font-black text-orange-950 uppercase tracking-widest text-xs flex items-center gap-3">
-                                    <span className="w-3 h-3 bg-orange-600 rounded-full animate-pulse shadow-lg shadow-orange-600/50"></span>
-                                    Private Case Dossier
-                                </h3>
-                                <p className="text-[10px] font-bold text-orange-900/20 uppercase tracking-widest">{grievances.length} Submissions</p>
+                                    <h3 className="font-black text-[#002316] uppercase tracking-widest text-xs flex items-center gap-3">
+                                        <span className="w-3 h-3 bg-orange-600 rounded-full animate-pulse shadow-lg shadow-orange-600/50"></span>
+                                        Grievance Reports
+                                    </h3>
+                                <p className="text-[10px] font-bold text-[#002316]/20 uppercase tracking-widest">{grievances.length} Submissions</p>
                             </div>
                             {grievances.length > 0 ? grievances.map(g => (
                                 <div key={g.id} className="bg-white p-6 rounded-[1.5rem] shadow-sm border border-orange-100 transition-all hover:border-orange-600/20">
                                     <div className="flex justify-between items-start mb-4">
-                                        <h4 className="font-black text-orange-950 text-base uppercase tracking-tight pr-4">{g.subject}</h4>
+                                        <h4 className="font-black text-[#002316] text-base uppercase tracking-tight pr-4">{g.subject}</h4>
                                         <span className={`text-[9px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest shadow-sm ${
                                             g.status === 'NEW' ? 'bg-orange-100 text-orange-700 border border-orange-200' : 'bg-orange-100 text-orange-700 border border-orange-200'
                                         }`}>
                                             {g.status}
                                         </span>
                                     </div>
-                                    <p className="text-xs text-orange-900/40 line-clamp-3 leading-relaxed mb-6 font-medium italic">"{g.description}"</p>
+                                    <p className="text-xs text-[#002316]/40 line-clamp-3 leading-relaxed mb-6 font-medium italic">"{g.description}"</p>
                                     {g.status === 'RESOLVED' && (
                                         <div className="p-6 bg-orange-50 rounded-2xl border-2 border-orange-100 relative overflow-hidden">
                                             <div className="absolute top-0 right-0 w-16 h-16 bg-orange-100 rounded-full -mr-8 -mt-8 opacity-40" />
@@ -418,13 +434,13 @@ const MemberDashboard: React.FC<MemberDashboardProps> = ({ activeTab, setActiveT
                                                 <span className="w-1.5 h-1.5 bg-orange-600 rounded-full"></span>
                                                 Official Union Resolution
                                             </p>
-                                            <p className="text-[13px] text-orange-950 font-bold leading-relaxed">"{g.response}"</p>
+                                            <p className="text-[13px] text-[#002316] font-bold leading-relaxed">"{g.response}"</p>
                                         </div>
                                     )}
                                 </div>
                             )) : (
                                 <div className="p-24 text-center bg-[#fcfaf7] rounded-[2.5rem] border-2 border-dashed border-orange-100 opacity-60">
-                                    <p className="text-[10px] font-black text-orange-900/20 uppercase tracking-[0.3em]">No legal submissions recorded</p>
+                                    <p className="text-[10px] font-black text-[#002316]/20 uppercase tracking-[0.3em]">No legal submissions recorded</p>
                                 </div>
                             )}
                         </div>
@@ -441,8 +457,8 @@ const MemberDashboard: React.FC<MemberDashboardProps> = ({ activeTab, setActiveT
                             <ClipboardListIcon className="w-7 h-7"/>
                         </div>
                         <div>
-                            <h2 className="text-3xl font-black text-orange-950 tracking-tight leading-none uppercase">Public Survey / Suggestion</h2>
-                            <p className="text-[10px] font-bold text-orange-900/40 uppercase tracking-widest mt-1.5">Your Voice in Union Governance</p>
+                            <h2 className="text-3xl font-black text-[#002316] tracking-tight leading-none uppercase">Public Survey / Suggestion</h2>
+                            <p className="text-[10px] font-bold text-[#002316]/70 uppercase tracking-widest mt-1.5">Your Voice in Union Governance</p>
                         </div>
                     </div>
                     {availableSurveys.length > 0 ? (

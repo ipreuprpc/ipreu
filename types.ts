@@ -15,6 +15,8 @@ export interface User {
   unit: string;
   fatherName: string;
   motherName: string;
+  memberNo: string;
+  pfNumber: string;
   nativePlace: string;
   state: string;
   caste?: string;

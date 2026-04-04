@@ -18,8 +18,8 @@ const FeatureCard: React.FC<{ icon: React.ReactNode; title: string; description:
         <div className="bg-gradient-to-br from-orange-100 to-orange-50 dark:from-orange-900/20 dark:to-orange-900/10 w-14 h-14 rounded-xl flex items-center justify-center mb-6 shadow-inner text-orange-600 dark:text-orange-400">
             {icon}
         </div>
-        <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-3">{title}</h3>
-        <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{description}</p>
+        <h3 className="text-xl font-black text-orange-950 dark:text-gray-100 mb-3 uppercase tracking-tight">{title}</h3>
+        <p className="text-gray-900 dark:text-gray-200 leading-relaxed font-medium">{description}</p>
     </div>
 );
 
@@ -30,7 +30,7 @@ const LeadershipCard: React.FC<{ name: string; post: string }> = ({ name, post }
                 {name.split(' ').map(n => n[0]).join('').substring(0, 2)}
             </div>
             <div>
-                <p className="font-black text-xl text-orange-950 tracking-tight leading-tight mb-0.5 group-hover:text-orange-600 transition-colors uppercase">{name}</p>
+                <p className="font-black text-xl text-[#002316] tracking-tight leading-tight mb-0.5 transition-colors uppercase">{name}</p>
                 <p className="text-[10px] uppercase tracking-[0.2em] text-orange-700 font-black">{post}</p>
             </div>
         </div>
@@ -243,19 +243,19 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
                     <div className="bg-white p-8 rounded-2xl border border-orange-100 text-center space-y-4 shadow-sm hover:shadow-xl hover:border-orange-300 transition-all">
                         <div className="w-12 h-12 bg-orange-600 text-white rounded-full flex items-center justify-center font-bold text-xl mx-auto shadow-lg shadow-orange-600/20">1</div>
                         <h4 className="font-bold text-xl text-orange-950 uppercase tracking-tight">Digital Registration</h4>
-                        <p className="text-base text-orange-900/50">Click Join and fill in your official employee details via our secure form.</p>
+                        <p className="text-base text-orange-950/70">Click Join and fill in your official employee details via our secure form.</p>
                     </div>
 
-                    <div className="bg-white p-8 rounded-2xl border border-orange-100 text-center space-y-4 shadow-sm hover:shadow-xl hover:border-orange-300 transition-all">
-                        <div className="w-12 h-12 bg-orange-600 text-white rounded-full flex items-center justify-center font-bold text-xl mx-auto shadow-lg shadow-orange-600/20">2</div>
+                    <div className="bg-white p-8 rounded-2xl border border-orange-200 text-center space-y-4 shadow-sm hover:shadow-xl hover:border-orange-400 transition-all">
+                        <div className="w-12 h-12 bg-orange-800 text-white rounded-full flex items-center justify-center font-bold text-xl mx-auto shadow-lg shadow-orange-900/20">2</div>
                         <h4 className="font-bold text-xl text-orange-950 uppercase tracking-tight">Admin Verification</h4>
-                        <p className="text-base text-orange-900/50">Your details will be reviewed by the Executive Body for union credentials.</p>
+                        <p className="text-base text-orange-950/70">Your details will be reviewed by the Executive Body for union credentials.</p>
                     </div>
 
-                    <div className="bg-white p-8 rounded-2xl border border-orange-100 text-center space-y-4 shadow-sm hover:shadow-xl hover:border-orange-300 transition-all">
-                        <div className="w-12 h-12 bg-orange-600 text-white rounded-full flex items-center justify-center font-bold text-xl mx-auto shadow-lg shadow-orange-600/20">3</div>
+                    <div className="bg-white p-8 rounded-2xl border border-orange-200 text-center space-y-4 shadow-sm hover:shadow-xl hover:border-orange-400 transition-all">
+                        <div className="w-12 h-12 bg-orange-800 text-white rounded-full flex items-center justify-center font-bold text-xl mx-auto shadow-lg shadow-orange-900/20">3</div>
                         <h4 className="font-bold text-xl text-orange-950 uppercase tracking-tight">Full Access</h4>
-                        <p className="text-base text-orange-900/50">Receive your digital ID card and gain access to voting, circulars, and more.</p>
+                        <p className="text-base text-orange-950/70">Receive your digital ID card and gain access to voting, circulars, and more.</p>
                     </div>
                 </div>
                 <div className="mt-16 text-center">

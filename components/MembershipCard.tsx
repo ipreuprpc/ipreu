@@ -11,8 +11,7 @@ const MembershipCard: React.FC<MembershipCardProps> = ({ user, logoUrl }) => {
     const cardRef = useRef<HTMLDivElement>(null);
     const [isDownloading, setIsDownloading] = useState(false);
     
-    // Fallback logo if missing
-    const finalLogoUrl = logoUrl || '/logo.png';
+    const finalLogoUrl = logoUrl || '/icon-512.svg';
     const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(user.id)}&color=431407&bgcolor=ffffff`;
 
     const handleDownload = async () => {
@@ -80,7 +79,6 @@ const MembershipCard: React.FC<MembershipCardProps> = ({ user, logoUrl }) => {
                             </div>
                             <div>
                                 <h2 className="text-lg font-black tracking-tighter leading-none text-white uppercase drop-shadow-md">IPREU - UNION</h2>
-                                <p className="text-[7px] text-orange-200/50 uppercase tracking-[0.3em] mt-1 font-black">Official Governance Hub</p>
                             </div>
                         </div>
                         
@@ -105,10 +103,6 @@ const MembershipCard: React.FC<MembershipCardProps> = ({ user, logoUrl }) => {
                                 <div>
                                     <p className="text-[7px] text-orange-300 uppercase tracking-[0.3em] font-black opacity-60">EMP ID</p>
                                     <p className="text-sm font-black tracking-widest text-[#fbbf24] shadow-sm">#{user.employeeNumber}</p>
-                                </div>
-                                <div>
-                                    <p className="text-[7px] text-orange-300 uppercase tracking-[0.3em] font-black opacity-60">PF NO</p>
-                                    <p className="text-sm font-black tracking-widest text-orange-100">{user.pfNumber || 'PENDING'}</p>
                                 </div>
                             </div>
                         </div>

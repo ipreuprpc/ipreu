@@ -125,10 +125,6 @@ export const api = {
     const snapshot = await getDocs(q);
     return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   },
-  approveUser: async (id: string) => {
-    await updateDoc(doc(db, 'users', id), { role: 'MEMBER' });
-    return true;
-  },
   rejectUser: async (id: string) => {
     await deleteDoc(doc(db, 'users', id));
     return true;
