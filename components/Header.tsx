@@ -11,9 +11,9 @@ const Header: React.FC = () => {
       <div className="container mx-auto px-4 py-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4 group cursor-pointer">
-            <UserGroupIcon className="h-10 w-10 text-[#014737] dark:text-[#00c4a7] animate-fade-in group-hover:scale-110 transition-transform" />
-            <h1 className="text-2xl md:text-3xl font-display font-black text-[#014737] dark:text-[#00c4a7] tracking-tighter">
-              Union Connect <span className="text-orange-600">Portal</span>
+            <UserGroupIcon className="h-10 w-10 text-orange-600 animate-fade-in group-hover:scale-110 transition-transform" />
+            <h1 className="text-2xl md:text-3xl font-display font-black text-orange-950 tracking-tighter uppercase">
+              Union Connect <span className="text-orange-600">Hub</span>
             </h1>
           </div>
           <div className="flex items-center space-x-2 md:space-x-4 animate-fade-in">
@@ -36,10 +36,10 @@ const Header: React.FC = () => {
                    <span className="text-sm text-gray-700 dark:text-gray-300 leading-tight">
                      Welcome, <span className="font-bold text-gray-900 dark:text-white">{currentUser.employeeName}</span>
                    </span>
-                   <span className={`text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full mt-0.5 ${
+                   <span className={`text-[10px] uppercase tracking-wider font-extrabold px-3 py-1 rounded-full mt-0.5 ${
                       currentUser.role === UserRole.ADMIN 
-                        ? 'bg-rose-100 text-rose-700 border border-rose-200 shadow-sm' 
-                        : 'bg-emerald-100 text-emerald-700 border border-emerald-200 shadow-sm'
+                        ? 'bg-orange-600 text-white shadow-lg shadow-orange-200' 
+                        : 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20'
                    }`}>
                       {currentUser.role}
                    </span>

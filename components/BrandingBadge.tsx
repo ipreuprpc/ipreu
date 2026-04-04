@@ -7,11 +7,11 @@ const BrandingBadge: React.FC = () => {
                 {/* Glow Effect Background */}
                 <div className="absolute -inset-1 bg-gradient-to-r from-orange-600 to-red-600 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
                 
-                <div className="relative px-8 py-4 bg-white dark:bg-gray-950 border-2 border-orange-500/20 rounded-2xl shadow-xl flex flex-col items-center transition-all hover:border-orange-500/50">
+                <div className="relative px-8 py-4 bg-white border-2 border-orange-500/20 rounded-2xl shadow-xl flex flex-col items-center transition-all hover:border-orange-500/50">
                     <p className="text-[10px] font-black uppercase tracking-[0.3em] text-orange-600 mb-2 drop-shadow-sm">Official Platform Identity</p>
                     
                     <h4 className="text-base md:text-lg font-black tracking-tight text-center leading-tight">
-                        <span className="text-gray-900 dark:text-white">Design & Developed by </span>
+                        <span className="text-gray-900">Design & Developed by </span>
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-red-700 uppercase drop-shadow-sm">
                             Mr. NAVEEN KUMAR
                         </span>

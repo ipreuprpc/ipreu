@@ -326,15 +326,15 @@ function App() {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-600"></div>
+            <div className="min-h-screen flex items-center justify-center bg-[#fcfaf7] transition-colors duration-300">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-600 shadow-[0_0_20px_rgba(234,88,12,0.3)]"></div>
             </div>
         );
     }
 
     return (
         <AppContext.Provider value={contextValue}>
-            <div className="min-h-screen font-sans bg-gray-50/30 dark:bg-gray-950 transition-colors duration-300">
+            <div className="min-h-screen font-sans bg-[#fcfaf7] transition-colors duration-300">
                 <Header />
                 <main className="container mx-auto p-4 md:p-8 pb-32">
                     <Suspense fallback={
@@ -346,7 +346,7 @@ function App() {
                     </Suspense>
                 </main>
                 {currentUser && (
-                    <footer className="w-full py-12 bg-white/5 dark:bg-black/20 border-t border-gray-200 dark:border-gray-800 backdrop-blur-sm mt-auto">
+                    <footer className="w-full py-12 bg-white/5 border-t border-orange-100 backdrop-blur-sm mt-auto">
                         <div className="container mx-auto px-4">
                             <BrandingBadge />
                         </div>
