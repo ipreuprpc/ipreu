@@ -9,7 +9,7 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'robots.txt', 'logo.png'],
+      includeAssets: ['logo.png', 'robots.txt', 'sitemap.xml'],
       manifest: {
         name: 'IPREU Union Connect',
         short_name: 'IPREU Union',
@@ -17,14 +17,16 @@ export default defineConfig({
         theme_color: '#ea580c',
         icons: [
           {
-            src: 'icon-192.svg',
+            src: 'logo.png',
             sizes: '192x192',
-            type: 'image/svg+xml'
+            type: 'image/png',
+            purpose: 'any'
           },
           {
-            src: 'icon-512.svg',
+            src: 'logo.png',
             sizes: '512x512',
-            type: 'image/svg+xml'
+            type: 'image/png',
+            purpose: 'maskable'
           }
         ]
       }

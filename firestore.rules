@@ -45,7 +45,13 @@ service cloud.firestore {
     match /surveys/{surveyId} {
       allow read: if isMemberOrAdmin();
       allow create, delete: if isAdmin();
-      allow update: if isAdmin() || (isMemberOrAdmin() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['votes']));
+      allow update: if isAdmin() || (
+        isMemberOrAdmin() && 
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['votes']) &&
+        // Ensure only the user's own vote is being added/changed, and no other votes are removed
+        request.resource.data.votes.keys().hasAll(resource.data.votes.keys()) &&
+        request.resource.data.votes[request.auth.uid] != null
+      );
     }
   }
 }
