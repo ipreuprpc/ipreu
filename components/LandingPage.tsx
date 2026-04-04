@@ -10,7 +10,7 @@ import { EXECUTIVE_MEMBERS, UNION_CONTACT_INFO } from '../constants';
 import BrandingBadge from './BrandingBadge';
 
 interface LandingPageProps {
-    onLoginClick: () => void;
+    onLoginClick: (tab?: string) => void;
 }
 
 const FeatureCard: React.FC<{ icon: React.ReactNode; title: string; description: string }> = ({ icon, title, description }) => (
@@ -24,14 +24,14 @@ const FeatureCard: React.FC<{ icon: React.ReactNode; title: string; description:
 );
 
 const LeadershipCard: React.FC<{ name: string; post: string }> = ({ name, post }) => (
-    <div className="p-5 rounded-2xl border transition-all duration-300 bg-white dark:bg-gray-950 border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-xl hover:border-orange-200 dark:hover:border-orange-900/50 group">
+    <div className="p-5 rounded-2xl border transition-all duration-300 bg-white border-orange-100 shadow-sm hover:shadow-xl hover:border-orange-300 group">
         <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-full flex items-center justify-center text-lg font-black bg-gradient-to-br from-orange-100 to-orange-200 text-orange-700 group-hover:scale-110 shadow-sm border border-orange-100 transition-transform duration-300">
                 {name.split(' ').map(n => n[0]).join('').substring(0, 2)}
             </div>
             <div>
                 <p className="font-black text-xl text-orange-950 tracking-tight leading-tight mb-0.5 group-hover:text-orange-600 transition-colors uppercase">{name}</p>
-                <p className="text-[10px] uppercase tracking-widest text-orange-800/40 font-bold">{post}</p>
+                <p className="text-[10px] uppercase tracking-[0.2em] text-orange-700 font-black">{post}</p>
             </div>
         </div>
     </div>
@@ -104,41 +104,41 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
             </section>
 
             {/* LIVE ACTIVITY SECTION */}
-            <section className="py-20 bg-slate-50 dark:bg-[#020617] relative z-20 border-b border-gray-100 dark:border-gray-900/50">
+            <section className="py-20 bg-[#fcfaf7] relative z-20 border-b border-orange-100">
                 <div className="max-w-6xl mx-auto px-6 lg:px-12">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                         
                         {/* Upcoming Events */}
                         <div className="space-y-8">
                             <div className="flex items-center gap-4">
-                                <div className="p-3 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl">
+                                <div className="p-3 bg-orange-100 text-orange-600 rounded-xl">
                                     <CalendarIcon className="w-7 h-7" />
                                 </div>
-                                <h3 className="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-gray-100">Union Calendar</h3>
+                                <h3 className="text-2xl md:text-3xl font-extrabold text-orange-950">Union Calendar</h3>
                             </div>
                             <div className="space-y-3">
                                 {upcomingEvents.length > 0 ? upcomingEvents.map(event => (
-                                    <div key={event.id} className="bg-white dark:bg-gray-900 p-4 rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm flex items-center justify-between group hover:border-blue-200 dark:hover:border-blue-900 transition-colors">
+                                    <div key={event.id} className="bg-white p-4 rounded-xl border border-orange-100 shadow-sm flex items-center justify-between group hover:border-orange-300 transition-colors">
                                         <div className="flex items-center gap-4">
-                                            <div className="flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-800 w-14 h-14 rounded-lg border dark:border-gray-700">
-                                                <span className="text-[10px] text-gray-500 uppercase font-bold">{new Date(event.date).toLocaleString('default', { month: 'short' })}</span>
-                                                <span className="text-xl font-bold text-blue-600 dark:text-blue-400 leading-none">{new Date(event.date).getDate()}</span>
+                                            <div className="flex flex-col items-center justify-center bg-orange-50 w-14 h-14 rounded-lg border border-orange-100">
+                                                <span className="text-[10px] text-orange-800/50 uppercase font-bold">{new Date(event.date).toLocaleString('default', { month: 'short' })}</span>
+                                                <span className="text-xl font-bold text-orange-700 leading-none">{new Date(event.date).getDate()}</span>
                                             </div>
                                             <div>
-                                                <h4 className="font-bold text-gray-800 dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{event.title}</h4>
-                                                <div className="flex items-center gap-3 text-xs text-gray-500 mt-1">
+                                                <h4 className="font-bold text-orange-950 group-hover:text-orange-600 transition-colors">{event.title}</h4>
+                                                <div className="flex items-center gap-3 text-xs text-orange-900/40 mt-1">
                                                     <span className="flex items-center gap-1"><ClockIcon className="w-3 h-3" /> {event.startTime}</span>
                                                     {event.location && <span className="flex items-center gap-1">📍 {event.location}</span>}
                                                 </div>
                                             </div>
                                         </div>
-                                        <button onClick={onLoginClick} className="text-xs font-bold text-gray-400 hover:text-blue-600 uppercase tracking-widest px-3 py-1 bg-gray-50 dark:bg-gray-800 rounded-full border dark:border-gray-700">Details</button>
+                                        <button onClick={onLoginClick} className="text-xs font-bold text-orange-600/40 hover:text-orange-600 uppercase tracking-widest px-3 py-1 bg-orange-50 rounded-full border border-orange-100">Details</button>
                                     </div>
                                 )) : (
-                                    <p className="text-gray-500 italic py-8 text-center bg-white dark:bg-gray-900 rounded-xl border border-dashed dark:border-gray-800">No upcoming events listed for this month.</p>
+                                    <p className="text-orange-900/40 italic py-8 text-center bg-white rounded-xl border border-dashed border-orange-100">No upcoming events listed for this month.</p>
                                 )}
                                 <p className="text-center">
-                                    <button onClick={onLoginClick} className="text-sm font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400">View Full Calendar &rarr;</button>
+                                    <button onClick={onLoginClick} className="text-sm font-semibold text-orange-600 hover:text-orange-700">View Full Calendar &rarr;</button>
                                 </p>
                             </div>
                         </div>
@@ -146,21 +146,21 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
                         {/* Announcements / Circulars */}
                         <div className="space-y-8">
                             <div className="flex items-center gap-4">
-                                <div className="p-3 bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 rounded-xl">
+                                <div className="p-3 bg-orange-100 text-orange-600 rounded-xl">
                                     <MegaphoneIcon className="w-7 h-7" />
                                 </div>
-                                <h3 className="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-gray-100">Latest Circulars</h3>
+                                <h3 className="text-2xl md:text-3xl font-extrabold text-orange-950">Latest Circulars</h3>
                             </div>
                             <div className="space-y-3">
                                 {latestAnnouncements.length > 0 ? latestAnnouncements.map(ann => (
-                                    <div key={ann.id} className="bg-white dark:bg-gray-900 p-4 rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm transition-all hover:border-orange-200 dark:hover:border-orange-900">
+                                    <div key={ann.id} className="bg-white p-4 rounded-xl border border-orange-100 shadow-sm transition-all hover:border-orange-300">
                                         <div className="flex justify-between items-start mb-2">
-                                            <h4 className="font-bold text-gray-800 dark:text-gray-200 line-clamp-1">{ann.title}</h4>
-                                            <span className="text-[10px] bg-orange-50 dark:bg-orange-900/20 text-orange-700 dark:text-orange-400 px-2 py-0.5 rounded-full font-bold">OFFICIAL</span>
+                                            <h4 className="font-bold text-orange-950 line-clamp-1">{ann.title}</h4>
+                                            <span className="text-[10px] bg-orange-50 text-orange-700 px-2 py-0.5 rounded-full font-bold">OFFICIAL</span>
                                         </div>
-                                        <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-3">{ann.content}</p>
+                                        <p className="text-sm text-orange-900/60 line-clamp-2 mb-3">{ann.content}</p>
                                         <div className="flex items-center justify-between">
-                                            <span className="text-[10px] text-gray-400 font-medium italic">{new Date(ann.createdAt).toLocaleDateString()}</span>
+                                            <span className="text-[10px] text-orange-900/30 font-medium italic">{new Date(ann.createdAt).toLocaleDateString()}</span>
                                             {ann.attachment && (
                                                 <button onClick={onLoginClick} className="flex items-center gap-1.5 text-xs font-bold text-orange-600 hover:text-orange-700">
                                                     <PaperClipIcon className="w-3.5 h-3.5" />
@@ -170,10 +170,10 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
                                         </div>
                                     </div>
                                 )) : (
-                                    <p className="text-gray-500 italic py-8 text-center bg-white dark:bg-gray-900 rounded-xl border border-dashed dark:border-gray-800">No public notices available at this time.</p>
+                                    <p className="text-orange-900/40 italic py-8 text-center bg-white rounded-xl border border-dashed border-orange-100">No public notices available at this time.</p>
                                 )}
                                 <p className="text-center">
-                                    <button onClick={onLoginClick} className="text-sm font-semibold text-orange-600 hover:text-orange-700 dark:text-orange-400">Read All Circulars &rarr;</button>
+                                    <button onClick={onLoginClick} className="text-sm font-semibold text-orange-600 hover:text-orange-700">Read All Circulars &rarr;</button>
                                 </p>
                             </div>
                         </div>
@@ -183,12 +183,12 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
             </section>
 
             {/* LEADERSHIP SECTION */}
-            <section id="leadership" className="py-24 px-6 lg:px-12 bg-white dark:bg-black relative z-20">
+            <section id="leadership" className="py-24 px-6 lg:px-12 bg-[#fcfaf7] relative z-20">
                 <div className="max-w-6xl mx-auto">
                     <div className="text-center mb-20">
-                        <h2 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-6 font-display uppercase tracking-tight">Executive Body of <span className="text-orange-600">IPREU</span></h2>
+                        <h2 className="text-3xl md:text-5xl font-bold text-orange-950 mb-6 font-display uppercase tracking-tight">Executive Body of <span className="text-orange-600">IPREU</span></h2>
                         <div className="w-32 h-2 bg-gradient-to-r from-orange-400 to-red-800 mx-auto rounded-full mb-8 opacity-80"></div>
-                        <p className="text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">Serving with dedication, integrity, and a commitment to member welfare and industrial harmony.</p>
+                        <p className="text-base md:text-lg text-orange-950/60 max-w-3xl mx-auto leading-relaxed font-medium">Serving with dedication, integrity, and a commitment to member welfare and industrial harmony.</p>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -233,29 +233,29 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
             </section>
 
             {/* JOINING PATHWAY */}
-            <section className="py-24 px-6 lg:px-12 bg-white dark:bg-black relative z-20">
+            <section className="py-24 px-6 lg:px-12 bg-[#fcfaf7] relative z-20">
                 <div className="max-w-6xl mx-auto text-center mb-20">
-                    <h2 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-8 font-display underline decoration-orange-500 decoration-4 underline-offset-12">How to Join IPREU</h2>
+                    <h2 className="text-3xl md:text-5xl font-bold text-orange-950 mb-8 font-display underline decoration-orange-500 decoration-4 underline-offset-12">How to Join IPREU</h2>
                 </div>
                 <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 relative">
-                    <div className="absolute top-1/2 left-0 w-full h-1 bg-gray-100 dark:bg-gray-800 hidden md:block -z-10"></div>
+                    <div className="absolute top-1/2 left-0 w-full h-1 bg-orange-100 hidden md:block -z-10"></div>
                     
-                    <div className="bg-white dark:bg-gray-950 p-8 rounded-2xl border dark:border-gray-800 text-center space-y-4 shadow-sm hover:shadow-xl transition-shadow">
+                    <div className="bg-white p-8 rounded-2xl border border-orange-100 text-center space-y-4 shadow-sm hover:shadow-xl hover:border-orange-300 transition-all">
                         <div className="w-12 h-12 bg-orange-600 text-white rounded-full flex items-center justify-center font-bold text-xl mx-auto shadow-lg shadow-orange-600/20">1</div>
-                        <h4 className="font-bold text-xl text-gray-900 dark:text-gray-100">Digital Registration</h4>
-                        <p className="text-base text-gray-500 dark:text-gray-400">Click Join and fill in your official employee details via our secure form.</p>
+                        <h4 className="font-bold text-xl text-orange-950 uppercase tracking-tight">Digital Registration</h4>
+                        <p className="text-base text-orange-900/50">Click Join and fill in your official employee details via our secure form.</p>
                     </div>
 
-                    <div className="bg-white dark:bg-gray-950 p-8 rounded-2xl border dark:border-gray-800 text-center space-y-4 shadow-sm hover:shadow-xl transition-shadow">
+                    <div className="bg-white p-8 rounded-2xl border border-orange-100 text-center space-y-4 shadow-sm hover:shadow-xl hover:border-orange-300 transition-all">
                         <div className="w-12 h-12 bg-orange-600 text-white rounded-full flex items-center justify-center font-bold text-xl mx-auto shadow-lg shadow-orange-600/20">2</div>
-                        <h4 className="font-bold text-xl text-gray-900 dark:text-gray-100">Admin Verification</h4>
-                        <p className="text-base text-gray-500 dark:text-gray-400">Your details will be reviewed by the Executive Body for union credentials.</p>
+                        <h4 className="font-bold text-xl text-orange-950 uppercase tracking-tight">Admin Verification</h4>
+                        <p className="text-base text-orange-900/50">Your details will be reviewed by the Executive Body for union credentials.</p>
                     </div>
 
-                    <div className="bg-white dark:bg-gray-950 p-8 rounded-2xl border dark:border-gray-800 text-center space-y-4 shadow-sm hover:shadow-xl transition-shadow">
+                    <div className="bg-white p-8 rounded-2xl border border-orange-100 text-center space-y-4 shadow-sm hover:shadow-xl hover:border-orange-300 transition-all">
                         <div className="w-12 h-12 bg-orange-600 text-white rounded-full flex items-center justify-center font-bold text-xl mx-auto shadow-lg shadow-orange-600/20">3</div>
-                        <h4 className="font-bold text-xl text-gray-900 dark:text-gray-100 uppercase tracking-tight">Full Access</h4>
-                        <p className="text-base text-gray-500 dark:text-gray-400">Receive your digital ID card and gain access to voting, circulars, and more.</p>
+                        <h4 className="font-bold text-xl text-orange-950 uppercase tracking-tight">Full Access</h4>
+                        <p className="text-base text-orange-900/50">Receive your digital ID card and gain access to voting, circulars, and more.</p>
                     </div>
                 </div>
                 <div className="mt-16 text-center">
@@ -264,41 +264,41 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
             </section>
 
             {/* FOOTER */}
-            <footer className="bg-gray-900 text-gray-300 py-16 px-6 border-t border-gray-800 relative z-20">
+            <footer className="bg-orange-950 text-orange-100 py-16 px-6 border-t border-orange-900 relative z-20">
                 <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-12">
                     <div className="md:col-span-2 space-y-4">
                         <h4 className="text-2xl font-display font-bold text-white tracking-tight">{UNION_CONTACT_INFO.englishName}</h4>
-                        <p className="text-lg text-orange-400 font-bold mb-4">{UNION_CONTACT_INFO.hindiName}</p>
-                        <p className="text-sm leading-relaxed max-w-md text-gray-400">
+                        <p className="text-lg text-orange-300 font-bold mb-4">{UNION_CONTACT_INFO.hindiName}</p>
+                        <p className="text-sm leading-relaxed max-w-md text-orange-100/60">
                              {UNION_CONTACT_INFO.address}
                         </p>
                         <div className="pt-4 space-y-2 text-sm">
-                            <p className="flex items-center gap-3"><span className="text-orange-500">📞</span> {UNION_CONTACT_INFO.phones.join(' / ')} (Ext: {UNION_CONTACT_INFO.intercom})</p>
-                            <p className="flex items-center gap-3"><span className="text-orange-500">✉️</span> <a href={`mailto:${UNION_CONTACT_INFO.email}`} className="hover:text-white transition-colors">{UNION_CONTACT_INFO.email}</a></p>
+                            <p className="flex items-center gap-3"><span className="text-orange-400">📞</span> {UNION_CONTACT_INFO.phones.join(' / ')} (Ext: {UNION_CONTACT_INFO.intercom})</p>
+                            <p className="flex items-center gap-3"><span className="text-orange-400">✉️</span> <a href={`mailto:${UNION_CONTACT_INFO.email}`} className="hover:text-orange-300 transition-colors">{UNION_CONTACT_INFO.email}</a></p>
                         </div>
                     </div>
                     <div>
-                        <h5 className="text-white font-bold mb-4 uppercase text-xs tracking-widest font-display">Compliance</h5>
-                        <ul className="space-y-3 text-sm text-gray-400">
+                        <h5 className="text-orange-300 font-bold mb-4 uppercase text-xs tracking-widest font-display">Compliance</h5>
+                        <ul className="space-y-3 text-sm text-orange-100/60">
                             <li>Affiliation: {UNION_CONTACT_INFO.affiliation}</li>
                             <li>Regd No: {UNION_CONTACT_INFO.regdNo}</li>
-                            <li><span className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-orange-500"></span> Network Status: Active</span></li>
+                            <li><span className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-orange-400"></span> Network Status: Active</span></li>
                         </ul>
                     </div>
                     <div>
-                         <h5 className="text-white font-bold mb-4 uppercase text-xs tracking-widest font-display">Navigation</h5>
-                        <ul className="space-y-2 text-sm">
-                            <li><button onClick={onLoginClick} className="hover:text-orange-500 transition-colors">Member Login</button></li>
-                            <li><a href="#leadership" className="hover:text-orange-500 transition-colors">Executive Body</a></li>
-                            <li><button onClick={onLoginClick} className="hover:text-orange-500 transition-colors">Grievance Portal</button></li>
+                         <h5 className="text-orange-300 font-bold mb-4 uppercase text-xs tracking-widest font-display">Navigation</h5>
+                        <ul className="space-y-2 text-sm text-orange-100/60">
+                            <li><button onClick={onLoginClick} className="hover:text-orange-300 transition-colors">Member Login</button></li>
+                            <li><a href="#leadership" className="hover:text-orange-300 transition-colors">Executive Body</a></li>
+                            <li><button onClick={() => onLoginClick('grievances')} className="hover:text-orange-300 transition-colors">Grievance Portal</button></li>
                         </ul>
                     </div>
                 </div>
-                <div className="max-w-6xl mx-auto mt-12 pt-8 border-t border-gray-800/50 flex flex-col items-center gap-6">
+                <div className="max-w-6xl mx-auto mt-12 pt-8 border-t border-orange-900/60 flex flex-col items-center gap-6">
                     <BrandingBadge />
-                    <div className="flex flex-col md:flex-row justify-between items-center w-full gap-4 text-[10px] uppercase tracking-widest text-gray-500 font-medium">
+                    <div className="flex flex-col md:flex-row justify-between items-center w-full gap-4 text-[10px] uppercase tracking-widest text-orange-100/40 font-medium">
                         <p>&copy; {new Date().getFullYear()} IPREU. All rights reserved. | Built for the Employees, by the Union.</p>
-                        <p className="text-orange-600 font-bold px-3 py-1 bg-orange-600/5 rounded-full border border-orange-600/20">Secure Private Network</p>
+                        <p className="text-orange-400 font-bold px-3 py-1 bg-orange-400/10 rounded-full border border-orange-400/20">Secure Private Network</p>
                     </div>
                 </div>
             </footer>

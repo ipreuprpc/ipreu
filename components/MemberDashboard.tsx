@@ -32,8 +32,8 @@ const SurveyCard: React.FC<{ survey: Survey; onSubmit: (surveyId: string, option
                         {survey.options.map(option => (
                             <label key={option.id} className={`flex items-center p-4 rounded-xl border-2 transition-all cursor-pointer ${
                                 selectedOption === option.id 
-                                ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20' 
-                                : 'border-gray-100 dark:border-gray-800 hover:border-emerald-200 dark:hover:border-emerald-900/30'
+                                ? 'border-orange-500 bg-orange-50' 
+                                : 'border-gray-100 hover:border-orange-200'
                             }`}>
                                 <input
                                     type="radio"
@@ -441,7 +441,7 @@ const MemberDashboard: React.FC<MemberDashboardProps> = ({ activeTab, setActiveT
                             <ClipboardListIcon className="w-7 h-7"/>
                         </div>
                         <div>
-                            <h2 className="text-3xl font-black text-orange-950 tracking-tight leading-none uppercase">Digital Referendums</h2>
+                            <h2 className="text-3xl font-black text-orange-950 tracking-tight leading-none uppercase">Public Survey / Suggestion</h2>
                             <p className="text-[10px] font-bold text-orange-900/40 uppercase tracking-widest mt-1.5">Your Voice in Union Governance</p>
                         </div>
                     </div>

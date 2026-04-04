@@ -74,6 +74,7 @@ function App() {
     const [grievances, setGrievances] = useState<Grievance[]>([]);
     const [users, setUsers] = useState<User[]>([]);
     const [activeTab, setActiveTab] = useState('dashboard');
+    const [requestedTab, setRequestedTab] = useState<string | null>(null);
 
     React.useLayoutEffect(() => {
         document.documentElement.classList.toggle('dark', isDarkMode);
@@ -314,7 +315,18 @@ function App() {
     const renderContent = () => {
         if (!currentUser) {
             if (showAuth) return <Auth onBack={() => setShowAuth(false)} />;
-            return <LandingPage onLoginClick={() => setShowAuth(true)} />;
+            return <LandingPage 
+                onLoginClick={(tab?: string) => { 
+                    if (tab) setRequestedTab(tab); 
+                    setShowAuth(true); 
+                }} 
+            />;
+        }
+
+        // Apply deep-link tab on first dashboard render
+        if (requestedTab) {
+            setActiveTab(requestedTab);
+            setRequestedTab(null);
         }
 
         switch (currentUser.role) {
