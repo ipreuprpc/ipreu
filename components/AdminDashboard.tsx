@@ -47,29 +47,60 @@ const PendingMemberCard: React.FC<{
     </div>
 );
 
-// ─── Survey Result Card ──────────────────────────────────────────────────────
 const SurveyResultCard: React.FC<{ survey: Survey }> = ({ survey }) => {
+    const { users } = useAppContext();
+    const [showVoters, setShowVoters] = useState(false);
     const allVotes = Object.values(survey.votes);
     const totalVotes = allVotes.length;
     const getCount = (optId: string) => allVotes.filter(v => v === optId).length;
 
+    const getVoterNamesForOption = (optId: string) => {
+        return Object.entries(survey.votes)
+            .filter(([_, votedOptId]) => votedOptId === optId)
+            .map(([userId, _]) => users.find(u => u.id === userId)?.employeeName || 'Unknown Member');
+    };
+
     return (
         <div className="bg-white p-6 rounded-lg shadow">
-            <h3 className="font-bold text-lg text-gray-800">{survey.question}</h3>
-            <p className="text-sm text-gray-500 mb-4">{totalVotes} total votes</p>
-            <div className="space-y-3">
+            <div className="flex justify-between items-start mb-6">
+                <div>
+                    <h3 className="font-bold text-lg text-gray-800">{survey.question}</h3>
+                    <p className="text-sm text-gray-500">{totalVotes} total votes recorded</p>
+                </div>
+                <button 
+                  onClick={() => setShowVoters(!showVoters)}
+                  className="text-xs font-bold text-orange-600 hover:text-orange-700 bg-orange-50 px-3 py-1.5 rounded-full border border-orange-100 transition-all flex items-center gap-1.5"
+                >
+                  <UserGroupIcon className="w-3.5 h-3.5" />
+                  {showVoters ? 'Hide Voter Names' : 'View Voter Names'}
+                </button>
+            </div>
+
+            <div className="space-y-6">
                 {survey.options.map(option => {
                     const count = getCount(option.id);
                     const pct = totalVotes > 0 ? (count / totalVotes) * 100 : 0;
+                    const voterNames = getVoterNamesForOption(option.id);
+                    
                     return (
                         <div key={option.id}>
-                            <div className="flex justify-between items-center text-sm mb-1">
-                                <span className="font-medium text-gray-700">{option.text}</span>
-                                <span className="text-gray-500">{count} votes ({pct.toFixed(1)}%)</span>
+                            <div className="flex justify-between items-center text-sm mb-1.5">
+                                <span className="font-semibold text-gray-700">{option.text}</span>
+                                <span className="text-gray-500 text-xs">{count} votes ({pct.toFixed(1)}%)</span>
                             </div>
-                            <div className="w-full bg-gray-200 rounded-full h-2.5">
-                                <div className="bg-orange-600 h-2.5 rounded-full" style={{ width: `${pct}%` }} />
+                            <div className="w-full bg-gray-100 rounded-full h-2.5">
+                                <div className="bg-gradient-to-r from-orange-500 to-orange-600 h-2.5 rounded-full shadow-sm" style={{ width: `${pct}%` }} />
                             </div>
+                            
+                            {showVoters && voterNames.length > 0 && (
+                                <div className="flex flex-wrap gap-1.5 mt-3 ml-1 animate-fade-in">
+                                    {voterNames.map((name, i) => (
+                                        <span key={i} className="text-[10px] bg-white text-gray-600 px-2.5 py-1 rounded-md border border-gray-200 shadow-sm font-medium">
+                                            {name}
+                                        </span>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     );
                 })}
