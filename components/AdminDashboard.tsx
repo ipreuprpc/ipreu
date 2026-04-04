@@ -13,15 +13,17 @@ import { UserCheckIcon } from './icons/UserCheckIcon';
 import { XMarkIcon } from './icons/XMarkIcon';
 
 // ─── Stat Card ───────────────────────────────────────────────────────────────
-const StatCard: React.FC<{ title: string; value: number; icon: React.ReactNode; color?: string }> = ({ title, value, icon, color = 'orange' }) => (
-    <div className="relative overflow-hidden bg-white dark:bg-gray-900 p-5 rounded-xl shadow-lg border border-gray-100 dark:border-gray-800 flex items-center space-x-4 transition-transform hover:-translate-y-1 group">
-        <div className={`absolute -right-4 -top-4 w-24 h-24 bg-${color}-50 dark:bg-${color}-900/10 rounded-full opacity-50 group-hover:scale-150 transition-transform duration-500`} />
-        <div className={`bg-${color}-100 dark:bg-${color}-900/30 p-3 rounded-full text-${color}-600 dark:text-${color}-400 shadow-inner relative z-10`}>
+const StatCard: React.FC<{ title: string; value: number; icon: React.ReactNode; color?: string }> = ({ title, value, icon, color = 'emerald' }) => (
+    <div className="relative overflow-hidden bg-white/5 backdrop-blur-xl p-6 rounded-[2rem] shadow-2xl border border-white/10 flex items-center space-x-5 transition-all hover:scale-[1.02] hover:border-emerald-500/30 group">
+        <div className={`absolute -right-6 -top-6 w-32 h-32 bg-${color}-500/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700`} />
+        <div className={`bg-${color}-500/20 p-4 rounded-2xl text-${color}-400 shadow-lg border border-${color}-500/20 relative z-10 animate-pulse-slow`}>
             {icon}
         </div>
         <div className="relative z-10">
-            <p className="text-xs text-gray-500 dark:text-gray-400 font-medium tracking-wide uppercase">{title}</p>
-            <p className="text-3xl font-display font-bold text-gray-800 dark:text-gray-100 tracking-tight">{value}</p>
+            <p className="text-[10px] text-emerald-400/60 font-black tracking-[0.2em] uppercase mb-1">{title}</p>
+            <p className="text-4xl font-black text-white tracking-tighter drop-shadow-md">
+                {value}
+            </p>
         </div>
     </div>
 );
@@ -32,17 +34,40 @@ const PendingMemberCard: React.FC<{
     onApprove: (id: string) => void;
     onReject: (id: string) => void;
 }> = ({ member, onApprove, onReject }) => (
-    <div className="bg-white p-4 rounded-lg shadow transition-shadow hover:shadow-md">
-        <h3 className="font-bold text-lg text-gray-800">{member.employeeName}</h3>
-        <p className="text-sm text-gray-500">Emp No: {member.employeeNumber}</p>
-        <div className="mt-3 text-sm text-gray-600 space-y-1">
-            <p><span className="font-semibold">DOB:</span> {member.dob}</p>
-            <p><span className="font-semibold">Location:</span> {member.nativePlace}, {member.state}</p>
-            <p><span className="font-semibold">Contact:</span> {member.mobileNumber}</p>
+    <div className="bg-white/5 backdrop-blur-md p-6 rounded-[2rem] shadow-2xl border-2 border-emerald-500/20 transition-all hover:border-emerald-500/50 relative overflow-hidden group">
+        <div className="absolute top-3 right-3">
+            <span className="flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+            </span>
         </div>
-        <div className="mt-4 flex space-x-2">
-            <button onClick={() => onApprove(member.id)} className="flex-1 bg-green-500 text-white px-3 py-1 rounded-md text-sm font-semibold hover:bg-green-600 transition-colors">Approve</button>
-            <button onClick={() => onReject(member.id)} className="flex-1 bg-red-500 text-white px-3 py-1 rounded-md text-sm font-semibold hover:bg-red-600 transition-colors">Reject</button>
+        <h3 className="font-black text-xl text-white uppercase tracking-tight mb-1">{member.employeeName}</h3>
+        <p className="text-[10px] font-black text-emerald-400/60 uppercase tracking-widest mb-4">Emp ID: {member.employeeNumber}</p>
+        
+        <div className="space-y-2.5 mb-6">
+            <div className="flex items-center gap-2 text-xs font-bold text-emerald-50">
+                <span className="text-[9px] uppercase tracking-widest opacity-40 w-16">Mobile:</span>
+                <span>{member.mobileNumber}</span>
+            </div>
+            <div className="flex items-center gap-2 text-xs font-bold text-emerald-50">
+                <span className="text-[9px] uppercase tracking-widest opacity-40 w-16">Native:</span>
+                <span>{member.nativePlace}</span>
+            </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
+            <button 
+                onClick={() => onApprove(member.id)} 
+                className="bg-emerald-600 text-white px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-500 transition-all shadow-lg shadow-emerald-900/40"
+            >
+                Approve
+            </button>
+            <button 
+                onClick={() => onReject(member.id)} 
+                className="bg-white/10 text-white px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-red-500/20 border border-white/10 transition-all"
+            >
+                Reject
+            </button>
         </div>
     </div>
 );
@@ -61,22 +86,22 @@ const SurveyResultCard: React.FC<{ survey: Survey }> = ({ survey }) => {
     };
 
     return (
-        <div className="bg-white p-6 rounded-lg shadow">
-            <div className="flex justify-between items-start mb-6">
+        <div className="bg-white/5 backdrop-blur-xl p-8 rounded-[2.5rem] shadow-2xl border border-white/10">
+            <div className="flex justify-between items-start mb-8">
                 <div>
-                    <h3 className="font-bold text-lg text-gray-800">{survey.question}</h3>
-                    <p className="text-sm text-gray-500">{totalVotes} total votes recorded</p>
+                    <h3 className="font-black text-2xl text-white uppercase tracking-tight leading-tight">{survey.question}</h3>
+                    <p className="text-[10px] font-black text-emerald-400 uppercase tracking-widest mt-2">{totalVotes} Verified Votes Recorded</p>
                 </div>
                 <button 
                   onClick={() => setShowVoters(!showVoters)}
-                  className="text-xs font-bold text-orange-600 hover:text-orange-700 bg-orange-50 px-3 py-1.5 rounded-full border border-orange-100 transition-all flex items-center gap-1.5"
+                  className="text-[9px] font-black text-orange-400 hover:text-orange-300 bg-orange-400/10 px-4 py-2 rounded-full border border-orange-400/20 transition-all flex items-center gap-2 uppercase tracking-widest shadow-lg"
                 >
                   <UserGroupIcon className="w-3.5 h-3.5" />
-                  {showVoters ? 'Hide Voter Names' : 'View Voter Names'}
+                  {showVoters ? 'Hide Voters' : 'Visualise Voters'}
                 </button>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-8">
                 {survey.options.map(option => {
                     const count = getCount(option.id);
                     const pct = totalVotes > 0 ? (count / totalVotes) * 100 : 0;
@@ -84,18 +109,18 @@ const SurveyResultCard: React.FC<{ survey: Survey }> = ({ survey }) => {
                     
                     return (
                         <div key={option.id}>
-                            <div className="flex justify-between items-center text-sm mb-1.5">
-                                <span className="font-semibold text-gray-700">{option.text}</span>
-                                <span className="text-gray-500 text-xs">{count} votes ({pct.toFixed(1)}%)</span>
+                            <div className="flex justify-between items-center text-[11px] font-black uppercase tracking-widest mb-2.5">
+                                <span className="text-emerald-50">{option.text}</span>
+                                <span className="text-orange-400">{count} Votes ({pct.toFixed(0)}%)</span>
                             </div>
-                            <div className="w-full bg-gray-100 rounded-full h-2.5">
-                                <div className="bg-gradient-to-r from-orange-500 to-orange-600 h-2.5 rounded-full shadow-sm" style={{ width: `${pct}%` }} />
+                            <div className="w-full bg-white/5 rounded-full h-3.5 shadow-inner p-0.5">
+                                <div className="bg-gradient-to-r from-emerald-600 to-emerald-400 h-2.5 rounded-full shadow-[0_0_15px_rgba(52,211,153,0.3)] transition-all duration-1000" style={{ width: `${pct}%` }} />
                             </div>
                             
                             {showVoters && voterNames.length > 0 && (
-                                <div className="flex flex-wrap gap-1.5 mt-3 ml-1 animate-fade-in">
+                                <div className="flex flex-wrap gap-2 mt-4 ml-1 animate-fade-in">
                                     {voterNames.map((name, i) => (
-                                        <span key={i} className="text-[10px] bg-white text-gray-600 px-2.5 py-1 rounded-md border border-gray-200 shadow-sm font-medium">
+                                        <span key={i} className="text-[9px] bg-white/5 text-emerald-200/60 px-3 py-1.5 rounded-xl border border-white/5 font-black uppercase tracking-tighter">
                                             {name}
                                         </span>
                                     ))}
@@ -139,24 +164,32 @@ const SurveyCreator: React.FC = () => {
     };
 
     return (
-        <div className="bg-white p-6 rounded-lg shadow">
-            <h3 className="text-xl font-bold text-gray-800 mb-4">Create New Survey</h3>
-            <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="bg-white/5 backdrop-blur-xl p-8 rounded-[2.5rem] shadow-2xl border border-white/10">
+            <h3 className="text-2xl font-black text-white mb-6 uppercase tracking-tight">Post New Strategic Survey</h3>
+            <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                    <label htmlFor="survey-question" className="block text-sm font-medium text-gray-700">Question</label>
-                    <textarea id="survey-question" value={question} onChange={e => setQuestion(e.target.value)} required rows={2} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-gray-900 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm" />
+                    <label htmlFor="survey-question" className="block text-[10px] font-black text-emerald-400/60 uppercase tracking-[0.2em] mb-2">Primary Question</label>
+                    <textarea id="survey-question" value={question} onChange={e => setQuestion(e.target.value)} required rows={2} className="mt-1 block w-full px-4 py-3 bg-white/5 border-2 border-white/10 rounded-2xl shadow-sm text-white focus:outline-none focus:border-emerald-500 transition-all font-bold" placeholder="What is the union's stance on..." />
                 </div>
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Options</label>
-                    {options.map((option, index) => (
-                        <div key={index} className="flex items-center gap-2 mb-2">
-                            <input type="text" value={option} onChange={e => handleOptionChange(index, e.target.value)} required className="flex-grow px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-gray-900 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm" />
-                            <button type="button" onClick={() => removeOption(index)} disabled={options.length <= 2} className="px-2 py-1 text-red-600 hover:text-red-800 disabled:opacity-30 text-2xl font-bold">&times;</button>
-                        </div>
-                    ))}
-                    <button type="button" onClick={addOption} className="text-sm font-medium text-orange-600 hover:text-orange-500 mt-2">+ Add Option</button>
+                    <label className="block text-[10px] font-black text-emerald-400/60 uppercase tracking-[0.2em] mb-3">Response Options</label>
+                    <div className="space-y-3">
+                        {options.map((option, index) => (
+                            <div key={index} className="flex items-center gap-3">
+                                <input type="text" value={option} onChange={e => handleOptionChange(index, e.target.value)} required className="flex-grow px-4 py-3 bg-white/5 border-2 border-white/10 rounded-2xl shadow-sm text-white focus:outline-none focus:border-emerald-500 transition-all font-bold" placeholder={`Option ${index + 1}`} />
+                                <button type="button" onClick={() => removeOption(index)} disabled={options.length <= 2} className="p-3 text-red-400 hover:text-red-300 disabled:opacity-20 transition-colors">
+                                    <TrashIcon className="w-5 h-5" />
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                    <button type="button" onClick={addOption} className="text-[10px] font-black text-emerald-400 hover:text-emerald-300 mt-4 uppercase tracking-[0.2em] flex items-center gap-1.5 transition-all">
+                        <span className="text-lg">+</span> Add Response Alternative
+                    </button>
                 </div>
-                <button type="submit" className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700">Publish Survey</button>
+                <button type="submit" className="w-full py-4 px-6 border-none rounded-2xl shadow-xl text-xs font-black text-white bg-emerald-600 hover:bg-emerald-500 transition-all uppercase tracking-[0.2em]">
+                    Publish Strategic Referendum
+                </button>
             </form>
         </div>
     );
@@ -849,32 +882,37 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ activeTab, setActiveTab
     ];
 
     return (
-        <div className="space-y-6">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                {/* Tabs */}
-                <div className="bg-white rounded-lg shadow-sm p-1.5 flex gap-1 flex-wrap border border-gray-100">
-                {tabs.map(tab => (
-                    <button
-                        key={tab.id}
-                        onClick={() => setActiveTab(tab.id)}
-                        className={`flex-1 min-w-[110px] flex items-center justify-center gap-2 py-2 px-3 rounded-md text-sm font-medium transition-colors ${
-                            activeTab === tab.id
-                                ? 'bg-orange-600 text-white shadow'
-                                : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
-                        }`}
-                    >
-                        {tab.icon}
-                        {tab.label}
-                    </button>
-                ))}
+        <div className="min-h-screen bg-gradient-to-br from-[#064e3b] via-[#065f46] to-[#01241b] p-6 lg:p-10 -mx-4 lg:-mx-8 -mt-8 text-white">
+            <div className="max-w-7xl mx-auto space-y-10">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
+                    {/* Navigation Tabs */}
+                    <div className="bg-white/5 backdrop-blur-xl rounded-[2rem] p-1.5 flex gap-1 flex-wrap border border-white/10 shadow-2xl">
+                    {tabs.map(tab => (
+                        <button
+                            key={tab.id}
+                            onClick={() => setActiveTab(tab.id)}
+                            className={`flex-1 min-w-[120px] flex items-center justify-center gap-2 py-3 px-6 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${
+                                activeTab === tab.id
+                                    ? 'bg-orange-600 text-white shadow-lg shadow-orange-900/40 scale-[1.02]'
+                                    : 'text-emerald-100/60 hover:text-white hover:bg-white/5'
+                            }`}
+                        >
+                            {tab.icon}
+                            {tab.label}
+                        </button>
+                    ))}
+                    </div>
+                    
+                    {/* Live Clock / Status */}
+                    <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest bg-black/20 backdrop-blur-md px-6 py-3 rounded-full border border-white/5 shadow-inner">
+                        <div className="flex items-center gap-2">
+                            <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+                            <span className="text-emerald-400">Live Control Hub</span>
+                        </div>
+                        <div className="w-[1px] h-4 bg-white/10 mx-2"></div>
+                        <span className="text-white/60">{currentTime.toLocaleTimeString()}</span>
+                    </div>
                 </div>
-                
-                {/* Live Clock */}
-                <div className="flex items-center gap-2 text-sm text-gray-500 bg-white px-4 py-2 rounded-lg shadow-sm border border-gray-100">
-                    <ClockIcon className="w-4 h-4 text-orange-500" />
-                    <span>Last Refreshed: <span className="font-semibold text-gray-700">{currentTime.toLocaleTimeString()}</span></span>
-                </div>
-            </div>
 
             {/* Overview */}
             {activeTab === 'overview' && (
@@ -926,38 +964,38 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ activeTab, setActiveTab
                     </div>
 
                     {filteredMembers.length > 0 ? (
-                        <div className="bg-white rounded-lg shadow overflow-hidden">
-                            <table className="min-w-full divide-y divide-gray-200 text-sm">
-                                <thead className="bg-gray-50">
+                        <div className="bg-white/5 backdrop-blur-xl rounded-[2.5rem] shadow-2xl border border-white/10 overflow-hidden">
+                            <table className="min-w-full divide-y divide-white/5 text-sm">
+                                <thead className="bg-black/20">
                                     <tr>
-                                        <th className="px-4 py-3 text-left font-semibold text-gray-600">Name</th>
-                                        <th className="px-4 py-3 text-left font-semibold text-gray-600 hidden md:table-cell">Emp No</th>
-                                        <th className="px-4 py-3 text-left font-semibold text-gray-600 hidden lg:table-cell">Email</th>
-                                        <th className="px-4 py-3 text-left font-semibold text-gray-600">Role</th>
-                                        <th className="px-4 py-3 text-center font-semibold text-gray-600">Details</th>
+                                        <th className="px-8 py-5 text-left text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em]">Full Name / Identity</th>
+                                        <th className="px-8 py-5 text-left text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em] hidden md:table-cell">Emp No</th>
+                                        <th className="px-8 py-5 text-left text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em] hidden lg:table-cell">Email Address</th>
+                                        <th className="px-8 py-5 text-left text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em]">Authority</th>
+                                        <th className="px-8 py-5 text-center text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em]">Profile</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-gray-100">
+                                <tbody className="divide-y divide-white/5 bg-transparent">
                                     {filteredMembers.map(m => (
-                                        <tr key={m.id} className="hover:bg-gray-50">
-                                            <td className="px-4 py-3 font-medium text-gray-800">{m.employeeName}</td>
-                                            <td className="px-4 py-3 text-gray-500 hidden md:table-cell">{m.employeeNumber}</td>
-                                            <td className="px-4 py-3 text-gray-500 hidden lg:table-cell">{m.email}</td>
-                                            <td className="px-4 py-3">
-                                                <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
+                                        <tr key={m.id} className="hover:bg-white/5 transition-colors group">
+                                            <td className="px-8 py-5 font-bold text-white group-hover:text-emerald-400 transition-colors">{m.employeeName}</td>
+                                            <td className="px-8 py-5 text-white/60 hidden md:table-cell font-mono">{m.employeeNumber}</td>
+                                            <td className="px-8 py-5 text-white/60 hidden lg:table-cell">{m.email}</td>
+                                            <td className="px-8 py-5">
+                                                <span className={`px-4 py-1 rounded-full text-[9px] font-black uppercase tracking-widest shadow-sm ${
                                                     m.role === UserRole.ADMIN
-                                                        ? 'bg-orange-100 text-orange-700'
-                                                        : 'bg-green-100 text-green-700'
+                                                        ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30'
+                                                        : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
                                                 }`}>
                                                     {m.role}
                                                 </span>
                                             </td>
-                                            <td className="px-4 py-3 text-center">
+                                            <td className="px-8 py-5 text-center">
                                                 <button
                                                     onClick={() => setSelectedMember(m)}
-                                                    className="text-orange-600 hover:text-orange-800 text-xs font-medium underline"
+                                                    className="text-[10px] font-black text-white/40 hover:text-white uppercase tracking-widest transition-all underline underline-offset-4"
                                                 >
-                                                    View
+                                                    View File
                                                 </button>
                                             </td>
                                         </tr>
@@ -1008,7 +1046,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ activeTab, setActiveTab
                 <MemberDetailsModal member={selectedMember} onClose={() => setSelectedMember(null)} />
             )}
         </div>
-    );
+    </div>
+);
 };
 
 export default AdminDashboard;

@@ -259,7 +259,8 @@ function App() {
         submitVote: async (surveyId: string, optionId: string) => {
             if (!currentUser) return;
             const survey = surveys.find(s => s.id === surveyId);
-            if (!survey || survey.votes[currentUser.id]) return;
+            if (!survey) return;
+            // Support re-voting by overwriting the specific user's choice in the votes map
             const newVotes = { ...survey.votes, [currentUser.id]: optionId };
             await api.updateSurvey(surveyId, { votes: newVotes });
             setSurveys(prev => prev.map(s => {

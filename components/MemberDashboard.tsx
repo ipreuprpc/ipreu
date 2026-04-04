@@ -63,7 +63,7 @@ const SurveyCard: React.FC<{ survey: Survey; onSubmit: (surveyId: string, option
 };
 
 // Helper: Voted Survey Result Card
-const VotedSurveyCard: React.FC<{ survey: Survey; userVoteOptionId: string; }> = ({ survey, userVoteOptionId }) => {
+const VotedSurveyCard: React.FC<{ survey: Survey; userVoteOptionId: string; onReVote?: (id: string) => void; }> = ({ survey, userVoteOptionId, onReVote }) => {
     const allVotes = Object.values(survey.votes);
     const totalVotes = allVotes.length;
     
@@ -74,12 +74,23 @@ const VotedSurveyCard: React.FC<{ survey: Survey; userVoteOptionId: string; }> =
     };
 
     return (
-        <div className="bg-white dark:bg-gray-950 p-6 rounded-2xl shadow-sm border-l-8 border-emerald-500 border border-gray-100 dark:border-gray-900">
+        <div className="bg-white dark:bg-gray-950 p-6 rounded-2xl shadow-sm border-l-8 border-emerald-500 border border-gray-100 dark:border-gray-900 group">
             <h3 className="font-black text-gray-900 dark:text-gray-100 text-lg mb-2">{survey.question}</h3>
              {userVotedOption && (
-                 <div className="inline-flex items-center gap-2 text-[10px] font-black text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-3 py-1 rounded-full uppercase tracking-widest mb-6">
-                    <CheckCircleIcon className="w-3 h-3" />
-                    Your choice: {userVotedOption.text}
+                 <div className="flex flex-wrap justify-between items-center gap-2 mb-6">
+                    <div className="inline-flex items-center gap-2 text-[10px] font-black text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-3 py-1 rounded-full uppercase tracking-widest">
+                        <CheckCircleIcon className="w-3 h-3" />
+                        Your choice: {userVotedOption.text}
+                    </div>
+                    {onReVote && (
+                        <button 
+                            onClick={() => onReVote(survey.id)}
+                            className="text-[10px] font-black text-orange-600 hover:text-orange-700 uppercase tracking-widest transition-colors flex items-center gap-1.5"
+                        >
+                            <span className="w-2 h-2 bg-orange-400 rounded-full animate-pulse"></span>
+                            Change My Choice
+                        </button>
+                    )}
                 </div>
             )}
             <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">{totalVotes} verified votes</p>
@@ -174,12 +185,25 @@ interface MemberDashboardProps {
 
 const MemberDashboard: React.FC<MemberDashboardProps> = ({ activeTab, setActiveTab }) => {
     const { surveys, currentUser, submitVote, announcements, calendarEvents, grievances, submitGrievance } = useAppContext();
-
+    const [reVotingIds, setReVotingIds] = useState<Set<string>>(new Set());
 
     if (!currentUser) return null;
 
-    const availableSurveys = surveys.filter(s => !s.votes[currentUser.id]);
-    const votedSurveys = surveys.filter(s => !!s.votes[currentUser.id]);
+    const availableSurveys = surveys.filter(s => !s.votes[currentUser.id] || reVotingIds.has(s.id));
+    const votedSurveys = surveys.filter(s => !!s.votes[currentUser.id] && !reVotingIds.has(s.id));
+
+    const handleReVote = (id: string) => {
+        setReVotingIds(prev => new Set(prev).add(id));
+    };
+
+    const handleVoteSubmit = async (surveyId: string, optionId: string) => {
+        await submitVote(surveyId, optionId);
+        setReVotingIds(prev => {
+            const next = new Set(prev);
+            next.delete(surveyId);
+            return next;
+        });
+    };
 
     const currentHour = new Date().getHours();
     const greeting = currentHour < 12 ? 'Good morning' : currentHour < 18 ? 'Good afternoon' : 'Good evening';
@@ -424,7 +448,7 @@ const MemberDashboard: React.FC<MemberDashboardProps> = ({ activeTab, setActiveT
                     {availableSurveys.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             {availableSurveys.map(survey => (
-                                <SurveyCard key={survey.id} survey={survey} onSubmit={submitVote} />
+                                <SurveyCard key={survey.id} survey={survey} onSubmit={handleVoteSubmit} />
                             ))}
                         </div>
                     ) : (
@@ -447,7 +471,12 @@ const MemberDashboard: React.FC<MemberDashboardProps> = ({ activeTab, setActiveT
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {votedSurveys.map(survey => (
-                            <VotedSurveyCard key={survey.id} survey={survey} userVoteOptionId={survey.votes[currentUser.id]} />
+                            <VotedSurveyCard 
+                                key={survey.id} 
+                                survey={survey} 
+                                userVoteOptionId={survey.votes[currentUser.id]} 
+                                onReVote={handleReVote}
+                            />
                             ))}
                         </div>
                     </div>
