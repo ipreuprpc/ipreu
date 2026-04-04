@@ -129,6 +129,14 @@ export const api = {
     await deleteDoc(doc(db, 'users', id));
     return true;
   },
+  approveUser: async (id: string, memberNo: string) => {
+    const userRef = doc(db, 'users', id);
+    await updateDoc(userRef, { 
+      role: 'MEMBER',
+      memberNo: memberNo
+    });
+    return true;
+  },
   getSurveys: async () => {
     const q = query(collection(db, 'surveys'));
     const snapshot = await getDocs(q);

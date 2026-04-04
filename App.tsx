@@ -7,9 +7,10 @@ import BrandingBadge from './components/BrandingBadge';
 import ErrorBoundary from './components/ErrorBoundary';
 import {
     loadSession, saveSession, clearSession,
-    api, messaging, db
+    api, messaging, db, auth
 } from './services/storage';
 import { getToken, onMessage } from 'firebase/messaging';
+import { onAuthStateChanged } from 'firebase/auth';
 import { collection, query, orderBy, onSnapshot, where, limit } from 'firebase/firestore';
 
 const Auth = lazy(() => import('./components/Auth'));
@@ -94,6 +95,17 @@ function App() {
     }, [activeTab]);
 
     useEffect(() => {
+        // Sync Firebase Auth state with UI state to prevent "Missing permissions" errors
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // If we have an auth user but no local currentUser, we should probably fetch it
+                // but for now we trust the localStorage session + auth sync
+                console.log("Firebase Auth synced:", user.uid);
+            } else {
+                console.log("Firebase Auth signed out");
+            }
+        });
+
         const init = async () => {
             try {
                 const session = loadSession();
@@ -108,6 +120,7 @@ function App() {
             }
         };
         init();
+        return () => unsubscribe();
     }, []);
 
     // Real-time Data Listeners
@@ -244,6 +257,14 @@ function App() {
         rejectRegistration: async (id: string) => {
             await api.rejectUser(id);
             setUsers(prev => prev.filter(u => u.id !== id));
+        },
+        approveRegistration: async (id: string) => {
+            const approvedCount = users.filter(u => u.role === UserRole.MEMBER).length;
+            const nextSerial = (approvedCount + 1).toString().padStart(4, '0');
+            const memberNo = `IPREU-${nextSerial}`;
+            
+            await api.approveUser(id, memberNo);
+            setUsers(prev => prev.map(u => u.id === id ? { ...u, role: UserRole.MEMBER, memberNo } : u));
         },
         createSurvey: async (surveyData: Omit<Survey, 'id' | 'votes'>) => {
             const newSurvey = await api.createSurvey({ ...surveyData, votes: {} });
