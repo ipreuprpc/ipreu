@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { toPng } from 'html-to-image';
+import { toBlob } from 'html-to-image';
 import { User, UserRole } from '../types';
 
 interface MembershipCardProps {
@@ -19,16 +19,23 @@ const MembershipCard: React.FC<MembershipCardProps> = ({ user, logoUrl }) => {
         if (!cardRef.current) return;
         setIsDownloading(true);
         try {
-            // Optimization for high-quality PNG
-            const dataUrl = await toPng(cardRef.current, { 
+            // Use toBlob for more reliable large image saves across all devices
+            const blob = await toBlob(cardRef.current, { 
                 cacheBust: true, 
                 pixelRatio: 2, 
                 backgroundColor: 'transparent'
             });
-            const link = document.createElement('a');
-            link.download = `IPREU-ID-${user.id.substring(0, 6).toUpperCase()}.png`;
-            link.href = dataUrl;
-            link.click();
+            
+            if (blob) {
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.download = `IPREU-ID-${user.id.substring(0, 8).toUpperCase()}.png`;
+                link.href = url;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(url);
+            }
         } catch (err) {
             console.error('Failed to download card:', err);
             alert('Failed to generate image. Please try again or take a screenshot.');
