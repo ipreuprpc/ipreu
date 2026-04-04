@@ -26,12 +26,12 @@ const FeatureCard: React.FC<{ icon: React.ReactNode; title: string; description:
 const LeadershipCard: React.FC<{ name: string; post: string }> = ({ name, post }) => (
     <div className="p-5 rounded-2xl border transition-all duration-300 bg-white dark:bg-gray-950 border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-xl hover:border-orange-200 dark:hover:border-orange-900/50 group">
         <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-full flex items-center justify-center text-lg font-black bg-gradient-to-br from-emerald-100 to-emerald-200 dark:from-emerald-900/60 dark:to-emerald-900/40 text-emerald-700 dark:text-emerald-400 group-hover:scale-110 shadow-sm border border-emerald-100/50 dark:border-emerald-800/30 transition-transform duration-300">
+            <div className="w-14 h-14 rounded-full flex items-center justify-center text-lg font-black bg-gradient-to-br from-orange-100 to-orange-200 text-orange-700 group-hover:scale-110 shadow-sm border border-orange-100 transition-transform duration-300">
                 {name.split(' ').map(n => n[0]).join('').substring(0, 2)}
             </div>
             <div>
-                <p className="font-black text-xl text-emerald-900 dark:text-emerald-400 tracking-tight leading-tight mb-0.5 group-hover:text-emerald-700 transition-colors">{name}</p>
-                <p className="text-[10px] uppercase tracking-widest text-gray-500 dark:text-gray-400 font-bold">{post}</p>
+                <p className="font-black text-xl text-orange-950 tracking-tight leading-tight mb-0.5 group-hover:text-orange-600 transition-colors uppercase">{name}</p>
+                <p className="text-[10px] uppercase tracking-widest text-orange-800/40 font-bold">{post}</p>
             </div>
         </div>
     </div>
@@ -67,8 +67,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
                     <div className="inline-flex flex-col items-center gap-6">
                         <div className="px-5 py-2 rounded-full bg-white/5 backdrop-blur-xl border border-white/10 text-xs font-bold text-orange-200 shadow-2xl flex items-center gap-2">
                             <span className="flex h-2 w-2 relative">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-orange-500"></span>
                             </span>
                             SECURE CENTRALIZED MEMBER HUB
                         </div>
@@ -253,8 +253,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
                     </div>
 
                     <div className="bg-white dark:bg-gray-950 p-8 rounded-2xl border dark:border-gray-800 text-center space-y-4 shadow-sm hover:shadow-xl transition-shadow">
-                        <div className="w-12 h-12 bg-green-500 text-white rounded-full flex items-center justify-center font-bold text-xl mx-auto shadow-lg shadow-green-500/20">3</div>
-                        <h4 className="font-bold text-xl text-gray-900 dark:text-gray-100">Full Access</h4>
+                        <div className="w-12 h-12 bg-orange-600 text-white rounded-full flex items-center justify-center font-bold text-xl mx-auto shadow-lg shadow-orange-600/20">3</div>
+                        <h4 className="font-bold text-xl text-gray-900 dark:text-gray-100 uppercase tracking-tight">Full Access</h4>
                         <p className="text-base text-gray-500 dark:text-gray-400">Receive your digital ID card and gain access to voting, circulars, and more.</p>
                     </div>
                 </div>
@@ -282,7 +282,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
                         <ul className="space-y-3 text-sm text-gray-400">
                             <li>Affiliation: {UNION_CONTACT_INFO.affiliation}</li>
                             <li>Regd No: {UNION_CONTACT_INFO.regdNo}</li>
-                            <li><span className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-green-500"></span> Server Status: Stable</span></li>
+                            <li><span className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-orange-500"></span> Network Status: Active</span></li>
                         </ul>
                     </div>
                     <div>

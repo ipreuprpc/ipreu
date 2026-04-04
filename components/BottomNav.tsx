@@ -23,7 +23,7 @@ const BottomNav: React.FC<BottomNavProps> = ({ activeTab, setActiveTab, role }) 
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white/80 dark:bg-gray-950/80 backdrop-blur-lg border-t border-gray-200 dark:border-gray-800 px-4 py-2 flex justify-around items-center z-50 lg:hidden safe-area-bottom">
+    <nav className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-xl border-t border-orange-100 px-4 py-2 flex justify-around items-center z-50 lg:hidden safe-area-bottom shadow-[0_-10px_30px_rgba(249,115,22,0.1)]">
       {tabs.map((tab) => {
         const Icon = tab.icon;
         const isActive = activeTab === tab.id;
@@ -34,15 +34,15 @@ const BottomNav: React.FC<BottomNavProps> = ({ activeTab, setActiveTab, role }) 
               setActiveTab(tab.id);
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
-            className={`flex flex-col items-center gap-1 p-2 rounded-xl transition-all duration-300 ${
+            className={`flex flex-col items-center gap-1.5 p-2 rounded-2xl transition-all duration-300 ${
               isActive 
-                ? 'text-orange-600 dark:text-orange-500 scale-110' 
-                : 'text-gray-400 dark:text-gray-600 hover:text-gray-600'
+                ? 'text-orange-600 scale-110' 
+                : 'text-orange-950/20 hover:text-orange-600'
             }`}
             aria-label={tab.label}
           >
             <Icon className={`w-6 h-6 ${isActive ? 'fill-current' : 'stroke-current'}`} />
-            <span className={`text-[10px] font-bold uppercase tracking-widest ${isActive ? 'opacity-100' : 'opacity-60'}`}>
+            <span className={`text-[9px] font-black uppercase tracking-widest ${isActive ? 'opacity-100' : 'opacity-40'}`}>
               {tab.label}
             </span>
           </button>

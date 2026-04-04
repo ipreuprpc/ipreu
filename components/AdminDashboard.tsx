@@ -13,15 +13,15 @@ import { UserCheckIcon } from './icons/UserCheckIcon';
 import { XMarkIcon } from './icons/XMarkIcon';
 
 // ─── Stat Card ───────────────────────────────────────────────────────────────
-const StatCard: React.FC<{ title: string; value: number; icon: React.ReactNode; color?: string }> = ({ title, value, icon, color = 'emerald' }) => (
-    <div className="relative overflow-hidden bg-white/5 backdrop-blur-xl p-6 rounded-[2rem] shadow-2xl border border-white/10 flex items-center space-x-5 transition-all hover:scale-[1.02] hover:border-emerald-500/30 group">
-        <div className={`absolute -right-6 -top-6 w-32 h-32 bg-${color}-500/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700`} />
-        <div className={`bg-${color}-500/20 p-4 rounded-2xl text-${color}-400 shadow-lg border border-${color}-500/20 relative z-10 animate-pulse-slow`}>
+const StatCard: React.FC<{ title: string; value: number; icon: React.ReactNode; color?: string }> = ({ title, value, icon, color = 'orange' }) => (
+    <div className="relative overflow-hidden bg-white p-6 rounded-[2rem] shadow-xl border border-orange-100 flex items-center space-x-5 transition-all hover:scale-[1.02] hover:border-orange-500/30 group">
+        <div className={`absolute -right-6 -top-6 w-32 h-32 bg-${color}-500/5 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700`} />
+        <div className={`bg-${color}-100 p-4 rounded-2xl text-${color}-600 shadow-sm border border-${color}-200 relative z-10`}>
             {icon}
         </div>
         <div className="relative z-10">
-            <p className="text-[10px] text-emerald-400/60 font-black tracking-[0.2em] uppercase mb-1">{title}</p>
-            <p className="text-4xl font-black text-white tracking-tighter drop-shadow-md">
+            <p className="text-[10px] text-orange-900/40 font-black tracking-[0.2em] uppercase mb-1">{title}</p>
+            <p className="text-4xl font-black text-orange-950 tracking-tighter drop-shadow-sm">
                 {value}
             </p>
         </div>
@@ -34,22 +34,22 @@ const PendingMemberCard: React.FC<{
     onApprove: (id: string) => void;
     onReject: (id: string) => void;
 }> = ({ member, onApprove, onReject }) => (
-    <div className="bg-white/5 backdrop-blur-md p-6 rounded-[2rem] shadow-2xl border-2 border-emerald-500/20 transition-all hover:border-emerald-500/50 relative overflow-hidden group">
+    <div className="bg-white p-6 rounded-[2rem] shadow-xl border-2 border-orange-100 transition-all hover:border-orange-300 relative overflow-hidden group">
         <div className="absolute top-3 right-3">
             <span className="flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-orange-500"></span>
             </span>
         </div>
-        <h3 className="font-black text-xl text-white uppercase tracking-tight mb-1">{member.employeeName}</h3>
-        <p className="text-[10px] font-black text-emerald-400/60 uppercase tracking-widest mb-4">Emp ID: {member.employeeNumber}</p>
+        <h3 className="font-black text-xl text-orange-950 uppercase tracking-tight mb-1">{member.employeeName}</h3>
+        <p className="text-[10px] font-black text-orange-600 uppercase tracking-widest mb-4">Emp ID: {member.employeeNumber}</p>
         
         <div className="space-y-2.5 mb-6">
-            <div className="flex items-center gap-2 text-xs font-bold text-emerald-50">
+            <div className="flex items-center gap-2 text-xs font-bold text-orange-900">
                 <span className="text-[9px] uppercase tracking-widest opacity-40 w-16">Mobile:</span>
                 <span>{member.mobileNumber}</span>
             </div>
-            <div className="flex items-center gap-2 text-xs font-bold text-emerald-50">
+            <div className="flex items-center gap-2 text-xs font-bold text-orange-900">
                 <span className="text-[9px] uppercase tracking-widest opacity-40 w-16">Native:</span>
                 <span>{member.nativePlace}</span>
             </div>
@@ -58,13 +58,13 @@ const PendingMemberCard: React.FC<{
         <div className="grid grid-cols-2 gap-3">
             <button 
                 onClick={() => onApprove(member.id)} 
-                className="bg-emerald-600 text-white px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-500 transition-all shadow-lg shadow-emerald-900/40"
+                className="bg-orange-600 text-white px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-orange-700 transition-all shadow-lg shadow-orange-200"
             >
                 Approve
             </button>
             <button 
                 onClick={() => onReject(member.id)} 
-                className="bg-white/10 text-white px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-red-500/20 border border-white/10 transition-all"
+                className="bg-orange-50 text-orange-700 px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-red-50 transition-all border border-orange-200"
             >
                 Reject
             </button>
@@ -86,15 +86,15 @@ const SurveyResultCard: React.FC<{ survey: Survey }> = ({ survey }) => {
     };
 
     return (
-        <div className="bg-white/5 backdrop-blur-xl p-8 rounded-[2.5rem] shadow-2xl border border-white/10">
+        <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-orange-100">
             <div className="flex justify-between items-start mb-8">
                 <div>
-                    <h3 className="font-black text-2xl text-white uppercase tracking-tight leading-tight">{survey.question}</h3>
-                    <p className="text-[10px] font-black text-emerald-400 uppercase tracking-widest mt-2">{totalVotes} Verified Votes Recorded</p>
+                    <h3 className="font-black text-2xl text-orange-950 uppercase tracking-tight leading-tight">{survey.question}</h3>
+                    <p className="text-[10px] font-black text-orange-600 uppercase tracking-widest mt-2">{totalVotes} Verified Votes Recorded</p>
                 </div>
                 <button 
                   onClick={() => setShowVoters(!showVoters)}
-                  className="text-[9px] font-black text-orange-400 hover:text-orange-300 bg-orange-400/10 px-4 py-2 rounded-full border border-orange-400/20 transition-all flex items-center gap-2 uppercase tracking-widest shadow-lg"
+                  className="text-[9px] font-black text-orange-700 hover:text-orange-900 bg-orange-100 px-4 py-2 rounded-full border border-orange-200 transition-all flex items-center gap-2 uppercase tracking-widest shadow-sm"
                 >
                   <UserGroupIcon className="w-3.5 h-3.5" />
                   {showVoters ? 'Hide Voters' : 'Visualise Voters'}
@@ -110,17 +110,17 @@ const SurveyResultCard: React.FC<{ survey: Survey }> = ({ survey }) => {
                     return (
                         <div key={option.id}>
                             <div className="flex justify-between items-center text-[11px] font-black uppercase tracking-widest mb-2.5">
-                                <span className="text-emerald-50">{option.text}</span>
-                                <span className="text-orange-400">{count} Votes ({pct.toFixed(0)}%)</span>
+                                <span className="text-orange-900">{option.text}</span>
+                                <span className="text-orange-600">{count} Votes ({pct.toFixed(0)}%)</span>
                             </div>
-                            <div className="w-full bg-white/5 rounded-full h-3.5 shadow-inner p-0.5">
-                                <div className="bg-gradient-to-r from-emerald-600 to-emerald-400 h-2.5 rounded-full shadow-[0_0_15px_rgba(52,211,153,0.3)] transition-all duration-1000" style={{ width: `${pct}%` }} />
+                            <div className="w-full bg-orange-50 rounded-full h-3.5 shadow-inner p-0.5">
+                                <div className="bg-gradient-to-r from-orange-600 to-orange-400 h-2.5 rounded-full shadow-[0_0_15px_rgba(249,115,22,0.2)] transition-all duration-1000" style={{ width: `${pct}%` }} />
                             </div>
                             
                             {showVoters && voterNames.length > 0 && (
                                 <div className="flex flex-wrap gap-2 mt-4 ml-1 animate-fade-in">
                                     {voterNames.map((name, i) => (
-                                        <span key={i} className="text-[9px] bg-white/5 text-emerald-200/60 px-3 py-1.5 rounded-xl border border-white/5 font-black uppercase tracking-tighter">
+                                        <span key={i} className="text-[9px] bg-orange-50 text-orange-800/60 px-3 py-1.5 rounded-xl border border-orange-100 font-black uppercase tracking-tighter">
                                             {name}
                                         </span>
                                     ))}
@@ -174,33 +174,33 @@ const SurveyCreator: React.FC = () => {
     };
 
     return (
-        <div className="bg-white/5 backdrop-blur-xl p-8 rounded-[2.5rem] shadow-2xl border border-white/10">
-            <h3 className="text-2xl font-black text-white mb-6 uppercase tracking-tight">Post New Strategic Survey</h3>
+        <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-orange-100">
+            <h3 className="text-2xl font-black text-orange-950 mb-6 uppercase tracking-tight">Post New Strategic Survey</h3>
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                    <label htmlFor="survey-question" className="block text-[10px] font-black text-emerald-400/60 uppercase tracking-[0.2em] mb-2">Primary Question</label>
-                    <textarea id="survey-question" value={question} onChange={e => setQuestion(e.target.value)} required rows={2} className="mt-1 block w-full px-4 py-3 bg-white/5 border-2 border-white/10 rounded-2xl shadow-sm text-white focus:outline-none focus:border-emerald-500 transition-all font-bold" placeholder="What is the union's stance on..." />
+                    <label htmlFor="survey-question" className="block text-[10px] font-black text-orange-800/60 uppercase tracking-[0.2em] mb-2">Primary Question</label>
+                    <textarea id="survey-question" value={question} onChange={e => setQuestion(e.target.value)} required rows={2} className="mt-1 block w-full px-4 py-3 bg-orange-50 border-2 border-orange-100 rounded-2xl shadow-sm text-orange-950 focus:outline-none focus:border-orange-500 transition-all font-bold placeholder:text-orange-900/30" placeholder="What is the union's stance on..." />
                 </div>
                 <div>
-                    <label className="block text-[10px] font-black text-emerald-400/60 uppercase tracking-[0.2em] mb-3">Response Options</label>
+                    <label className="block text-[10px] font-black text-orange-800/60 uppercase tracking-[0.2em] mb-3">Response Options</label>
                     <div className="space-y-3">
                         {options.map((option, index) => (
                             <div key={index} className="flex items-center gap-3">
-                                <input type="text" value={option} onChange={e => handleOptionChange(index, e.target.value)} required className="flex-grow px-4 py-3 bg-white/5 border-2 border-white/10 rounded-2xl shadow-sm text-white focus:outline-none focus:border-emerald-500 transition-all font-bold" placeholder={`Option ${index + 1}`} />
-                                <button type="button" onClick={() => removeOption(index)} disabled={options.length <= 2} className="p-3 text-red-400 hover:text-red-300 disabled:opacity-20 transition-colors">
+                                <input type="text" value={option} onChange={e => handleOptionChange(index, e.target.value)} required className="flex-grow px-4 py-3 bg-orange-50 border-2 border-orange-100 rounded-2xl shadow-sm text-orange-950 focus:outline-none focus:border-orange-500 transition-all font-bold placeholder:text-orange-900/30" placeholder={`Option ${index + 1}`} />
+                                <button type="button" onClick={() => removeOption(index)} disabled={options.length <= 2} className="p-3 text-red-400 hover:text-red-600 disabled:opacity-20 transition-colors">
                                     <TrashIcon className="w-5 h-5" />
                                 </button>
                             </div>
                         ))}
                     </div>
-                    <button type="button" onClick={addOption} className="text-[10px] font-black text-emerald-400 hover:text-emerald-300 mt-4 uppercase tracking-[0.2em] flex items-center gap-1.5 transition-all">
+                    <button type="button" onClick={addOption} className="text-[10px] font-black text-orange-600 hover:text-orange-800 mt-4 uppercase tracking-[0.2em] flex items-center gap-1.5 transition-all">
                         <span className="text-lg">+</span> Add Response Alternative
                     </button>
                 </div>
                 <button 
                     type="submit" 
                     disabled={isPublishing}
-                    className="w-full py-4 px-6 border-none rounded-2xl shadow-xl text-xs font-black text-white bg-emerald-600 hover:bg-emerald-500 disabled:bg-emerald-800/50 disabled:cursor-not-allowed transition-all uppercase tracking-[0.2em]"
+                    className="w-full py-4 px-6 border-none rounded-2xl shadow-xl text-xs font-black text-white bg-orange-600 hover:bg-orange-700 disabled:bg-orange-200 disabled:cursor-not-allowed transition-all uppercase tracking-[0.2em]"
                 >
                     {isPublishing ? 'Publishing Strategic Referendum...' : 'Publish Strategic Referendum'}
                 </button>
@@ -300,13 +300,13 @@ const AnnouncementManager: React.FC = () => {
     return (
         <div className="space-y-6">
             {/* ── Post / Edit Form ── */}
-            <div className={`p-6 rounded-lg shadow transition-colors ${editingId ? 'bg-orange-50 border-2 border-orange-200' : 'bg-white'}`}>
+            <div className={`p-6 rounded-2xl shadow-xl transition-colors border ${editingId ? 'bg-orange-100 border-orange-300' : 'bg-white border-orange-100'}`}>
                 <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-xl font-bold text-gray-800">
-                        {editingId ? 'Edit Announcement' : 'Post a New Announcement'}
+                    <h3 className="text-xl font-black text-orange-950 uppercase tracking-tight">
+                        {editingId ? 'Refine Announcement' : 'Post New Official Notice'}
                     </h3>
                     {editingId && (
-                        <button onClick={cancelEdit} className="text-sm font-medium text-gray-500 hover:text-gray-700">
+                        <button onClick={cancelEdit} className="text-xs font-black text-orange-600 hover:text-orange-800 uppercase tracking-widest transition-colors">
                             Cancel Edit
                         </button>
                     )}
@@ -314,21 +314,22 @@ const AnnouncementManager: React.FC = () => {
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <label htmlFor="ann-title" className="block text-sm font-medium text-gray-700">Title</label>
+                        <label htmlFor="ann-title" className="block text-[10px] font-black text-orange-800/60 uppercase tracking-[0.2em] mb-1.5">Strategic Title</label>
                         <input
                             id="ann-title"
                             value={title}
                             onChange={e => setTitle(e.target.value)}
                             required
-                            className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-gray-900 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
+                            className="block w-full px-4 py-3 bg-orange-50 border border-orange-200 rounded-xl text-orange-950 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all font-bold placeholder:text-orange-900/30"
+                            placeholder="Immediate Action Required: ..."
                         />
                     </div>
 
                     <div>
-                        <div className="flex justify-between items-center">
-                            <label htmlFor="ann-content" className="block text-sm font-medium text-gray-700">Content</label>
-                            <span className={`text-xs ${content.length > 800 ? 'text-red-500 font-bold' : 'text-gray-400'}`}>
-                                {content.length} characters
+                        <div className="flex justify-between items-center mb-1.5">
+                            <label htmlFor="ann-content" className="block text-[10px] font-black text-orange-800/60 uppercase tracking-[0.2em]">Detailed Content</label>
+                            <span className={`text-[10px] font-black uppercase tracking-widest ${content.length > 800 ? 'text-red-500' : 'text-orange-400/60'}`}>
+                                {content.length} / 800
                             </span>
                         </div>
                         <textarea
@@ -337,7 +338,8 @@ const AnnouncementManager: React.FC = () => {
                             onChange={e => setContent(e.target.value)}
                             required
                             rows={4}
-                            className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-gray-900 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
+                            className="block w-full px-4 py-3 bg-orange-50 border border-orange-200 rounded-xl text-orange-950 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all font-bold placeholder:text-orange-900/30"
+                            placeholder="Enter the official announcement details here..."
                         />
                     </div>
 
@@ -577,34 +579,34 @@ const CalendarManager: React.FC = () => {
             </div>
 
             {isAdding && (
-                <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md border dark:border-gray-800 space-y-4 animate-fade-in">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <form onSubmit={handleSubmit} className="bg-white p-8 rounded-[2rem] shadow-xl border border-orange-100 space-y-6 animate-fade-in">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Event Title</label>
-                            <input type="text" value={title} onChange={e => setTitle(e.target.value)} required className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md text-gray-900 dark:text-gray-100 focus:ring-orange-500" />
+                            <label className="block text-[10px] font-black text-orange-800/60 uppercase tracking-[0.2em] mb-1.5">Event Identity</label>
+                            <input type="text" value={title} onChange={e => setTitle(e.target.value)} required className="block w-full px-4 py-3 bg-orange-50 border border-orange-200 rounded-xl text-orange-950 focus:outline-none focus:ring-2 focus:ring-orange-500 font-bold" />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Category</label>
-                            <select value={category} onChange={e => setCategory(e.target.value as any)} className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md text-gray-900 dark:text-gray-100 focus:ring-orange-500">
-                                <option value="MEETING">Meeting</option>
-                                <option value="HOLIDAY">Holiday</option>
-                                <option value="ELECTION">Election</option>
-                                <option value="SOCIAL">Social</option>
-                                <option value="OTHER">Other</option>
+                            <label className="block text-[10px] font-black text-orange-800/60 uppercase tracking-[0.2em] mb-1.5">Action Category</label>
+                            <select value={category} onChange={e => setCategory(e.target.value as any)} className="block w-full px-4 py-3 bg-orange-50 border border-orange-200 rounded-xl text-orange-950 focus:outline-none focus:ring-2 focus:ring-orange-500 font-bold">
+                                <option value="MEETING">Strategic Meeting</option>
+                                <option value="HOLIDAY">Union Holiday</option>
+                                <option value="ELECTION">Referendum / Election</option>
+                                <option value="SOCIAL">Social Gathering</option>
+                                <option value="OTHER">Other Operation</option>
                             </select>
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Date</label>
-                            <input type="date" value={date} onChange={e => setDate(e.target.value)} required className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md text-gray-900 dark:text-gray-100 focus:ring-orange-500" />
+                            <label className="block text-[10px] font-black text-orange-800/60 uppercase tracking-[0.2em] mb-1.5">Target Date</label>
+                            <input type="date" value={date} onChange={e => setDate(e.target.value)} required className="block w-full px-4 py-3 bg-orange-50 border border-orange-200 rounded-xl text-orange-950 focus:outline-none focus:ring-2 focus:ring-orange-500 font-bold" />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Start Time</label>
-                            <input type="time" value={startTime} onChange={e => setStartTime(e.target.value)} required className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md text-gray-900 dark:text-gray-100 focus:ring-orange-500" />
+                            <label className="block text-[10px] font-black text-orange-800/60 uppercase tracking-[0.2em] mb-1.5">Commencement Time</label>
+                            <input type="time" value={startTime} onChange={e => setStartTime(e.target.value)} required className="block w-full px-4 py-3 bg-orange-50 border border-orange-200 rounded-xl text-orange-950 focus:outline-none focus:ring-2 focus:ring-orange-500 font-bold font-mono" />
                         </div>
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Location (Optional)</label>
-                        <input type="text" value={location} onChange={e => setLocation(e.target.value)} className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md text-gray-900 dark:text-gray-100 focus:ring-orange-500" />
+                        <label className="block text-[10px] font-black text-orange-800/60 uppercase tracking-[0.2em] mb-1.5">Strategic Location (Optional)</label>
+                        <input type="text" value={location} onChange={e => setLocation(e.target.value)} className="block w-full px-4 py-3 bg-orange-50 border border-orange-200 rounded-xl text-orange-950 focus:outline-none focus:ring-2 focus:ring-orange-500 font-bold" />
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
@@ -613,7 +615,7 @@ const CalendarManager: React.FC = () => {
                     <button 
                         type="submit" 
                         disabled={isSubmitting}
-                        className="w-full py-2 bg-green-600 text-white rounded-md font-bold hover:bg-green-700 disabled:bg-green-800/50 disabled:cursor-not-allowed transition-colors"
+                        className="w-full py-2 bg-orange-600 text-white rounded-md font-bold hover:bg-orange-700 disabled:bg-orange-200 disabled:cursor-not-allowed transition-colors"
                     >
                         {isSubmitting ? 'Publishing Event...' : 'Publish Event'}
                     </button>
@@ -682,34 +684,34 @@ const GrievanceInbox: React.FC = () => {
 
     return (
         <div className="space-y-6">
-            <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">Grievance Inbox</h3>
+            <h3 className="text-xl font-black text-orange-950 uppercase tracking-tight">Messages Hub / Grievances</h3>
             <div className="space-y-4">
                 {grievances.length > 0 ? (
                     grievances.map(g => (
                         <div key={g.id} className={`p-5 rounded-xl border transition-all ${
-                            g.status === 'NEW' ? 'bg-orange-50 border-orange-200 dark:bg-orange-900/10 dark:border-orange-900/30' : 'bg-white border-gray-100 dark:bg-gray-900 dark:border-gray-800'
+                            g.status === 'NEW' ? 'bg-orange-50 border-orange-200' : 'bg-white border-orange-100'
                         }`}>
                             <div className="flex justify-between items-start mb-3">
                                 <div>
                                     <div className="flex items-center gap-2">
                                         <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                                            g.status === 'NEW' ? 'bg-orange-200 text-orange-800' : 'bg-green-100 text-green-700'
+                                            g.status === 'NEW' ? 'bg-orange-200 text-orange-800' : 'bg-emerald-100 text-emerald-700'
                                         }`}>
                                             {g.status}
                                         </span>
-                                        <h4 className="font-bold text-gray-800 dark:text-gray-100">{g.subject}</h4>
+                                        <h4 className="font-bold text-orange-950">{g.subject}</h4>
                                     </div>
-                                    <p className="text-xs text-gray-500 mt-0.5">From: <span className="font-semibold">{g.userName}</span> ({g.userId.substring(0,6)})</p>
+                                    <p className="text-xs text-orange-900/60 mt-0.5">From: <span className="font-semibold">{g.userName}</span> ({g.userId.substring(0,6)})</p>
                                 </div>
-                                <span className="text-[10px] text-gray-400 italic">{new Date(g.createdAt).toLocaleDateString()}</span>
+                                <span className="text-[10px] text-orange-400 italic">{new Date(g.createdAt).toLocaleDateString()}</span>
                             </div>
-                            <p className="text-sm text-gray-700 dark:text-gray-300 bg-white/50 dark:bg-gray-800/50 p-3 rounded-lg border dark:border-gray-700/50 mb-4 italic">"{g.description}"</p>
+                            <p className="text-sm text-orange-900 bg-orange-50/50 p-3 rounded-lg border border-orange-100 mb-4 italic">"{g.description}"</p>
                             
                             {g.status === 'RESOLVED' ? (
-                                <div className="bg-green-50 dark:bg-green-900/10 p-3 rounded-lg border border-green-100 dark:border-green-900/30">
-                                    <p className="text-xs font-bold text-green-700 dark:text-green-400 mb-1">✅ Admin Response:</p>
-                                    <p className="text-sm text-green-800 dark:text-green-300">{g.response}</p>
-                                    <p className="text-[10px] text-green-600 mt-2 italic">Resolved on {new Date(g.respondedAt!).toLocaleDateString()}</p>
+                                <div className="bg-emerald-50 p-3 rounded-lg border border-emerald-100">
+                                    <p className="text-xs font-bold text-emerald-700 mb-1">✅ Admin Response:</p>
+                                    <p className="text-sm text-emerald-800">{g.response}</p>
+                                    <p className="text-[10px] text-emerald-600 mt-2 italic">Resolved on {new Date(g.respondedAt!).toLocaleDateString()}</p>
                                 </div>
                             ) : (
                                 <div className="space-y-2">
@@ -718,7 +720,7 @@ const GrievanceInbox: React.FC = () => {
                                         value={responseMap[g.id] || ''}
                                         onChange={e => setResponseMap(prev => ({ ...prev, [g.id]: e.target.value }))}
                                         rows={2}
-                                        className="w-full px-3 py-2 text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-900 dark:text-gray-100 focus:ring-orange-500"
+                                        className="w-full px-3 py-2 text-sm bg-white border border-orange-200 rounded-lg text-orange-950 focus:ring-orange-500"
                                     />
                                     <button
                                         onClick={() => handleRespond(g.id)}
@@ -731,45 +733,48 @@ const GrievanceInbox: React.FC = () => {
                         </div>
                     ))
                 ) : (
-                  <div className="text-center py-20 bg-white dark:bg-gray-900 rounded-xl border border-dashed dark:border-gray-800">
-                    <CheckCircleIcon className="w-12 h-12 text-green-500/30 mx-auto mb-2" />
-                    <p className="text-gray-500">No grievances reported. Excellent!</p>
+                  <div className="text-center py-20 bg-white rounded-xl border border-dashed border-orange-200">
+                    <CheckCircleIcon className="w-12 h-12 text-orange-500/30 mx-auto mb-2" />
+                    <p className="text-orange-900/40">No grievances reported. Excellent!</p>
                   </div>
                 )}
             </div>
 
             {/* Notification Guide */}
             <div className="mt-12 group">
-                <div className="p-6 rounded-2xl bg-orange-50 dark:bg-orange-950/20 border border-orange-100 dark:border-orange-900/30">
-                    <div className="flex items-center gap-3 mb-4">
-                        <div className="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900/50 flex items-center justify-center text-orange-600">
-                            <MegaphoneIcon className="w-6 h-6" />
+                <div className="p-8 rounded-[2.5rem] bg-orange-100/50 border border-orange-200">
+                    <div className="flex items-center gap-4 mb-6">
+                        <div className="w-12 h-12 rounded-2xl bg-orange-600 flex items-center justify-center text-white shadow-lg shadow-orange-600/20">
+                            <MegaphoneIcon className="w-7 h-7" />
                         </div>
-                        <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100">Broadcast Push Notification</h3>
+                        <div>
+                            <h3 className="text-xl font-black text-orange-950 uppercase tracking-tight">Broadcast Direct Communication</h3>
+                            <p className="text-[10px] font-black text-orange-600 uppercase tracking-widest mt-1">Free Forever Push Infrastructure Active</p>
+                        </div>
                     </div>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
-                        To send a broadcast message to all members' phones, use the <strong>Firebase Console Cloud Messaging</strong> tab. This is a <strong>Free Forever</strong> service that allows you to send unlimited push notifications.
+                    <p className="text-sm text-orange-900/70 mb-8 leading-relaxed max-w-2xl">
+                        To transmit broadcast intelligence to all mobile units, utilize the <strong>Firebase Control Center</strong>. This secure protocol ensures 100% reach with no operational overhead.
                     </p>
-                    <div className="space-y-3">
-                        <div className="flex items-start gap-3">
-                            <div className="w-5 h-5 rounded-full bg-white dark:bg-gray-800 border dark:border-gray-700 flex items-center justify-center text-[10px] font-bold text-orange-600 mt-0.5">1</div>
-                            <p className="text-xs text-gray-700 dark:text-gray-300">Go to <strong>Messaging</strong> in your Firebase Console.</p>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div className="flex items-start gap-4 p-4 bg-white/50 rounded-2xl border border-orange-200/50">
+                            <div className="w-6 h-6 rounded-lg bg-orange-600 text-white text-[10px] font-black flex items-center justify-center flex-shrink-0">1</div>
+                            <p className="text-xs font-bold text-orange-900 leading-tight">Access Messaging via Firebase Console.</p>
                         </div>
-                        <div className="flex items-start gap-3">
-                            <div className="w-5 h-5 rounded-full bg-white dark:bg-gray-800 border dark:border-gray-700 flex items-center justify-center text-[10px] font-bold text-orange-600 mt-0.5">2</div>
-                            <p className="text-xs text-gray-700 dark:text-gray-300">Click <strong>"New campaign"</strong> &rarr; <strong>"Notifications"</strong>.</p>
+                        <div className="flex items-start gap-4 p-4 bg-white/50 rounded-2xl border border-orange-200/50">
+                            <div className="w-6 h-6 rounded-lg bg-orange-600 text-white text-[10px] font-black flex items-center justify-center flex-shrink-0">2</div>
+                            <p className="text-xs font-bold text-orange-900 leading-tight">Initiate New Campaign &rarr; Notifications.</p>
                         </div>
-                        <div className="flex items-start gap-3">
-                            <div className="w-5 h-5 rounded-full bg-white dark:bg-gray-800 border dark:border-gray-700 flex items-center justify-center text-[10px] font-bold text-orange-600 mt-0.5">3</div>
-                            <p className="text-xs text-gray-700 dark:text-gray-300">Enter your Title and Message, then target your Web app.</p>
+                        <div className="flex items-start gap-4 p-4 bg-white/50 rounded-2xl border border-orange-200/50">
+                            <div className="w-6 h-6 rounded-lg bg-orange-600 text-white text-[10px] font-black flex items-center justify-center flex-shrink-0">3</div>
+                            <p className="text-xs font-bold text-orange-900 leading-tight">Transmit payload to target Web Application.</p>
                         </div>
                     </div>
                     <button 
                         onClick={() => window.open('https://console.firebase.google.com/', '_blank')}
-                        className="mt-6 inline-flex items-center gap-2 px-6 py-2 bg-orange-600 text-white rounded-lg text-sm font-bold hover:bg-orange-700 transition-all shadow-md group-hover:scale-105"
+                        className="inline-flex items-center gap-3 px-8 py-3 bg-orange-600 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-orange-700 transition-all shadow-xl shadow-orange-600/20 hover:scale-[1.02]"
                     >
-                        Open Firebase Console
-                        <span className="text-xs">↗</span>
+                        Initialize Command Center
+                        <span className="text-sm">↗</span>
                     </button>
                 </div>
             </div>
@@ -779,35 +784,38 @@ const GrievanceInbox: React.FC = () => {
 
 // ─── Member Details Modal ─────────────────────────────────────────────────────
 const MemberDetailsModal: React.FC<{ member: User; onClose: () => void }> = ({ member, onClose }) => (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50" onClick={onClose}>
-        <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6" onClick={e => e.stopPropagation()}>
-            <div className="flex justify-between items-start mb-4">
-                <h2 className="text-xl font-bold text-gray-800">{member.employeeName}</h2>
-                <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-orange-950/40 backdrop-blur-sm" onClick={onClose}>
+        <div className="bg-white rounded-[2.5rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] max-w-2xl w-full p-8 border border-orange-100 overflow-hidden relative" onClick={e => e.stopPropagation()}>
+            <div className="flex justify-between items-start mb-8">
+                <div>
+                     <h2 className="text-3xl font-black text-orange-950 uppercase tracking-tight">{member.employeeName}</h2>
+                     <p className="text-[10px] font-black text-orange-600 uppercase tracking-widest mt-1">Official Member Dossier</p>
+                </div>
+                <button onClick={onClose} className="p-2 bg-orange-50 text-orange-900/40 hover:text-orange-600 rounded-xl transition-all">
                     <XMarkIcon className="w-6 h-6" />
                 </button>
             </div>
-            <div className="flex flex-col md:flex-row gap-6">
-                <div className="space-y-2 text-sm text-gray-700 flex-1">
-                    <p><span className="font-semibold w-32 inline-block">Employee No:</span>{member.employeeNumber}</p>
-                    <p><span className="font-semibold w-32 inline-block">Date of Birth:</span>{member.dob}</p>
-                    <p><span className="font-semibold w-32 inline-block">Email:</span>{member.email}</p>
-                    <p><span className="font-semibold w-32 inline-block">Mobile:</span>{member.mobileNumber}</p>
-                    <p><span className="font-semibold w-32 inline-block">Native Place:</span>{member.nativePlace}</p>
-                    <p><span className="font-semibold w-32 inline-block">State:</span>{member.state}</p>
-                    <p><span className="font-semibold w-32 inline-block">PF No:</span>{member.pfNumber}</p>
-                    <p><span className="font-semibold w-32 inline-block">Qualification:</span>{member.qualification}</p>
-                    <p><span className="font-semibold w-32 inline-block">Role:</span><span className="capitalize">{member.role?.toLowerCase()}</span></p>
+            <div className="flex flex-col md:flex-row gap-8">
+                <div className="space-y-4 text-xs font-bold text-orange-900/80 flex-1 bg-orange-50/50 p-6 rounded-2xl border border-orange-100">
+                    <div className="flex justify-between border-b border-orange-100 pb-2">
+                        <span className="text-[9px] uppercase tracking-widest opacity-40">Status</span>
+                        <span className="text-emerald-600">ACTIVE MEMBER</span>
+                    </div>
+                    <p className="flex justify-between"><span className="opacity-40 uppercase text-[9px] tracking-widest">Emp No</span>{member.employeeNumber}</p>
+                    <p className="flex justify-between"><span className="opacity-40 uppercase text-[9px] tracking-widest">Birth</span>{member.dob}</p>
+                    <p className="flex justify-between"><span className="opacity-40 uppercase text-[9px] tracking-widest">Contact</span>{member.mobileNumber}</p>
+                    <p className="flex justify-between"><span className="opacity-40 uppercase text-[9px] tracking-widest">Region</span>{member.nativePlace}</p>
+                    <p className="flex justify-between"><span className="opacity-40 uppercase text-[9px] tracking-widest">Authority</span><span className="capitalize">{member.role?.toLowerCase()}</span></p>
                 </div>
-                <div className="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl border border-gray-100">
-                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Digital Membership ID</p>
-                    <div className="scale-90 origin-top">
+                <div className="flex flex-col items-center justify-center p-6 bg-orange-100/30 rounded-[2rem] border border-orange-200/50 shadow-inner">
+                    <p className="text-[9px] font-black text-orange-400 uppercase tracking-[0.2em] mb-4">Strategic Digital Intelligence</p>
+                    <div className="scale-90 origin-top hover:scale-[1.1] transition-transform duration-500">
                         <MembershipCard user={member} logoUrl="/logo.png" />
                     </div>
                 </div>
             </div>
-            <button onClick={onClose} className="mt-6 w-full py-2 px-4 bg-orange-600 hover:bg-orange-700 rounded-lg text-sm font-bold text-white transition-colors shadow-lg">
-                Close Viewer
+            <button onClick={onClose} className="mt-8 w-full py-4 px-6 bg-orange-600 hover:bg-orange-700 rounded-2xl text-[10px] font-black text-white uppercase tracking-[0.2em] transition-all shadow-xl shadow-orange-600/20">
+                Close Intelligence Viewer
             </button>
         </div>
     </div>
@@ -830,37 +838,37 @@ const EliteOverview: React.FC = () => {
                 <StatCard title="Calendar Events" value={upcomingEvents} icon={<ClockIcon className="w-6 h-6" />} color="green" />
             </div>
 
-            <div className="bg-white dark:bg-gray-900 p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800">
+            <div className="bg-white p-8 rounded-2xl shadow-xl border border-orange-100">
                  <div className="flex items-center gap-4 mb-6">
                     <div className="p-3 bg-orange-600 rounded-xl text-white shadow-lg shadow-orange-600/20">
                         <MegaphoneIcon className="w-6 h-6" />
                     </div>
                     <div>
-                        <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">Elite Platform Status</h3>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">Your union communication infrastructure is active and healthy.</p>
+                        <h3 className="text-xl font-bold text-orange-950">Elite Platform Status</h3>
+                        <p className="text-sm text-orange-900/60">Your union communication infrastructure is active and healthy.</p>
                     </div>
                  </div>
 
                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div className="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50 border dark:border-gray-700/50">
-                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Push Notifications</p>
+                    <div className="p-4 rounded-xl bg-orange-50/50 border border-orange-100">
+                        <p className="text-[10px] font-bold text-orange-400 uppercase tracking-widest mb-1">Push Notifications</p>
                         <div className="flex items-center gap-2">
-                             <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                             <span className="text-sm font-bold text-gray-700 dark:text-gray-300">FCM Operational</span>
+                             <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                             <span className="text-sm font-bold text-orange-900">FCM Operational</span>
                         </div>
                     </div>
-                    <div className="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50 border dark:border-gray-700/50">
-                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Member ID System</p>
+                    <div className="p-4 rounded-xl bg-orange-50/50 border border-orange-100">
+                        <p className="text-[10px] font-bold text-orange-400 uppercase tracking-widest mb-1">Member ID System</p>
                         <div className="flex items-center gap-2">
                              <div className="w-2 h-2 rounded-full bg-blue-500"></div>
-                             <span className="text-sm font-bold text-gray-700 dark:text-gray-300">QR Engine Active</span>
+                             <span className="text-sm font-bold text-orange-900">QR Engine Active</span>
                         </div>
                     </div>
-                    <div className="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50 border dark:border-gray-700/50">
-                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Grievance Hub</p>
+                    <div className="p-4 rounded-xl bg-orange-50/50 border border-orange-100">
+                        <p className="text-[10px] font-bold text-orange-400 uppercase tracking-widest mb-1">Grievance Hub</p>
                         <div className="flex items-center gap-2">
-                             <div className={`w-2 h-2 rounded-full ${openGrievances > 0 ? 'bg-orange-500' : 'bg-green-500'}`}></div>
-                             <span className="text-sm font-bold text-gray-700 dark:text-gray-300">
+                             <div className={`w-2 h-2 rounded-full ${openGrievances > 0 ? 'bg-orange-500' : 'bg-emerald-500'}`}></div>
+                             <span className="text-sm font-bold text-orange-900">
                                 {openGrievances} pending action
                              </span>
                         </div>
@@ -906,19 +914,19 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ activeTab, setActiveTab
     ];
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-[#064e3b] via-[#065f46] to-[#01241b] p-6 lg:p-10 -mx-4 lg:-mx-8 -mt-8 text-white">
+        <div className="min-h-screen bg-[#fcfaf7] p-6 lg:p-10 -mx-4 lg:-mx-8 -mt-8 text-orange-950">
             <div className="max-w-7xl mx-auto space-y-10">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
                     {/* Navigation Tabs */}
-                    <div className="bg-white/5 backdrop-blur-xl rounded-[2rem] p-1.5 flex gap-1 flex-wrap border border-white/10 shadow-2xl">
+                    <div className="bg-white rounded-[2rem] p-1.5 flex gap-1 flex-wrap border border-orange-100 shadow-xl">
                     {tabs.map(tab => (
                         <button
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id)}
                             className={`flex-1 min-w-[120px] flex items-center justify-center gap-2 py-3 px-6 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${
                                 activeTab === tab.id
-                                    ? 'bg-orange-600 text-white shadow-lg shadow-orange-900/40 scale-[1.02]'
-                                    : 'text-emerald-100/60 hover:text-white hover:bg-white/5'
+                                    ? 'bg-orange-600 text-white shadow-lg shadow-orange-200 scale-[1.02]'
+                                    : 'text-orange-900/40 hover:text-orange-950 hover:bg-orange-50'
                             }`}
                         >
                             {tab.icon}
@@ -928,13 +936,13 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ activeTab, setActiveTab
                     </div>
                     
                     {/* Live Clock / Status */}
-                    <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest bg-black/20 backdrop-blur-md px-6 py-3 rounded-full border border-white/5 shadow-inner">
+                    <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest bg-orange-100 px-6 py-3 rounded-full border border-orange-200 shadow-sm">
                         <div className="flex items-center gap-2">
-                            <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
-                            <span className="text-emerald-400">Live Control Hub</span>
+                            <span className="w-2 h-2 bg-orange-600 rounded-full animate-pulse"></span>
+                            <span className="text-orange-700">Hub Active</span>
                         </div>
-                        <div className="w-[1px] h-4 bg-white/10 mx-2"></div>
-                        <span className="text-white/60">{currentTime.toLocaleTimeString()}</span>
+                        <div className="w-[1px] h-4 bg-orange-200 mx-2"></div>
+                        <span className="text-orange-900/60 font-mono">{currentTime.toLocaleTimeString()}</span>
                     </div>
                 </div>
 
@@ -945,7 +953,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ activeTab, setActiveTab
 
                     {pendingMembers.length > 0 && (
                         <div className="animate-fade-in">
-                            <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
+                            <h2 className="text-xl font-bold text-orange-950 mb-4 flex items-center gap-2">
                                 <ClockIcon className="w-5 h-5 text-orange-600" />
                                 Pending Approvals ({pendingMembers.length})
                             </h2>
@@ -963,9 +971,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ activeTab, setActiveTab
                     )}
 
                     {pendingMembers.length === 0 && (
-                        <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm p-8 text-center border border-gray-100 dark:border-gray-800 animate-fade-in">
-                            <CheckCircleIcon className="w-12 h-12 text-green-500/30 mx-auto mb-3" />
-                            <p className="text-gray-500">No pending approvals. All caught up!</p>
+                        <div className="bg-white rounded-xl shadow-xl p-8 text-center border border-orange-100 animate-fade-in">
+                            <CheckCircleIcon className="w-12 h-12 text-emerald-500/30 mx-auto mb-3" />
+                            <p className="text-orange-900/40">No pending approvals. All caught up!</p>
                         </div>
                     )}
                 </div>
@@ -975,7 +983,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ activeTab, setActiveTab
             {activeTab === 'members' && (
                 <div className="space-y-4">
                     <div className="flex items-center justify-between flex-wrap gap-3">
-                        <h2 className="text-xl font-bold text-gray-800">
+                        <h2 className="text-xl font-bold text-orange-950">
                             Approved Members ({approvedMembers.length})
                         </h2>
                         <input
@@ -983,33 +991,33 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ activeTab, setActiveTab
                             placeholder="Search members..."
                             value={searchTerm}
                             onChange={e => setSearchTerm(e.target.value)}
-                            className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 w-60"
+                            className="px-4 py-2 bg-white border border-orange-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 w-60 text-orange-950 placeholder:text-orange-900/30 shadow-sm"
                         />
                     </div>
 
                     {filteredMembers.length > 0 ? (
-                        <div className="bg-white/5 backdrop-blur-xl rounded-[2.5rem] shadow-2xl border border-white/10 overflow-hidden">
-                            <table className="min-w-full divide-y divide-white/5 text-sm">
-                                <thead className="bg-black/20">
+                        <div className="bg-white rounded-[2.5rem] shadow-xl border border-orange-100 overflow-hidden">
+                            <table className="min-w-full divide-y divide-orange-50 text-sm">
+                                <thead className="bg-orange-50/50 text-orange-950">
                                     <tr>
-                                        <th className="px-8 py-5 text-left text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em]">Full Name / Identity</th>
-                                        <th className="px-8 py-5 text-left text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em] hidden md:table-cell">Emp No</th>
-                                        <th className="px-8 py-5 text-left text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em] hidden lg:table-cell">Email Address</th>
-                                        <th className="px-8 py-5 text-left text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em]">Authority</th>
-                                        <th className="px-8 py-5 text-center text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em]">Profile</th>
+                                        <th className="px-8 py-5 text-left text-[10px] font-black text-orange-800 uppercase tracking-[0.2em]">Full Name / Identity</th>
+                                        <th className="px-8 py-5 text-left text-[10px] font-black text-orange-800 uppercase tracking-[0.2em] hidden md:table-cell">Emp No</th>
+                                        <th className="px-8 py-5 text-left text-[10px] font-black text-orange-800 uppercase tracking-[0.2em] hidden lg:table-cell">Email Address</th>
+                                        <th className="px-8 py-5 text-left text-[10px] font-black text-orange-800 uppercase tracking-[0.2em]">Authority</th>
+                                        <th className="px-8 py-5 text-center text-[10px] font-black text-orange-800 uppercase tracking-[0.2em]">Profile</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-white/5 bg-transparent">
+                                <tbody className="divide-y divide-orange-50 bg-transparent">
                                     {filteredMembers.map(m => (
-                                        <tr key={m.id} className="hover:bg-white/5 transition-colors group">
-                                            <td className="px-8 py-5 font-bold text-white group-hover:text-emerald-400 transition-colors">{m.employeeName}</td>
-                                            <td className="px-8 py-5 text-white/60 hidden md:table-cell font-mono">{m.employeeNumber}</td>
-                                            <td className="px-8 py-5 text-white/60 hidden lg:table-cell">{m.email}</td>
+                                        <tr key={m.id} className="hover:bg-orange-50/30 transition-colors group">
+                                            <td className="px-8 py-5 font-bold text-orange-950 group-hover:text-orange-600 transition-colors">{m.employeeName}</td>
+                                            <td className="px-8 py-5 text-orange-900/60 hidden md:table-cell font-mono">{m.employeeNumber}</td>
+                                            <td className="px-8 py-5 text-orange-900/60 hidden lg:table-cell">{m.email}</td>
                                             <td className="px-8 py-5">
                                                 <span className={`px-4 py-1 rounded-full text-[9px] font-black uppercase tracking-widest shadow-sm ${
                                                     m.role === UserRole.ADMIN
-                                                        ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30'
-                                                        : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                                                        ? 'bg-orange-500/10 text-orange-600 border border-orange-500/20'
+                                                        : 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20'
                                                 }`}>
                                                     {m.role}
                                                 </span>
@@ -1017,7 +1025,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ activeTab, setActiveTab
                                             <td className="px-8 py-5 text-center">
                                                 <button
                                                     onClick={() => setSelectedMember(m)}
-                                                    className="text-[10px] font-black text-white/40 hover:text-white uppercase tracking-widest transition-all underline underline-offset-4"
+                                                    className="text-[10px] font-black text-orange-600/40 hover:text-orange-600 uppercase tracking-widest transition-all underline underline-offset-4"
                                                 >
                                                     View File
                                                 </button>
@@ -1028,7 +1036,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ activeTab, setActiveTab
                             </table>
                         </div>
                     ) : (
-                        <p className="text-gray-500 text-center py-8">No members found matching "{searchTerm}".</p>
+                        <div className="bg-white rounded-xl shadow-xl p-8 text-center border border-orange-100">
+                             <p className="text-orange-900/40 font-bold">No members found matching "{searchTerm}".</p>
+                        </div>
                     )}
                 </div>
             )}
@@ -1043,15 +1053,17 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ activeTab, setActiveTab
                                 <SurveyResultCard survey={s} />
                                 <button
                                     onClick={() => deleteSurvey(s.id)}
-                                    className="absolute top-4 right-4 text-red-400 hover:text-red-600 p-1 rounded-full hover:bg-red-50"
+                                    className="absolute top-6 right-6 text-orange-400 hover:text-red-600 p-2 rounded-full hover:bg-orange-50 transition-all"
                                     title="Delete survey"
                                 >
-                                    <TrashIcon className="w-4 h-4" />
+                                    <TrashIcon className="w-5 h-5" />
                                 </button>
                             </div>
                         ))
                     ) : (
-                        <p className="text-gray-500 text-center py-8">No surveys yet. Create one above.</p>
+                        <div className="bg-white rounded-xl shadow-xl p-8 text-center border border-orange-100">
+                             <p className="text-orange-900/40 font-bold">No active surveys found. Deploy one above.</p>
+                        </div>
                     )}
                 </div>
             )}
