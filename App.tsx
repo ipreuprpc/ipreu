@@ -7,9 +7,10 @@ import BrandingBadge from './components/BrandingBadge';
 import ErrorBoundary from './components/ErrorBoundary';
 import {
     loadSession, saveSession, clearSession,
-    api, messaging
+    api, messaging, db
 } from './services/storage';
 import { getToken, onMessage } from 'firebase/messaging';
+import { collection, query, orderBy, onSnapshot, where, limit } from 'firebase/firestore';
 
 const Auth = lazy(() => import('./components/Auth'));
 const AdminDashboard = lazy(() => import('./components/AdminDashboard'));
@@ -98,41 +99,66 @@ function App() {
                 if (session && session.user) {
                     setCurrentUser(session.user);
                     registerFCM(session.user.id);
-
-                    const [loadedSurveys, events, acts, myGrievances] = await Promise.all([
-                        api.getSurveys(),
-                        api.getCalendarEvents(),
-                        api.getAnnouncements(),
-                        api.getGrievances(session.user.role === 'ADMIN' ? undefined : session.user.id)
-                    ]);
-
-                    if (loadedSurveys.length > 0) setSurveys(loadedSurveys as Survey[]);
-                    else setSurveys(initialSurveys);
-
-                    setCalendarEvents(events as CalendarEvent[]);
-                    setAnnouncements(acts);
-                    setGrievances(myGrievances as Grievance[]);
-
-                    if (session.user.role === 'ADMIN') {
-                        const [pending, approved] = await Promise.all([
-                            api.getPendingUsers(),
-                            api.getApprovedUsers()
-                        ]);
-                        setUsers([...pending, ...approved]);
-                    }
-                } else {
-                    // Start with default surveys for unauthenticated users if needed, 
-                    // or just leave them empty.
-                    setSurveys(initialSurveys);
                 }
             } catch (error) {
-                console.error("Failed to load data:", error);
+                console.error("Session init failed:", error);
             } finally {
                 setIsLoading(false);
             }
         };
         init();
     }, []);
+
+    // Real-time Data Listeners
+    useEffect(() => {
+        if (!currentUser) return;
+
+        // Announcements Listener
+        const qAnn = query(collection(db, 'announcements'), orderBy('createdAt', 'desc'), limit(30));
+        const unsubAnn = onSnapshot(qAnn, (snapshot) => {
+            setAnnouncements(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Announcement[]);
+        }, (err) => console.error("Announcements Sync Error:", err));
+
+        // Surveys Listener
+        const qSurv = query(collection(db, 'surveys'));
+        const unsubSurv = onSnapshot(qSurv, (snapshot) => {
+            setSurveys(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Survey[]);
+        }, (err) => console.error("Surveys Sync Error:", err));
+
+        // Calendar Listener
+        const qCal = query(collection(db, 'calendar'), orderBy('date', 'asc'));
+        const unsubCal = onSnapshot(qCal, (snapshot) => {
+            setCalendarEvents(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as CalendarEvent[]);
+        }, (err) => console.error("Calendar Sync Error:", err));
+
+        // Grievances Listener (Member sees only theirs, Admin sees all)
+        let qGriv;
+        if (currentUser.role === 'ADMIN') {
+            qGriv = query(collection(db, 'grievances'), orderBy('createdAt', 'desc'));
+        } else {
+            qGriv = query(collection(db, 'grievances'), where('userId', '==', currentUser.id), orderBy('createdAt', 'desc'));
+        }
+        const unsubGriv = onSnapshot(qGriv, (snapshot) => {
+            setGrievances(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Grievance[]);
+        }, (err) => console.error("Grievances Sync Error:", err));
+
+        // Admin: Users Listener
+        let unsubUsers = () => {};
+        if (currentUser.role === 'ADMIN') {
+            const qUsers = query(collection(db, 'users'));
+            unsubUsers = onSnapshot(qUsers, (snapshot) => {
+                setUsers(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as User[]);
+            });
+        }
+
+        return () => {
+            unsubAnn();
+            unsubSurv();
+            unsubCal();
+            unsubGriv();
+            unsubUsers();
+        };
+    }, [currentUser?.id]);
 
     const registerFCM = async (userId: string) => {
         if (!messaging) return;
