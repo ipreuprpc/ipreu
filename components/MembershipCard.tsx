@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { toBlob } from 'html-to-image';
+import { toPng } from 'html-to-image';
 import { User, UserRole } from '../types';
 
 interface MembershipCardProps {
@@ -13,32 +13,31 @@ const MembershipCard: React.FC<MembershipCardProps> = ({ user, logoUrl }) => {
     
     // Fallback logo if missing
     const finalLogoUrl = logoUrl || '/logo.png';
-    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(user.id)}&color=064e3b&bgcolor=ffffff`;
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(user.id)}&color=064e3b&bgcolor=ffffff`;
 
     const handleDownload = async () => {
         if (!cardRef.current) return;
         setIsDownloading(true);
         try {
-            // Use toBlob for more reliable large image saves across all devices
-            const blob = await toBlob(cardRef.current, { 
+            // Use toPng for maximum compatibility with mobile file systems (Base64 is more robust for small files)
+            const dataUrl = await toPng(cardRef.current, { 
                 cacheBust: true, 
-                pixelRatio: 2, 
-                backgroundColor: 'transparent'
+                pixelRatio: 3, // High density for crystal clear QR and text
+                backgroundColor: '#064e3b',
+                style: {
+                    transform: 'scale(1)', // Ensure no zoom/scale issues during capture
+                }
             });
             
-            if (blob) {
-                const url = window.URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.download = `IPREU-ID-${user.id.substring(0, 8).toUpperCase()}.png`;
-                link.href = url;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                window.URL.revokeObjectURL(url);
-            }
+            const link = document.createElement('a');
+            link.download = `IPREU-ID-${user.employeeNumber}-${user.employeeName.split(' ')[0].toUpperCase()}.png`;
+            link.href = dataUrl;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         } catch (err) {
             console.error('Failed to download card:', err);
-            alert('Failed to generate image. Please try again or take a screenshot.');
+            alert('Encountered an OS-level restriction. Please take a screenshot for immediate use.');
         } finally {
             setIsDownloading(false);
         }
@@ -65,13 +64,14 @@ const MembershipCard: React.FC<MembershipCardProps> = ({ user, logoUrl }) => {
                     
                     {/* Header: Logo & Title */}
                     <div className="flex justify-between items-start">
-                        <div className="flex items-center gap-4">
-                            <div className="relative group">
-                                <div className="absolute -inset-0.5 bg-white/20 rounded-xl blur opacity-30 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
-                                <div className="relative w-12 h-12 bg-white rounded-xl flex items-center justify-center p-1.5 shadow-lg border border-white/40">
+                        <div className="flex items-center gap-3">
+                            <div className="relative">
+                                <div className="absolute -inset-1 bg-white/10 rounded-xl blur opacity-30"></div>
+                                <div className="relative w-12 h-12 bg-white rounded-xl flex items-center justify-center p-2 shadow-xl border border-white/40">
                                     <img 
                                         src={finalLogoUrl} 
                                         alt="Union Logo" 
+                                        crossOrigin="anonymous"
                                         className="w-full h-full object-contain"
                                         onError={(e) => {
                                             (e.target as HTMLImageElement).src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%23064e3b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>';
@@ -80,54 +80,54 @@ const MembershipCard: React.FC<MembershipCardProps> = ({ user, logoUrl }) => {
                                 </div>
                             </div>
                             <div>
-                                <h2 className="text-xl font-black tracking-tighter leading-none text-white drop-shadow-sm">IPREU UNION</h2>
-                                <p className="text-[10px] text-emerald-100/70 uppercase tracking-[0.2em] mt-1 font-bold">Smart Membership Hub</p>
+                                <h2 className="text-lg font-black tracking-tighter leading-none text-white uppercase drop-shadow-md">IPREU - UNION</h2>
+                                <p className="text-[7px] text-emerald-100/50 uppercase tracking-[0.3em] mt-1 font-black">Official Governance Hub</p>
                             </div>
                         </div>
                         
-                        <div className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border-2 shadow-sm ${
-                            user.role === 'ADMIN' ? 'bg-red-500/30 border-red-400 text-red-100' : 'bg-emerald-500/30 border-emerald-400 text-emerald-100'
+                        <div className={`px-4 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest border shadow-xl ${
+                            user.role === 'ADMIN' ? 'bg-red-500/80 border-red-400 text-white' : 'bg-emerald-600/80 border-emerald-400 text-white'
                         }`}>
-                            {user.role}
+                            {user.role} CODE
                         </div>
                     </div>
 
                     {/* Member Details */}
-                    <div className="flex justify-between items-end gap-4 min-h-0">
-                        <div className="flex-1 min-w-0 pr-2">
+                    <div className="flex justify-between items-end gap-2">
+                        <div className="flex-1 min-w-0">
                              <div className="mb-4">
-                                <p className="text-[8px] text-emerald-200 uppercase tracking-[0.3em] font-black opacity-80 mb-0.5">REGISTERED NAME</p>
-                                <p className="text-xl font-black tracking-tight truncate leading-tight drop-shadow-lg text-white">
+                                <p className="text-[7px] text-emerald-300 uppercase tracking-[0.4em] font-black opacity-60 mb-1">MEMBER IDENTITY</p>
+                                <p className="text-[22px] font-black tracking-tight leading-[0.95] text-white break-words drop-shadow-xl max-w-[200px]">
                                     {user.employeeName}
                                 </p>
                             </div>
                             
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="min-w-0">
-                                    <p className="text-[8px] text-emerald-200 uppercase tracking-[0.3em] font-black opacity-80">EMP ID</p>
-                                    <p className="text-sm font-black tracking-wider text-emerald-50 truncate">#{user.employeeNumber}</p>
+                            <div className="flex items-center gap-6">
+                                <div>
+                                    <p className="text-[7px] text-emerald-300 uppercase tracking-[0.3em] font-black opacity-60">EMP ID</p>
+                                    <p className="text-sm font-black tracking-widest text-[#fbbf24] shadow-sm">#{user.employeeNumber}</p>
                                 </div>
-                                <div className="min-w-0">
-                                    <p className="text-[8px] text-emerald-200 uppercase tracking-[0.3em] font-black opacity-80">PF NO</p>
-                                    <p className="text-sm font-black tracking-wider text-emerald-50 truncate">{user.pfNumber || 'N/A'}</p>
+                                <div>
+                                    <p className="text-[7px] text-emerald-300 uppercase tracking-[0.3em] font-black opacity-60">PF NO</p>
+                                    <p className="text-sm font-black tracking-widest text-emerald-50">{user.pfNumber || 'PENDING'}</p>
                                 </div>
                             </div>
                         </div>
 
                         {/* Verified QR Section */}
-                        <div className="flex-shrink-0 flex flex-col items-center">
-                            <div className="relative group p-1.5 bg-white rounded-2xl shadow-2xl border-2 border-emerald-400/30">
-                                <img 
-                                    src={qrUrl} 
-                                    alt="Audit QR" 
-                                    crossOrigin="anonymous"
-                                    className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl"
-                                />
-                                <div className="absolute -top-2 -right-2 bg-emerald-600 border-2 border-white rounded-full p-1 shadow-lg">
-                                    <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="4" d="M5 13l4 4L19 7" /></svg>
-                                </div>
+                        <div className="flex-shrink-0 relative group p-2 bg-white rounded-2xl shadow-[0_15px_35px_rgba(0,0,0,0.3)] border-4 border-emerald-500/20">
+                            <img 
+                                src={qrUrl} 
+                                alt="Secure QR" 
+                                crossOrigin="anonymous"
+                                className="w-20 h-20 sm:w-24 sm:h-24 rounded-lg"
+                            />
+                            <div className="absolute -top-3 -right-3 bg-emerald-600 border-2 border-white rounded-full p-1.5 shadow-2xl">
+                                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="4">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                </svg>
                             </div>
-                            <p className="text-[8px] text-emerald-100/60 mt-2 font-black uppercase tracking-widest text-center">Verified ID</p>
+                            <p className="absolute -bottom-6 left-0 right-0 text-[7px] text-emerald-100/40 font-black uppercase tracking-[0.3em] text-center">Verified ID</p>
                         </div>
                     </div>
                 </div>
