@@ -9,7 +9,7 @@
   --color-orange-200: #fed7aa;
   --color-orange-300: #fdba74;
   --color-orange-400: #fb923c;
-  --color-orange-500: #f97316;
+  --color-orange-50: #f97316;
   --color-orange-600: #ea580c;
   --color-orange-700: #c2410c;
   --color-orange-800: #9a3412;
@@ -18,7 +18,7 @@
 }
 
 :root {
-  --app-bg: #fcfaf7;
+  --app-bg: #f8fafc;
   --glass-bg: rgba(255, 255, 255, 0.7);
   --glass-border: rgba(255, 255, 255, 0.4);
   color-scheme: light;

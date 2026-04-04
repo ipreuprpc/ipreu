@@ -24,8 +24,8 @@ const SurveyCard: React.FC<{ survey: Survey; onSubmit: (surveyId: string, option
         <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 transition-all hover:shadow-md hover:border-emerald-200 dark:hover:border-emerald-900/50 group">
             <form onSubmit={handleSubmit}>
                 <fieldset>
-                    <legend className="text-xl font-black text-orange-950 mb-6 flex items-center gap-3 uppercase tracking-tight">
-                        <span className="w-1.5 h-8 bg-orange-600 rounded-full"></span>
+                    <legend className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2">
+                        <span className="w-1.5 h-6 bg-emerald-500 rounded-full"></span>
                         {survey.question}
                     </legend>
                     <div className="space-y-3">
@@ -41,7 +41,7 @@ const SurveyCard: React.FC<{ survey: Survey; onSubmit: (surveyId: string, option
                                     value={option.id}
                                     checked={selectedOption === option.id}
                                     onChange={() => setSelectedOption(option.id)}
-                                    className="h-5 w-5 text-orange-600 border-orange-300 focus:ring-orange-500 bg-white"
+                                    className="h-5 w-5 text-emerald-600 border-gray-300 focus:ring-emerald-500 bg-white"
                                 />
                                 <span className={`ml-4 text-sm font-black ${selectedOption === option.id ? 'text-emerald-900 dark:text-emerald-100' : 'text-gray-600 dark:text-gray-400'}`}>
                                     {option.text}
@@ -53,9 +53,9 @@ const SurveyCard: React.FC<{ survey: Survey; onSubmit: (surveyId: string, option
                 <button
                     type="submit"
                     disabled={!selectedOption}
-                    className="mt-8 w-full py-4 px-6 bg-orange-600 hover:bg-orange-700 text-white rounded-2xl font-black uppercase tracking-[0.2em] transition-all shadow-xl shadow-orange-600/20 disabled:bg-orange-200 disabled:shadow-none active:scale-95"
+                    className="mt-8 w-full py-3 px-6 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-black transition-all shadow-lg shadow-emerald-600/20 hover:shadow-emerald-600/40 disabled:opacity-50 disabled:bg-gray-400 disabled:shadow-none active:scale-95"
                 >
-                    SUBMIT SECURE VOTE
+                    SUMMIT SECURE VOTE
                 </button>
             </form>
         </div>
@@ -78,9 +78,9 @@ const VotedSurveyCard: React.FC<{ survey: Survey; userVoteOptionId: string; onRe
             <h3 className="font-black text-gray-900 dark:text-gray-100 text-lg mb-2">{survey.question}</h3>
              {userVotedOption && (
                  <div className="flex flex-wrap justify-between items-center gap-2 mb-6">
-                     <div className="inline-flex items-center gap-2 text-[10px] font-black text-orange-700 bg-orange-100 px-3 py-1 rounded-full uppercase tracking-widest border border-orange-200">
+                    <div className="inline-flex items-center gap-2 text-[10px] font-black text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-3 py-1 rounded-full uppercase tracking-widest">
                         <CheckCircleIcon className="w-3 h-3" />
-                        Selection Logged: {userVotedOption.text}
+                        Your choice: {userVotedOption.text}
                     </div>
                     {onReVote && (
                         <button 
@@ -107,9 +107,9 @@ const VotedSurveyCard: React.FC<{ survey: Survey; userVoteOptionId: string; onRe
                                 </span>
                                 <span className="text-gray-400">{percentage.toFixed(0)}%</span>
                             </div>
-                            <div className="w-full bg-orange-100 rounded-full h-2.5 overflow-hidden">
+                            <div className="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-2.5 overflow-hidden">
                                 <div 
-                                    className={`h-full rounded-full transition-all duration-1000 ${isUserVote ? 'bg-orange-600' : 'bg-orange-200'}`} 
+                                    className={`h-full rounded-full transition-all duration-1000 ${isUserVote ? 'bg-emerald-500' : 'bg-gray-300 dark:bg-gray-700'}`} 
                                     style={{ width: `${percentage}%` }}
                                 />
                             </div>
@@ -144,11 +144,11 @@ const GrievanceForm: React.FC<{ onSubmit: (subject: string, desc: string, cat: s
 
     return (
         <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-900 p-8 rounded-2xl shadow-sm border dark:border-gray-800 space-y-6">
-            <h3 className="text-xl font-black text-orange-950 flex items-center gap-4 uppercase tracking-tight">
-                <div className="p-3 bg-orange-600 rounded-xl text-white shadow-lg shadow-orange-600/20">
-                    <MegaphoneIcon className="w-6 h-6" />
-                </div>
-                Transmit Secure Intelligence
+            <h3 className="text-xl font-black text-gray-900 dark:text-gray-100 flex items-center gap-3">
+                <span className="p-2 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg text-emerald-600">
+                    <MegaphoneIcon className="w-5 h-5" />
+                </span>
+                Submit a Secure Grievance
             </h3>
             <div className="grid grid-cols-1 gap-6">
                 <div>
@@ -169,8 +169,8 @@ const GrievanceForm: React.FC<{ onSubmit: (subject: string, desc: string, cat: s
                 <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5">Detailed Description (Private)</label>
                 <textarea value={description} onChange={e => setDescription(e.target.value)} required rows={4} placeholder="Please provide all relevant details here..." className="mt-1 block w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border-2 border-transparent focus:border-emerald-500 dark:focus:border-emerald-500 rounded-xl text-sm text-gray-900 dark:text-gray-100 outline-none transition-all font-bold" />
             </div>
-            <button type="submit" disabled={isSubmitting} className="w-full py-4 bg-orange-600 text-white rounded-2xl font-black uppercase tracking-[0.2em] hover:bg-orange-700 transition-all shadow-xl shadow-orange-600/20 active:scale-95 disabled:bg-orange-200">
-                {isSubmitting ? 'TRANSMITTING...' : 'INITIALIZE SECURE UPLOAD'}
+            <button type="submit" disabled={isSubmitting} className="w-full py-4 bg-[#064e3b] text-white rounded-xl font-black hover:bg-emerald-900 transition-all shadow-xl shadow-emerald-900/10 active:scale-95 disabled:bg-gray-400 uppercase tracking-widest">
+                {isSubmitting ? 'PROCESSING...' : 'DEPLOY SECURE GRIEVANCE'}
             </button>
         </form>
     );
@@ -220,36 +220,36 @@ const MemberDashboard: React.FC<MemberDashboardProps> = ({ activeTab, setActiveT
             {(activeTab === 'dashboard' || activeTab === 'overview') && (
                 <>
                 <div className="grid grid-cols-1 xl:grid-cols-5 gap-8 items-stretch">
-                    {/* Left: Greeting - REDESIGNED PREMIUM ORANGE */}
-                    <div className="xl:col-span-3 bg-gradient-to-br from-orange-950 via-orange-900 to-[#2d0f05] rounded-[3rem] p-10 md:p-14 text-white shadow-2xl flex flex-col justify-center relative overflow-hidden group border border-orange-900/50">
+                    {/* Left: Greeting - ROYAL EMERALD REDESIGN */}
+                    <div className="xl:col-span-3 bg-gradient-to-br from-[#064e3b] via-[#065f46] to-[#022c22] rounded-[2.5rem] p-10 md:p-12 text-white shadow-2xl flex flex-col justify-center relative overflow-hidden group">
                         {/* Dynamic Background Elements */}
-                        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-500/10 rounded-full -mr-32 -mt-32 blur-[100px] group-hover:scale-110 transition-transform duration-1000" />
-                        <div className="absolute bottom-0 left-0 w-80 h-80 bg-black/40 rounded-full -ml-32 -mb-32 blur-[80px]" />
+                        <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-400/10 rounded-full -mr-20 -mt-20 blur-3xl group-hover:scale-125 transition-transform duration-1000" />
+                        <div className="absolute bottom-0 left-0 w-64 h-64 bg-black/20 rounded-full -ml-32 -mb-32 blur-3xl" />
                         
                         <div className="relative z-10">
-                            <div className="inline-flex items-center gap-2 bg-orange-600/20 backdrop-blur-xl px-5 py-2 rounded-full border border-orange-500/20 text-[10px] font-black uppercase tracking-[0.3em] mb-8 shadow-inner">
-                                <span className="w-2 h-2 bg-orange-500 rounded-full animate-pulse shadow-[0_0_10px_#f97316]"></span>
-                                <span className="opacity-80">Authenticated Member Session</span>
+                            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/20 text-[10px] font-black uppercase tracking-[0.2em] mb-6 shadow-sm">
+                                <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+                                Secure Member Session
                             </div>
-                            <h1 className="text-5xl md:text-7xl font-black mb-8 tracking-tighter leading-[0.9] uppercase">
+                            <h1 className="text-5xl md:text-6xl font-black mb-6 tracking-tight leading-none">
                                 {greeting}, <br/>
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-200 to-orange-500">
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-100 to-emerald-300">
                                     {currentUser.employeeName.split(' ')[0]} 
-                                </span>! <span className="inline-block hover:animate-bounce transition-transform duration-300">⚡</span>
+                                </span>! <span className="inline-block hover:rotate-12 transition-transform duration-300">👋</span>
                             </h1>
-                            <p className="text-orange-100/60 text-lg md:text-xl max-w-xl leading-relaxed font-bold italic border-l-4 border-orange-500/30 pl-6">
-                                "Welcome back to the IPREU digital nexus. Your identity remains protected and your voice strategic."
+                            <p className="text-emerald-50/80 text-lg md:text-xl max-w-lg leading-relaxed font-bold italic">
+                                "Welcome back to your elite digital union hub. Your connectivity and document security remain our top priorities."
                             </p>
                         </div>
                         
-                        <div className="mt-14 flex flex-wrap items-center gap-4 relative z-10">
-                            <div className="bg-white/5 backdrop-blur-2xl px-6 py-4 rounded-2xl border border-white/10 text-xs font-black shadow-2xl flex items-center gap-3">
-                                <span className="text-orange-500 opacity-60 uppercase tracking-widest text-[9px]">Authority</span> 
-                                <span className="text-white">IPREU Member</span>
+                        <div className="mt-12 flex flex-wrap items-center gap-4 relative z-10">
+                            <div className="bg-white/5 backdrop-blur-xl px-6 py-3 rounded-2xl border border-white/10 text-xs font-black shadow-lg flex items-center gap-2 group/pill">
+                                <span className="text-emerald-400 opacity-60 uppercase tracking-widest text-[9px]">Rank</span> 
+                                <span className="text-white">Active Member</span>
                             </div>
-                            <div className="bg-white/5 backdrop-blur-2xl px-6 py-4 rounded-2xl border border-white/10 text-xs font-black shadow-2xl flex items-center gap-3">
-                                <span className="text-orange-500 opacity-60 uppercase tracking-widest text-[9px]">Dossier Code</span>
-                                <span className="text-white font-mono tracking-widest">#{currentUser.id.substring(0,8).toUpperCase()}</span>
+                            <div className="bg-white/5 backdrop-blur-xl px-6 py-3 rounded-2xl border border-white/10 text-xs font-black shadow-lg flex items-center gap-2 group/pill">
+                                <span className="text-emerald-400 opacity-60 uppercase tracking-widest text-[9px]">Reg ID</span>
+                                <span className="text-white">#{currentUser.id.substring(0,8).toUpperCase()}</span>
                             </div>
                         </div>
                     </div>

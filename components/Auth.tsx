@@ -38,14 +38,14 @@ const Auth: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
                     
                     <div className="relative z-10 space-y-4">
                         <div className="flex items-center gap-3">
-                            <div className="w-2 h-2 rounded-full bg-orange-400 animate-pulse"></div>
+                            <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
                             <span className="text-sm font-medium text-orange-100">End-to-End Encrypted Tunnel</span>
                         </div>
                     </div>
                 </div>
 
                 {/* Form Right Panel */}
-                <div className="w-full md:w-1/2 p-8 md:p-12 relative flex flex-col justify-center bg-[#fcfaf7]">
+                <div className="w-full md:w-1/2 p-8 md:p-12 relative flex flex-col justify-center bg-gray-50/50">
                     {onBack && (
                         <button onClick={onBack} className="absolute top-6 left-6 text-gray-400 hover:text-orange-600 flex items-center transition-colors">
                             &larr; <span className="text-sm font-medium ml-1">Home</span>
@@ -85,7 +85,7 @@ const LoginForm: React.FC<{ onToggleRegister: () => void; onToggleAdminLogin: ()
 
     return (
         <div className="animate-fade-in">
-            <h2 className="text-3xl font-black text-center text-orange-950 uppercase tracking-tight mb-8">Member Access</h2>
+            <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Member Login</h2>
             
             {isPending && (
                 <div className="bg-orange-50 border-l-4 border-orange-500 p-4 mb-6 rounded-r-lg animate-pulse">
@@ -97,28 +97,28 @@ const LoginForm: React.FC<{ onToggleRegister: () => void; onToggleAdminLogin: ()
             {error && <p className="bg-red-100 text-red-700 p-3 rounded-md mb-4 text-sm">{error}</p>}
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                    <label htmlFor="login-email" className="block text-[10px] font-black text-orange-800/60 uppercase tracking-[0.2em] mb-1.5">Email Identity</label>
+                    <label htmlFor="login-email" className="block text-sm font-medium text-gray-700">Email Address</label>
                     <input
                         id="login-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email"
-                        className="block w-full px-4 py-3 bg-white border border-orange-200 rounded-xl text-orange-950 focus:outline-none focus:ring-2 focus:ring-orange-500 font-bold"
-                        placeholder="mail@example.com"
+                        className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-gray-900 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
+                        placeholder="e.g., mail@example.com"
                     />
                 </div>
                 <div>
-                    <label htmlFor="login-password" className="block text-[10px] font-black text-orange-800/60 uppercase tracking-[0.2em] mb-1.5">Secure Key</label>
-                    <div className="relative">
+                    <label htmlFor="login-password" className="block text-sm font-medium text-gray-700">Password</label>
+                    <div className="relative mt-1">
                         <input
                             id="login-password" type={showPassword ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="current-password"
-                            className="block w-full px-4 py-3 bg-white border border-orange-200 rounded-xl text-orange-950 focus:outline-none focus:ring-2 focus:ring-orange-500 font-bold"
+                            className="block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-gray-900 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
                             placeholder="••••••••"
                         />
-                        <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pr-4 flex items-center text-[10px] font-black uppercase text-orange-400 hover:text-orange-600 tracking-widest">
+                        <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 text-gray-400 hover:text-gray-600">
                             {showPassword ? 'Hide' : 'Show'}
                         </button>
                     </div>
                 </div>
-                <button type="submit" className="w-full py-4 bg-orange-600 text-white rounded-xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-orange-700 transition-all shadow-xl shadow-orange-600/20 active:scale-[0.98]">
-                    Establish Session
+                <button type="submit" className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
+                    Login
                 </button>
             </form>
             <div className="mt-6 space-y-2 text-center text-sm text-gray-600">
@@ -147,7 +147,7 @@ const AdminLoginForm: React.FC<{ onToggle: () => void }> = ({ onToggle }) => {
 
     return (
         <>
-            <h2 className="text-3xl font-black text-center text-orange-950 uppercase tracking-tight mb-8">Admin Control</h2>
+            <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Admin Login</h2>
             {error && <p className="bg-red-100 text-red-700 p-3 rounded-md mb-4 text-sm">{error}</p>}
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
@@ -236,11 +236,11 @@ const RegistrationForm: React.FC<{ onToggle: () => void }> = ({ onToggle }) => {
         return (
             <div className="animate-fade-in">
                 <div className="text-center mb-6">
-                    <svg className="w-16 h-16 text-emerald-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-16 h-16 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
-                    <h2 className="text-3xl font-black text-orange-950 uppercase tracking-tight mt-6">Dossier Transmitted!</h2>
-                    <p className="text-orange-900/60 mt-2 font-bold">Your application is now under Executive Review.</p>
+                    <h2 className="text-2xl font-bold text-gray-800 mt-4">Registration Submitted!</h2>
+                    <p className="text-gray-600 mt-2">Your application has been received and is pending Executive Approval.</p>
                 </div>
                 <div className="bg-gray-50 p-5 rounded-md border border-gray-200 text-sm space-y-3 mb-8">
                     <p><span className="font-semibold text-gray-700">Email Address:</span> {submittedData.email}</p>
@@ -253,8 +253,8 @@ const RegistrationForm: React.FC<{ onToggle: () => void }> = ({ onToggle }) => {
                     <p><span className="font-semibold text-gray-700">Unit:</span> {submittedData.unit}</p>
                     <p><span className="font-semibold text-gray-700">Native Place:</span> {submittedData.nativePlace}, {submittedData.state}</p>
                 </div>
-                <button onClick={onToggle} className="w-full py-4 bg-emerald-600 text-white rounded-xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-600/20">
-                    Return to Login Hub
+                <button onClick={onToggle} className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                    Return to Login
                 </button>
             </div>
         );
@@ -262,7 +262,7 @@ const RegistrationForm: React.FC<{ onToggle: () => void }> = ({ onToggle }) => {
 
     return (
         <>
-            <h2 className="text-3xl font-black text-center text-orange-950 uppercase tracking-tight mb-8">New Dossier</h2>
+            <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">New Member Registration</h2>
             {message.text && (
                 <p className={`${message.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'} p-3 rounded-md mb-4 text-sm`}>{message.text}</p>
             )}
@@ -302,8 +302,8 @@ const RegistrationForm: React.FC<{ onToggle: () => void }> = ({ onToggle }) => {
                         </div>
                     </div>
                 </div>
-                <button type="submit" className="w-full py-4 bg-orange-600 text-white rounded-xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-orange-700 transition-all shadow-xl shadow-orange-600/20 active:scale-[0.98]">
-                    Submit for Executive Review
+                <button type="submit" className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
+                    Submit for Approval
                 </button>
             </form>
             <p className="mt-6 text-center text-sm text-gray-600">
