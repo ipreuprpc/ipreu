@@ -151,15 +151,25 @@ const SurveyCreator: React.FC = () => {
         if (options.length > 2) setOptions(options.filter((_, i) => i !== index));
     };
 
-    const handleSubmit = (e: FormEvent) => {
+    const [isPublishing, setIsPublishing] = useState(false);
+
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         const surveyOptions: SurveyOption[] = options
             .filter(opt => opt.trim() !== '')
             .map(opt => ({ id: `opt-${Date.now()}-${Math.random()}`, text: opt }));
+            
         if (question.trim() && surveyOptions.length >= 2) {
-            createSurvey({ question, options: surveyOptions });
-            setQuestion('');
-            setOptions(['', '']);
+            setIsPublishing(true);
+            try {
+                await createSurvey({ question, options: surveyOptions });
+                setQuestion('');
+                setOptions(['', '']);
+            } catch (err: any) {
+                alert(err.message || 'Failed to publish survey');
+            } finally {
+                setIsPublishing(false);
+            }
         }
     };
 
@@ -187,8 +197,12 @@ const SurveyCreator: React.FC = () => {
                         <span className="text-lg">+</span> Add Response Alternative
                     </button>
                 </div>
-                <button type="submit" className="w-full py-4 px-6 border-none rounded-2xl shadow-xl text-xs font-black text-white bg-emerald-600 hover:bg-emerald-500 transition-all uppercase tracking-[0.2em]">
-                    Publish Strategic Referendum
+                <button 
+                    type="submit" 
+                    disabled={isPublishing}
+                    className="w-full py-4 px-6 border-none rounded-2xl shadow-xl text-xs font-black text-white bg-emerald-600 hover:bg-emerald-500 disabled:bg-emerald-800/50 disabled:cursor-not-allowed transition-all uppercase tracking-[0.2em]"
+                >
+                    {isPublishing ? 'Publishing Strategic Referendum...' : 'Publish Strategic Referendum'}
                 </button>
             </form>
         </div>
@@ -428,9 +442,9 @@ const AnnouncementManager: React.FC = () => {
                     <button
                         type="submit"
                         disabled={isPosting}
-                        className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 disabled:bg-orange-400 transition-colors"
+                        className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 disabled:bg-orange-400 disabled:cursor-not-allowed transition-colors"
                     >
-                        {isPosting ? 'Saving...' : editingId ? 'Update Announcement' : 'Post Announcement'}
+                        {isPosting ? 'Publishing Notice...' : (editingId ? 'Update Official Announcement' : 'Post Official Announcement')}
                     </button>
                 </form>
             </div>
@@ -533,16 +547,20 @@ const CalendarManager: React.FC = () => {
     const [startTime, setStartTime] = useState('');
     const [location, setLocation] = useState('');
     const [category, setCategory] = useState<CalendarEvent['category']>('MEETING');
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [isAdding, setIsAdding] = useState(false);
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
+        setIsSubmitting(true);
         try {
             await createCalendarEvent({ title, description, date, startTime, location, category });
             setTitle(''); setDescription(''); setDate(''); setStartTime(''); setLocation(''); setCategory('MEETING');
             setIsAdding(false);
         } catch (err: any) {
             alert(err.message || 'Failed to create event');
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -592,7 +610,13 @@ const CalendarManager: React.FC = () => {
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
                         <textarea value={description} onChange={e => setDescription(e.target.value)} rows={2} className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md text-gray-900 dark:text-gray-100 focus:ring-orange-500" />
                     </div>
-                    <button type="submit" className="w-full py-2 bg-green-600 text-white rounded-md font-bold hover:bg-green-700 transition-colors">Publish Event</button>
+                    <button 
+                        type="submit" 
+                        disabled={isSubmitting}
+                        className="w-full py-2 bg-green-600 text-white rounded-md font-bold hover:bg-green-700 disabled:bg-green-800/50 disabled:cursor-not-allowed transition-colors"
+                    >
+                        {isSubmitting ? 'Publishing Event...' : 'Publish Event'}
+                    </button>
                 </form>
             )}
 
