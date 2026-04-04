@@ -132,13 +132,13 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
                                                 </div>
                                             </div>
                                         </div>
-                                        <button onClick={onLoginClick} className="text-xs font-bold text-orange-600/40 hover:text-orange-600 uppercase tracking-widest px-3 py-1 bg-orange-50 rounded-full border border-orange-100">Details</button>
+                                        <button onClick={onLoginClick} className="text-xs font-bold text-orange-700 hover:text-orange-600 uppercase tracking-widest px-3 py-1 bg-orange-50 rounded-full border border-orange-100">Details</button>
                                     </div>
                                 )) : (
-                                    <p className="text-orange-900/40 italic py-8 text-center bg-white rounded-xl border border-dashed border-orange-100">No upcoming events listed for this month.</p>
+                                    <p className="text-orange-950/60 font-black uppercase tracking-[0.2em] italic py-8 text-center bg-white rounded-xl border border-dashed border-orange-200">No upcoming events listed for this month.</p>
                                 )}
                                 <p className="text-center">
-                                    <button onClick={onLoginClick} className="text-sm font-semibold text-orange-600 hover:text-orange-700">View Full Calendar &rarr;</button>
+                                    <button onClick={onLoginClick} className="text-sm font-semibold text-orange-700 hover:text-orange-800">View Full Calendar &rarr;</button>
                                 </p>
                             </div>
                         </div>
@@ -170,7 +170,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
                                         </div>
                                     </div>
                                 )) : (
-                                    <p className="text-orange-900/40 italic py-8 text-center bg-white rounded-xl border border-dashed border-orange-100">No public notices available at this time.</p>
+                                    <p className="text-orange-950/60 font-black uppercase tracking-[0.2em] italic py-10 text-center bg-white rounded-2xl border-2 border-dashed border-orange-100/50 shadow-inner">No public notices available at this time.</p>
                                 )}
                                 <p className="text-center">
                                     <button onClick={onLoginClick} className="text-sm font-semibold text-orange-600 hover:text-orange-700">Read All Circulars &rarr;</button>
@@ -208,25 +208,25 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
                              <p className="text-4xl md:text-5xl font-extrabold text-orange-500 font-display transition-transform group-hover:scale-110 duration-300">
                                 {users.filter(u => u.role !== 'PENDING').length || 1}
                              </p>
-                             <p className="text-sm font-semibold text-gray-400 uppercase tracking-widest">Registered Members</p>
+                             <p className="text-sm font-black text-gray-500 uppercase tracking-widest">Registered Members</p>
                         </div>
                         <div className="space-y-2 group">
                              <p className="text-4xl md:text-5xl font-extrabold text-orange-500 font-display transition-transform group-hover:scale-110 duration-300">
                                 {announcements.length}
                              </p>
-                             <p className="text-sm font-semibold text-gray-400 uppercase tracking-widest">Digital Circulars</p>
+                             <p className="text-sm font-black text-gray-500 uppercase tracking-widest">Digital Circulars</p>
                         </div>
                         <div className="space-y-2 group">
                              <p className="text-4xl md:text-5xl font-extrabold text-orange-500 font-display transition-transform group-hover:scale-110 duration-300">
                                 {grievances.filter(g => g.status === 'RESOLVED').length}
                              </p>
-                             <p className="text-sm font-semibold text-gray-400 uppercase tracking-widest">Resolved Grievances</p>
+                             <p className="text-sm font-black text-gray-500 uppercase tracking-widest">Resolved Grievances</p>
                         </div>
                         <div className="space-y-2 group">
                              <p className="text-4xl md:text-5xl font-extrabold text-orange-500 font-display transition-transform group-hover:scale-110 duration-300">
                                 {UNION_CONTACT_INFO.regdNo}
                              </p>
-                             <p className="text-sm font-semibold text-gray-400 uppercase tracking-widest">Registration No.</p>
+                             <p className="text-sm font-black text-gray-500 uppercase tracking-widest">Registration No.</p>
                         </div>
                     </div>
                  </div>

@@ -112,7 +112,7 @@ const VoterListModal: React.FC<{ isOpen: boolean; onClose: () => void; title: st
                             <div key={i} className="flex items-center justify-between p-4 bg-orange-50/50 rounded-2xl border border-transparent hover:border-orange-200 transition-all group">
                                 <div>
                                     <p className="font-black text-[#002316] group-hover:text-orange-600 transition-colors uppercase text-sm">{v.name}</p>
-                                    <p className="text-[10px] font-bold text-orange-900/40 uppercase tracking-widest mt-0.5">{v.dept}</p>
+                                    <p className="text-[10px] font-black text-[#002316]/70 uppercase tracking-widest mt-0.5">{v.dept}</p>
                                 </div>
                                 <div className="text-right">
                                     <p className="font-mono text-xs font-black text-orange-700">{v.empNo}</p>
@@ -602,7 +602,7 @@ const AnnouncementManager: React.FC = () => {
                                 )}
 
                                 {ann.createdAt && (
-                                    <p className="text-xs text-gray-400 mt-2">
+                                    <p className="text-xs text-gray-500 font-bold mt-2">
                                         {new Date(ann.createdAt).toLocaleString()}
                                     </p>
                                 )}
@@ -646,7 +646,7 @@ const AnnouncementManager: React.FC = () => {
                         </div>
                     ))
                 ) : (
-                    <p className="text-gray-500">No announcements posted yet.</p>
+                    <p className="text-gray-600 font-bold italic">No announcements posted yet.</p>
                 )}
             </div>
         </div>
@@ -751,7 +751,7 @@ const CalendarManager: React.FC = () => {
                                     </span>
                                     <h4 className="font-bold text-gray-800 dark:text-gray-100">{event.title}</h4>
                                 </div>
-                                <p className="text-xs text-gray-500 mt-1">
+                                <p className="text-xs text-gray-600 font-bold mt-1">
                                     {new Date(event.date).toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' })} at {event.startTime}
                                 </p>
                                 {event.location && <p className="text-[10px] text-gray-400">📍 {event.location}</p>}
@@ -767,7 +767,7 @@ const CalendarManager: React.FC = () => {
                 ) : (
                     <div className="text-center py-12 bg-white dark:bg-gray-900 rounded-lg border border-dashed dark:border-gray-800">
                       <ClockIcon className="w-12 h-12 text-gray-300 mx-auto mb-2" />
-                      <p className="text-gray-500">No upcoming events scheduled.</p>
+                      <p className="text-gray-600 font-bold italic">No upcoming events scheduled.</p>
                     </div>
                 )}
             </div>

@@ -47,7 +47,7 @@ const Auth: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
                 {/* Form Right Panel */}
                 <div className="w-full md:w-1/2 p-8 md:p-12 relative flex flex-col justify-center bg-[#fcfaf7]">
                     {onBack && (
-                        <button onClick={onBack} className="absolute top-6 left-6 text-gray-400 hover:text-orange-600 flex items-center transition-colors">
+                        <button onClick={onBack} className="absolute top-6 left-6 text-gray-600 hover:text-orange-700 flex items-center transition-colors font-black uppercase text-[10px] tracking-widest gap-2">
                             &larr; <span className="text-sm font-medium ml-1">Home</span>
                         </button>
                     )}
@@ -239,7 +239,7 @@ const RegistrationForm: React.FC<{ onToggle: () => void }> = ({ onToggle }) => {
                     <svg className="w-16 h-16 text-orange-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
-                    <h2 className="text-3xl font-black text-[#002316] uppercase tracking-tight mt-6">Dossier Transmitted!</h2>
+                    <span className="text-[10px] text-gray-600 font-black uppercase tracking-[0.2em]">Secure Premium Infrastructure</span>
                     <p className="text-orange-900/60 mt-2 font-bold">Your application is now under Executive Review.</p>
                 </div>
                 <div className="bg-gray-50 p-5 rounded-md border border-gray-200 text-sm space-y-3 mb-8">
