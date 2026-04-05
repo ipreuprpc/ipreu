@@ -8,6 +8,7 @@ import { ClockIcon } from './icons/ClockIcon';
 import { PaperClipIcon } from './icons/PaperClipIcon';
 import { EXECUTIVE_MEMBERS, UNION_CONTACT_INFO } from '../constants';
 import BrandingBadge from './BrandingBadge';
+import { User } from '../types';
 
 interface LandingPageProps {
     onLoginClick: (tab?: string) => void;
@@ -30,7 +31,7 @@ const LeadershipCard: React.FC<{ name: string; post: string }> = ({ name, post }
                 {name.split(' ').map(n => n[0]).join('').substring(0, 2)}
             </div>
             <div>
-                <p className="font-black text-xl text-[#064e3b] tracking-tight leading-tight mb-0.5 transition-colors uppercase">{name}</p>
+                <p className="font-black text-xl text-[#15803d] tracking-tight leading-tight mb-0.5 transition-colors uppercase">{name}</p>
                 <p className="text-[10px] uppercase tracking-[0.2em] text-orange-700 font-black">{post}</p>
             </div>
         </div>
@@ -46,6 +47,16 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
         .slice(0, 3);
 
     const latestAnnouncements = announcements.slice(0, 3);
+
+    const isBirthdayToday = (dob?: string) => {
+        if (!dob) return false;
+        const today = new Date();
+        const birthDate = new Date(dob);
+        return today.getDate() === birthDate.getDate() && 
+               today.getMonth() === birthDate.getMonth();
+    };
+
+    const birthdayStars = users.filter(u => u.role === 'MEMBER' && isBirthdayToday(u.dob));
 
     return (
         <div className="min-h-[calc(100vh-80px)] flex flex-col justify-between -mt-4 md:-mt-8 -mx-4 md:-mx-8">
@@ -198,6 +209,38 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
                     </div>
                 </div>
             </section>
+
+            {/* BIRTHDAY STARS - NEW SECTION */}
+            {birthdayStars.length > 0 && (
+                <section className="py-24 px-6 md:px-12 bg-gradient-to-b from-orange-50 to-white overflow-hidden relative">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-orange-200/20 rounded-full blur-3xl -mr-32 -mt-32"></div>
+                    <div className="max-w-7xl mx-auto">
+                        <div className="text-center mb-16 relative z-10">
+                            <span className="text-orange-600 font-black uppercase tracking-[0.4em] text-[10px] mb-4 block">Celebrations</span>
+                            <h2 className="text-5xl md:text-7xl font-black text-[#013220] uppercase tracking-tighter mb-4">Birthday Stars 🎂</h2>
+                            <p className="text-lg md:text-xl text-gray-500 font-bold max-w-2xl mx-auto">Wishing our dedicated union members a year of pride and prosperity!</p>
+                        </div>
+
+                        <div className="flex flex-wrap justify-center gap-8 md:gap-12 relative z-10">
+                            {birthdayStars.map(m => (
+                                <div key={m.id} className="flex flex-col items-center group">
+                                    <div className="relative mb-6">
+                                        <div className="absolute inset-0 bg-orange-500 rounded-full scale-110 blur-[10px] opacity-0 group-hover:opacity-30 transition-opacity"></div>
+                                        <div className="w-32 h-32 md:w-44 md:h-44 rounded-full border-[6px] border-white shadow-[0_15px_35px_rgba(0,0,0,0.1)] overflow-hidden relative z-10 group-hover:scale-105 transition-transform duration-500">
+                                            <img src={m.photoUrl} alt={m.employeeName} className="w-full h-full object-cover" />
+                                        </div>
+                                        <div className="absolute -bottom-2 -right-2 bg-orange-600 text-white w-10 h-10 rounded-full flex items-center justify-center text-xl shadow-lg transform rotate-12 group-hover:rotate-0 transition-transform z-20">
+                                            🎈
+                                        </div>
+                                    </div>
+                                    <h3 className="text-xl md:text-2xl font-black text-[#013220] uppercase tracking-tight group-hover:text-orange-600 transition-colors">{m.employeeName}</h3>
+                                    <p className="text-[10px] font-black text-orange-950/40 uppercase tracking-[0.2em] mt-1">{m.employeeNumber} • {m.postingLocation}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            )}
 
             {/* QUICK STATS (ACTUAL) */}
             <section className="py-20 bg-gradient-to-br from-gray-900 to-black text-white overflow-hidden relative">

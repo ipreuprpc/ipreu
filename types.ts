@@ -24,6 +24,10 @@ export interface User {
   role: UserRole;
   fcmToken?: string;
   password?: string; // Kept for form types but not persisted
+  postingLocation: 'PR' | 'PNCP' | string;
+  pocName: string;
+  shift: 'General' | 'Shift' | '36 Hrs' | string;
+  photoUrl?: string;
 }
 
 export interface SurveyOption {
@@ -54,6 +58,10 @@ export interface Grievance {
   id: string;
   userId: string;
   userName: string;
+  employeeNumber: string;
+  postingLocation: string;
+  pocName: string;
+  shift: string;
   category: string;
   subject: string;
   description: string;

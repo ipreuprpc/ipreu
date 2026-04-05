@@ -7,8 +7,9 @@ import BrandingBadge from './components/BrandingBadge';
 import ErrorBoundary from './components/ErrorBoundary';
 import {
     loadSession, saveSession, clearSession,
-    api, messaging, db, auth
+    api, messaging, db, auth, storage
 } from './services/storage';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { getToken, onMessage } from 'firebase/messaging';
 import { onAuthStateChanged } from 'firebase/auth';
 import { collection, query, orderBy, onSnapshot, where, limit } from 'firebase/firestore';
@@ -41,7 +42,7 @@ interface AppContextType {
     memberLogin: (email: string, password?: string) => Promise<{ success: boolean; pending?: boolean; error?: string }>;
     adminLogin: (email: string, password?: string) => Promise<{ success: boolean; error?: string }>;
     logout: () => void;
-    register: (newUser: Omit<User, 'id' | 'role'>) => Promise<boolean>;
+    register: (newUser: Omit<User, 'id' | 'role'>, photo: Blob) => Promise<boolean>;
     approveRegistration: (id: string) => Promise<void>;
     rejectRegistration: (id: string) => Promise<void>;
     createSurvey: (survey: Omit<Survey, 'id' | 'votes'>) => void;
@@ -74,8 +75,22 @@ function App() {
     const [calendarEvents, setCalendarEvents] = useState<CalendarEvent[]>([]);
     const [grievances, setGrievances] = useState<Grievance[]>([]);
     const [users, setUsers] = useState<User[]>([]);
-    const [activeTab, setActiveTab] = useState('dashboard');
+    const [activeTab, setActiveTab] = useState(() => {
+        const params = new URLSearchParams(window.location.search);
+        return params.get('tab') || 'dashboard';
+    });
     const [requestedTab, setRequestedTab] = useState<string | null>(null);
+
+    // Sync activeTab with URL
+    useEffect(() => {
+        const url = new URL(window.location.href);
+        if (activeTab && activeTab !== 'dashboard') {
+            url.searchParams.set('tab', activeTab);
+        } else {
+            url.searchParams.delete('tab');
+        }
+        window.history.replaceState({}, '', url.toString());
+    }, [activeTab]);
 
     React.useLayoutEffect(() => {
         document.documentElement.classList.toggle('dark', isDarkMode);
@@ -256,8 +271,18 @@ function App() {
             setCurrentUser(null);
             clearSession();
         },
-        register: async (newUser: Omit<User, 'id' | 'role'>) => {
-            await api.register(newUser);
+        register: async (newUser: Omit<User, 'id' | 'role'>, photo: Blob) => {
+            let photoUrl = '';
+            try {
+                const photoRef = ref(storage, `profile_photos/${Date.now()}_${newUser.employeeNumber}.jpg`);
+                await uploadBytes(photoRef, photo);
+                photoUrl = await getDownloadURL(photoRef);
+            } catch (err) {
+                console.error("Photo upload failed:", err);
+                throw new Error("Failed to upload profile photo. Please try again.");
+            }
+
+            await api.register({ ...newUser, photoUrl });
             return true;
         },
         rejectRegistration: async (id: string) => {
@@ -315,15 +340,16 @@ function App() {
             setCalendarEvents(prev => prev.filter(e => e.id !== id));
         },
         submitGrievance: async (subject: string, description: string, category: string) => {
-            if (!currentUser || !auth.currentUser) {
+            if (!auth.currentUser) {
                 throw new Error("Session expired. Please log in again to register a grievance.");
             }
-            if (currentUser.id !== auth.currentUser.uid) {
-                throw new Error("Identity mismatch. Please log in again.");
-            }
             const newGrievance: Omit<Grievance, 'id'> = {
-                userId: currentUser.id,
-                userName: currentUser.employeeName,
+                userId: auth.currentUser.uid,
+                userName: currentUser?.employeeName || 'Anonymous',
+                employeeNumber: currentUser?.employeeNumber || 'N/A',
+                postingLocation: currentUser?.postingLocation || 'N/A',
+                pocName: currentUser?.pocName || 'N/A',
+                shift: currentUser?.shift || 'N/A',
                 subject,
                 description,
                 category,
@@ -375,7 +401,7 @@ function App() {
     return (
         <AppContext.Provider value={contextValue}>
             <div className="min-h-screen font-sans bg-[#fcfaf7] transition-colors duration-300">
-                <Header />
+                <Header onLoginClick={() => setShowAuth(true)} />
                 <main className="container mx-auto p-4 md:p-8 pb-32">
                     <Suspense fallback={
                         <div className="min-h-[50vh] flex items-center justify-center">

@@ -7,6 +7,8 @@ import { MegaphoneIcon } from './icons/MegaphoneIcon';
 import { PaperClipIcon } from './icons/PaperClipIcon';
 import { ClockIcon } from './icons/ClockIcon';
 import { CheckCircleIcon } from './icons/CheckCircleIcon';
+import Confetti from 'react-confetti';
+import { useWindowSize } from 'react-use';
 
 
 // Helper: Survey Card for Voting
@@ -203,6 +205,11 @@ const MemberDashboard: React.FC<MemberDashboardProps> = ({ activeTab, setActiveT
     const { surveys, currentUser, submitVote, announcements, calendarEvents, grievances, submitGrievance } = useAppContext();
     const [reVotingIds, setReVotingIds] = useState<Set<string>>(new Set());
 
+    const handleTabChange = (tab: string) => {
+        setActiveTab(tab as any);
+        // URL sync is handled by App.tsx useEffect
+    };
+
     if (!currentUser) return null;
 
     const availableSurveys = surveys.filter(s => !s.votes[currentUser.id] || reVotingIds.has(s.id));
@@ -230,8 +237,38 @@ const MemberDashboard: React.FC<MemberDashboardProps> = ({ activeTab, setActiveT
         return (new Date().getTime() - new Date(createdAt).getTime()) < oneDay;
     };
 
+    const isBirthdayToday = (dob?: string) => {
+        if (!dob) return false;
+        const today = new Date();
+        const birthDate = new Date(dob);
+        return today.getDate() === birthDate.getDate() && 
+               today.getMonth() === birthDate.getMonth();
+    };
+
+    const isBirthday = isBirthdayToday(currentUser.dob);
+    const { width, height } = useWindowSize();
+
     return (
         <div className="space-y-12 animate-fade-in pb-20">
+            {/* Confetti and Birthday Greeting */}
+            {isBirthday && (
+                <>
+                    <Confetti width={width} height={height} recycle={false} numberOfPieces={500} colors={['#f97316', '#fb923c', '#fdba74', '#ffffff']} />
+                    <div className="bg-gradient-to-r from-orange-600 via-orange-500 to-orange-600 p-8 rounded-[2.5rem] border-4 border-orange-400 shadow-2xl relative overflow-hidden animate-pulse-slow">
+                        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+                        <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
+                            <div className="w-32 h-32 rounded-full border-4 border-white shadow-2xl overflow-hidden bg-white flex-shrink-0 animate-bounce-slow">
+                                <img src={currentUser.photoUrl} alt={currentUser.employeeName} className="w-full h-full object-cover" />
+                            </div>
+                            <div className="text-center md:text-left text-white">
+                                <h2 className="text-4xl md:text-6xl font-black uppercase tracking-tighter mb-2">Happy Birthday! 🎂</h2>
+                                <p className="text-xl md:text-2xl font-bold opacity-90 italic">"Wishing you, <span className="underline decoration-white/30">{currentUser.employeeName}</span>, a year filled with unparalleled success, unwavering solidarity, and immense joy. The IPREU family celebrates you today!"</p>
+                            </div>
+                        </div>
+                    </div>
+                </>
+            )}
+
             {/* Home Dashboard: Greeting, ID Card, and Announcements */}
             {(activeTab === 'dashboard' || activeTab === 'overview') && (
                 <>
@@ -242,30 +279,45 @@ const MemberDashboard: React.FC<MemberDashboardProps> = ({ activeTab, setActiveT
                         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-500/10 rounded-full -mr-32 -mt-32 blur-[100px] group-hover:scale-110 transition-transform duration-1000" />
                         <div className="absolute bottom-0 left-0 w-80 h-80 bg-black/40 rounded-full -ml-32 -mb-32 blur-[80px]" />
                         
-                        <div className="relative z-10">
-                            <div className="inline-flex items-center gap-2 bg-orange-600/20 backdrop-blur-xl px-5 py-2 rounded-full border border-orange-500/20 text-[10px] font-black uppercase tracking-[0.3em] mb-8 shadow-inner">
-                                <span className="w-2 h-2 bg-orange-500 rounded-full animate-pulse shadow-[0_0_10px_#f97316]"></span>
-                                <span className="opacity-80">Authenticated Member Session</span>
+                        <div className="relative z-10 flex flex-col md:flex-row gap-8 items-center md:items-start">
+                            {/* Profile Image in Greeting */}
+                            <div className="w-32 h-32 md:w-48 md:h-48 rounded-[2rem] border-4 border-orange-500/30 overflow-hidden shadow-2xl bg-orange-900 flex-shrink-0 group-hover:scale-105 transition-transform duration-500">
+                                <img src={currentUser.photoUrl} alt={currentUser.employeeName} className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity" />
                             </div>
-                            <h1 className="text-5xl md:text-7xl font-black mb-8 tracking-tighter leading-[0.9] uppercase">
-                                {greeting}, <br/>
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-200 to-orange-500">
-                                    {currentUser.employeeName.split(' ')[0]} 
-                                </span>! <span className="inline-block hover:animate-bounce transition-transform duration-300">⚡</span>
-                            </h1>
-                            <p className="text-orange-100/60 text-lg md:text-xl max-w-xl leading-relaxed font-bold italic border-l-4 border-orange-500/30 pl-6">
-                                "Welcome back to the IPREU digital nexus. Your identity remains protected and your voice strategic."
-                            </p>
+                            
+                            <div className="flex-1 text-center md:text-left">
+                                <div className="inline-flex items-center gap-2 bg-orange-600/20 backdrop-blur-xl px-5 py-2 rounded-full border border-orange-500/20 text-[10px] font-black uppercase tracking-[0.3em] mb-8 shadow-inner">
+                                    <span className="w-2 h-2 bg-orange-500 rounded-full animate-pulse shadow-[0_0_10px_#f97316]"></span>
+                                    <span className="opacity-80">Authenticated Member Session</span>
+                                </div>
+                                <h1 className="text-5xl md:text-7xl font-black mb-8 tracking-tighter leading-[0.9] uppercase">
+                                    {greeting}, <br/>
+                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-200 to-orange-500">
+                                        {currentUser.employeeName.split(' ')[0]} 
+                                    </span>! <span className="inline-block hover:animate-bounce transition-transform duration-300">⚡</span>
+                                </h1>
+                                <p className="text-orange-100/60 text-lg md:text-xl max-w-xl leading-relaxed font-bold italic border-l-4 border-orange-500/30 pl-6">
+                                    "Welcome back to the IPREU digital nexus. Your identity remains protected and your voice strategic."
+                                </p>
+                            </div>
                         </div>
                         
                         <div className="mt-14 flex flex-wrap items-center gap-4 relative z-10">
                             <div className="bg-white/5 backdrop-blur-2xl px-6 py-4 rounded-2xl border border-white/10 text-xs font-black shadow-2xl flex items-center gap-3">
-                                <span className="text-orange-500 opacity-60 uppercase tracking-widest text-[9px]">Authority</span> 
-                                <span className="text-white">IPREU Member</span>
+                                <span className="text-orange-500 opacity-60 uppercase tracking-widest text-[9px]">Location</span> 
+                                <span className="text-white">{currentUser.postingLocation}</span>
                             </div>
                             <div className="bg-white/5 backdrop-blur-2xl px-6 py-4 rounded-2xl border border-white/10 text-xs font-black shadow-2xl flex items-center gap-3">
-                                <span className="text-orange-500 opacity-60 uppercase tracking-widest text-[9px]">Dossier Code</span>
-                                <span className="text-white font-mono tracking-widest">#{currentUser.id.substring(0,8).toUpperCase()}</span>
+                                <span className="text-orange-500 opacity-60 uppercase tracking-widest text-[9px]">POC</span> 
+                                <span className="text-white">{currentUser.pocName}</span>
+                            </div>
+                            <div className="bg-white/5 backdrop-blur-2xl px-6 py-4 rounded-2xl border border-white/10 text-xs font-black shadow-2xl flex items-center gap-3">
+                                <span className="text-orange-500 opacity-60 uppercase tracking-widest text-[9px]">Shift</span> 
+                                <span className="text-white">{currentUser.shift}</span>
+                            </div>
+                            <div className="bg-white/5 backdrop-blur-2xl px-6 py-4 rounded-2xl border border-white/10 text-xs font-black shadow-2xl flex items-center gap-3">
+                                <span className="text-orange-500 opacity-60 uppercase tracking-widest text-[9px]">Emp No</span>
+                                <span className="text-white font-mono tracking-widest">#{currentUser.employeeNumber}</span>
                             </div>
                         </div>
                     </div>
@@ -284,6 +336,45 @@ const MemberDashboard: React.FC<MemberDashboardProps> = ({ activeTab, setActiveT
                                 SECURE SMART ID BY IPREU
                             </p>
                             <div className="h-[2px] w-8 bg-orange-100" />
+                        </div>
+                    </div>
+                </div>
+
+                {/* Quick Actions & Navigation */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <button 
+                        onClick={() => handleTabChange('grievances')}
+                        className="group bg-white p-6 rounded-3xl border border-orange-100 shadow-sm hover:shadow-xl hover:border-orange-600/30 transition-all text-left flex items-center gap-6"
+                    >
+                        <div className="p-4 bg-orange-100 rounded-2xl text-orange-600 group-hover:bg-orange-600 group-hover:text-white transition-colors duration-300">
+                            <MegaphoneIcon className="w-8 h-8" />
+                        </div>
+                        <div>
+                            <h3 className="font-black text-orange-950 uppercase tracking-tight">Register Grievance</h3>
+                            <p className="text-[10px] font-bold text-orange-900/40 uppercase tracking-widest mt-1">Direct support channel</p>
+                        </div>
+                    </button>
+
+                    <button 
+                        onClick={() => handleTabChange('calendar')}
+                        className="group bg-white p-6 rounded-3xl border border-orange-100 shadow-sm hover:shadow-xl hover:border-orange-600/30 transition-all text-left flex items-center gap-6"
+                    >
+                        <div className="p-4 bg-blue-100 rounded-2xl text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
+                            <ClockIcon className="w-8 h-8" />
+                        </div>
+                        <div>
+                            <h3 className="font-black text-orange-950 uppercase tracking-tight">Union Calendar</h3>
+                            <p className="text-[10px] font-bold text-orange-900/40 uppercase tracking-widest mt-1">Upcoming schedules</p>
+                        </div>
+                    </button>
+
+                    <div className="bg-orange-50/50 p-6 rounded-3xl border border-dashed border-orange-200 flex items-center gap-6">
+                        <div className="p-4 bg-white rounded-2xl text-orange-300">
+                            <CheckCircleIcon className="w-8 h-8" />
+                        </div>
+                        <div>
+                            <h3 className="font-black text-orange-950/30 uppercase tracking-tight">More Features</h3>
+                            <p className="text-[10px] font-bold text-orange-900/20 uppercase tracking-widest mt-1">Coming soon...</p>
                         </div>
                     </div>
                 </div>

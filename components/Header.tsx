@@ -1,9 +1,14 @@
 import React from 'react';
 import { useAppContext } from '../App';
 import { UserGroupIcon } from './icons/UserGroupIcon';
+import { UserIcon } from './icons/UserIcon';
 import { UserRole } from '../types';
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  onLoginClick?: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ onLoginClick }) => {
   const { currentUser, logout } = useAppContext();
 
   return (
@@ -18,7 +23,7 @@ const Header: React.FC = () => {
           </div>
 
           <div className="flex items-center space-x-2 md:space-x-4 animate-fade-in">
-            {currentUser && (
+            {currentUser ? (
               <>
                 <div className="hidden sm:flex flex-col items-end">
                    <span className="text-sm text-orange-950/70 leading-tight">
@@ -39,6 +44,15 @@ const Header: React.FC = () => {
                   Logout
                 </button>
               </>
+            ) : (
+              <button
+                onClick={() => onLoginClick?.()}
+                className="flex items-center gap-2 px-4 py-2 text-sm font-black text-orange-700 bg-white border border-orange-200 rounded-xl shadow-sm hover:bg-orange-50 hover:border-orange-300 transition-all hover:-translate-y-0.5 active:scale-95 uppercase tracking-wider"
+              >
+                <UserIcon className="w-5 h-5" />
+                <span className="hidden sm:inline">Member Login</span>
+                <span className="sm:hidden">Login</span>
+              </button>
             )}
           </div>
         </div>
