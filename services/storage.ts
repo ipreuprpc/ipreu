@@ -5,13 +5,18 @@ import { getFirestore, collection, doc, setDoc, getDoc, getDocs, updateDoc, dele
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSy_mock_key",
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "mock.firebaseapp.com",
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "mock",
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "mock.appspot.com",
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "123",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:123:web:abc"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
+
+// Production Guard: Immediate configuration check
+if (!firebaseConfig.apiKey || firebaseConfig.apiKey.includes('mock')) {
+    console.error("CRITICAL ERROR: Firebase configuration is missing or invalid. Check your .env file.");
+}
 
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
