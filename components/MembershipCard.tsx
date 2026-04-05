@@ -89,38 +89,48 @@ const MembershipCard: React.FC<MembershipCardProps> = ({ user, logoUrl }) => {
                         </div>
                     </div>
 
-                    {/* Member Details */}
-                    <div className="flex justify-between items-end gap-2">
+                    {/* ID Card Body */}
+                    <div className="flex gap-6 items-center mt-2">
+                        {/* Member Photo - LEFT */}
+                        <div className="relative flex-shrink-0 group">
+                            <div className="absolute -inset-1 bg-white/20 rounded-2xl blur opacity-30"></div>
+                            <div className="relative w-24 h-24 sm:w-28 sm:h-28 bg-white/5 rounded-2xl overflow-hidden border-2 border-white/50 shadow-2xl backdrop-blur-sm">
+                                <img 
+                                    src={user.photoUrl} 
+                                    alt="Member Photo" 
+                                    crossOrigin="anonymous"
+                                    className="w-full h-full object-cover" 
+                                />
+                            </div>
+                            <div className="absolute -bottom-2 -right-2 bg-orange-600 text-[6px] font-black uppercase tracking-widest px-2 py-1 rounded-md border border-white/40 shadow-lg">
+                                VERIFIED
+                            </div>
+                        </div>
+
+                        {/* Member Details - CENTER */}
                         <div className="flex-1 min-w-0">
-                             <div className="mb-4">
-                                <p className="text-[7px] text-orange-300 uppercase tracking-[0.4em] font-black opacity-90 mb-1">MEMBER IDENTITY</p>
-                                <p className="text-[22px] font-black tracking-tight leading-[0.95] text-white break-words drop-shadow-xl max-w-[200px]">
+                            <div className="mb-4">
+                                <p className="text-[7px] text-orange-200 uppercase tracking-[0.4em] font-black opacity-80 mb-1">MEMBER IDENTITY</p>
+                                <p className="text-[20px] font-black tracking-tight leading-[1] text-white break-words drop-shadow-2xl">
                                     {user.employeeName}
                                 </p>
                             </div>
                             
-                            <div className="flex items-center gap-6">
-                                <div>
-                                    <p className="text-[7px] text-orange-300 uppercase tracking-[0.3em] font-black opacity-90">EMP ID</p>
-                                    <p className="text-sm font-black tracking-widest text-[#fbbf24] shadow-sm">#{user.employeeNumber}</p>
-                                </div>
+                            <div className="inline-flex flex-col">
+                                <p className="text-[7px] text-orange-200 uppercase tracking-[0.3em] font-black opacity-80">EMP ID</p>
+                                <p className="text-sm font-black tracking-widest text-[#fbbf24] shadow-sm">#{user.employeeNumber}</p>
                             </div>
                         </div>
 
-                        {/* Verified QR Section */}
-                        <div className="flex-shrink-0 relative group p-2 bg-white rounded-2xl shadow-[0_15px_35px_rgba(0,0,0,0.3)] border-4 border-orange-500/20">
+                        {/* Verified QR Section - RIGHT */}
+                        <div className="flex-shrink-0 relative group p-1.5 bg-white rounded-xl shadow-[0_15px_35px_rgba(0,0,0,0.3)] border-2 border-white/50">
                             <img 
                                 src={qrUrl} 
                                 alt="Secure QR" 
                                 crossOrigin="anonymous"
-                                className="w-20 h-20 sm:w-24 sm:h-24 rounded-lg"
+                                className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg"
                             />
-                            <div className="absolute -top-3 -right-3 bg-orange-700 border-2 border-white rounded-full p-1.5 shadow-2xl">
-                                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="4">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                                </svg>
-                            </div>
-                            <p className="absolute -bottom-6 left-0 right-0 text-[7px] text-orange-200/70 font-black uppercase tracking-[0.3em] text-center">Verified ID</p>
+                            <p className="absolute -bottom-6 left-0 right-0 text-[7px] text-orange-200/50 font-black uppercase tracking-[0.3em] text-center">SECURE DATA</p>
                         </div>
                     </div>
                 </div>

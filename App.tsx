@@ -11,7 +11,7 @@ import {
 } from './services/storage';
 import { getToken, onMessage } from 'firebase/messaging';
 import { onAuthStateChanged } from 'firebase/auth';
-import { collection, query, orderBy, onSnapshot, where, limit } from 'firebase/firestore';
+import { collection, query, orderBy, onSnapshot, where, limit, doc } from 'firebase/firestore';
 
 const Auth = lazy(() => import('./components/Auth'));
 const AdminDashboard = lazy(() => import('./components/AdminDashboard'));
@@ -38,6 +38,7 @@ interface AppContextType {
     announcements: Announcement[];
     calendarEvents: CalendarEvent[];
     grievances: Grievance[];
+    stats: { memberCount: number; announcementCount: number };
     memberLogin: (email: string, password?: string) => Promise<{ success: boolean; pending?: boolean; error?: string }>;
     adminLogin: (email: string, password?: string) => Promise<{ success: boolean; error?: string }>;
     logout: () => void;
@@ -74,6 +75,7 @@ function App() {
     const [calendarEvents, setCalendarEvents] = useState<CalendarEvent[]>([]);
     const [grievances, setGrievances] = useState<Grievance[]>([]);
     const [users, setUsers] = useState<User[]>([]);
+    const [stats, setStats] = useState({ memberCount: 1100, announcementCount: 0 });
     const [activeTab, setActiveTab] = useState(() => {
         const params = new URLSearchParams(window.location.search);
         return params.get('tab') || 'dashboard';
@@ -144,26 +146,43 @@ function App() {
     }, []);
 
     // Real-time Data Listeners
+    // Public Data Listeners (Always active for Landing Page)
     useEffect(() => {
-        if (!currentUser) return;
-
         // Announcements Listener
         const qAnn = query(collection(db, 'announcements'), orderBy('createdAt', 'desc'), limit(30));
         const unsubAnn = onSnapshot(qAnn, (snapshot) => {
             setAnnouncements(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Announcement[]);
-        }, (err) => console.error("Announcements Sync Error:", err));
+        }, (err) => console.error("Public Announcements Sync Error:", err));
+
+        // Calendar Listener
+        const qCal = query(collection(db, 'calendar'), orderBy('date', 'asc'));
+        const unsubCal = onSnapshot(qCal, (snapshot) => {
+            setCalendarEvents(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as CalendarEvent[]);
+        }, (err) => console.error("Public Calendar Sync Error:", err));
+
+        // Stats Listener
+        const unsubStats = onSnapshot(doc(db, 'stats', 'totals'), (snapshot) => {
+            if (snapshot.exists()) {
+                setStats(snapshot.data() as any);
+            }
+        }, (err) => console.error("Public Stats Sync Error:", err));
+
+        return () => {
+            unsubAnn();
+            unsubCal();
+            unsubStats();
+        };
+    }, []);
+
+    // Private Data Listeners (Active only when logged in)
+    useEffect(() => {
+        if (!currentUser) return;
 
         // Surveys Listener
         const qSurv = query(collection(db, 'surveys'));
         const unsubSurv = onSnapshot(qSurv, (snapshot) => {
             setSurveys(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Survey[]);
         }, (err) => console.error("Surveys Sync Error:", err));
-
-        // Calendar Listener
-        const qCal = query(collection(db, 'calendar'), orderBy('date', 'asc'));
-        const unsubCal = onSnapshot(qCal, (snapshot) => {
-            setCalendarEvents(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as CalendarEvent[]);
-        }, (err) => console.error("Calendar Sync Error:", err));
 
         // Grievances Listener (Member sees only theirs, Admin sees all)
         let qGriv;
@@ -186,9 +205,7 @@ function App() {
         }
 
         return () => {
-            unsubAnn();
             unsubSurv();
-            unsubCal();
             unsubGriv();
             unsubUsers();
         };
@@ -228,6 +245,7 @@ function App() {
         announcements: announcements,
         calendarEvents: calendarEvents,
         grievances: grievances,
+        stats: stats,
         fetchAnnouncements: async () => {
             const acts = await api.getAnnouncements();
             setAnnouncements(acts);

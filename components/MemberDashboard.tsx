@@ -279,8 +279,8 @@ const MemberDashboard: React.FC<MemberDashboardProps> = ({ activeTab, setActiveT
             {(activeTab === 'dashboard' || activeTab === 'overview') && (
                 <>
                 <div className="grid grid-cols-1 xl:grid-cols-5 gap-8 items-stretch">
-                    {/* Left: Greeting - REDESIGNED PREMIUM ORANGE */}
-                    <div className="xl:col-span-3 bg-gradient-to-br from-orange-950 via-orange-900 to-[#2d0f05] rounded-[3rem] p-10 md:p-14 text-white shadow-2xl flex flex-col justify-center relative overflow-hidden group border border-orange-900/50">
+                    {/* Left: Greeting - MORE COMPACT & SOPHISTICATED */}
+                    <div className="xl:col-span-2 bg-gradient-to-br from-orange-950 via-orange-900 to-[#2d0f05] rounded-[2.5rem] p-8 md:p-10 text-white shadow-2xl flex flex-col justify-center relative overflow-hidden group border border-orange-900/50">
                         {/* Dynamic Background Elements */}
                         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-500/10 rounded-full -mr-32 -mt-32 blur-[100px] group-hover:scale-110 transition-transform duration-1000" />
                         <div className="absolute bottom-0 left-0 w-80 h-80 bg-black/40 rounded-full -ml-32 -mb-32 blur-[80px]" />
@@ -296,14 +296,14 @@ const MemberDashboard: React.FC<MemberDashboardProps> = ({ activeTab, setActiveT
                                     <span className="w-2 h-2 bg-orange-500 rounded-full animate-pulse shadow-[0_0_10px_#f97316]"></span>
                                     <span className="opacity-100">Authenticated Member Session</span>
                                 </div>
-                                <h1 className="text-5xl md:text-7xl font-black mb-8 tracking-tighter leading-[0.9] uppercase">
+                                <h1 className="text-3xl md:text-5xl font-black mb-6 tracking-tighter leading-[0.9] uppercase">
                                     {greeting}, <br/>
                                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-200 to-orange-500">
                                         {currentUser.employeeName.split(' ')[0]} 
                                     </span>! <span className="inline-block hover:animate-bounce transition-transform duration-300">⚡</span>
                                 </h1>
-                                <p className="text-orange-100/60 text-lg md:text-xl max-w-xl leading-relaxed font-bold italic border-l-4 border-orange-500/30 pl-6">
-                                    "Welcome back to the IPREU digital nexus. Your identity remains protected and your voice strategic."
+                                <p className="text-orange-100/60 text-sm md:text-base max-w-sm leading-relaxed font-bold italic border-l-3 border-orange-500/30 pl-4">
+                                    "Your voice remains strategic."
                                 </p>
                             </div>
                         </div>
@@ -328,8 +328,8 @@ const MemberDashboard: React.FC<MemberDashboardProps> = ({ activeTab, setActiveT
                         </div>
                     </div>
 
-                    {/* Right: Digital ID Card Preview */}
-                    <div className="xl:col-span-2 flex flex-col items-center justify-center bg-white rounded-[2.5rem] p-8 border border-orange-100 shadow-xl group hover:border-orange-600/20 transition-all duration-500">
+                    {/* Right: Digital ID Card Preview - ENLARGED PROMINENCE */}
+                    <div className="xl:col-span-3 flex flex-col items-center justify-center bg-white rounded-[2.5rem] p-10 border border-orange-100 shadow-xl group hover:border-orange-600/20 transition-all duration-500">
                         <div className="inline-flex items-center gap-2 mb-8 bg-[#fcfaf7] px-4 py-1.5 rounded-full">
                             <p className="text-[10px] font-black text-orange-600 uppercase tracking-[0.3em]">Identity Verification</p>
                         </div>
@@ -348,18 +348,7 @@ const MemberDashboard: React.FC<MemberDashboardProps> = ({ activeTab, setActiveT
 
                 {/* Quick Actions & Navigation */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <button 
-                        onClick={() => handleTabChange('grievances')}
-                        className="group bg-white p-6 rounded-3xl border border-orange-100 shadow-sm hover:shadow-xl hover:border-orange-600/30 transition-all text-left flex items-center gap-6"
-                    >
-                        <div className="p-4 bg-orange-100 rounded-2xl text-orange-600 group-hover:bg-orange-600 group-hover:text-white transition-colors duration-300">
-                            <MegaphoneIcon className="w-8 h-8" />
-                        </div>
-                        <div>
-                            <h3 className="font-black text-orange-950 uppercase tracking-tight">Register Grievance</h3>
-                            <p className="text-[10px] font-bold text-orange-900/70 uppercase tracking-widest mt-1">Direct support channel</p>
-                        </div>
-                    </button>
+                    {/* Registration Shortcut replaced with Member List/Profile info or hidden */}
 
                     <button 
                         onClick={() => handleTabChange('calendar')}
@@ -489,61 +478,6 @@ const MemberDashboard: React.FC<MemberDashboardProps> = ({ activeTab, setActiveT
                 </div>
             )}
 
-            {/* Grievance Section */}
-            {activeTab === 'grievances' && (
-                <div className="space-y-10 animate-slide-up">
-                   <div className="flex items-center gap-4">
-                        <div className="p-3 bg-orange-100 rounded-2xl text-orange-600 shadow-sm">
-                            <MegaphoneIcon className="w-7 h-7 rotate-12"/>
-                        </div>
-                        <div>
-                            <h2 className="text-3xl font-black text-[#002316] tracking-tight leading-none uppercase">Public Grievance Redressal Hub</h2>
-                            <p className="text-[10px] font-bold text-[#002316]/90 uppercase tracking-widest mt-1.5">Secure Grievance Redressal Mechanism</p>
-                        </div>
-                    </div>
-                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-10">
-                        <div>
-                             <GrievanceForm onSubmit={submitGrievance} />
-                        </div>
-                        <div className="space-y-6">
-                            <div className="flex items-center justify-between mb-4">
-                                    <h3 className="font-black text-[#002316] uppercase tracking-widest text-xs flex items-center gap-3">
-                                        <span className="w-3 h-3 bg-orange-600 rounded-full animate-pulse shadow-lg shadow-orange-600/50"></span>
-                                        Grievance Reports
-                                    </h3>
-                                <p className="text-[10px] font-bold text-[#002316]/60 uppercase tracking-widest">{grievances.length} Submissions</p>
-                            </div>
-                            {grievances.length > 0 ? grievances.map(g => (
-                                <div key={g.id} className="bg-white p-6 rounded-[1.5rem] shadow-sm border border-orange-100 transition-all hover:border-orange-600/20">
-                                    <div className="flex justify-between items-start mb-4">
-                                        <h4 className="font-black text-[#002316] text-base uppercase tracking-tight pr-4">{g.subject}</h4>
-                                        <span className={`text-[9px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest shadow-sm ${
-                                            g.status === 'NEW' ? 'bg-orange-100 text-orange-700 border border-orange-200' : 'bg-orange-100 text-orange-700 border border-orange-200'
-                                        }`}>
-                                            {g.status}
-                                        </span>
-                                    </div>
-                                    <p className="text-xs text-[#002316]/70 line-clamp-3 leading-relaxed mb-6 font-medium italic">"{g.description}"</p>
-                                    {g.status === 'RESOLVED' && (
-                                        <div className="p-6 bg-orange-50 rounded-2xl border-2 border-orange-100 relative overflow-hidden">
-                                            <div className="absolute top-0 right-0 w-16 h-16 bg-orange-100 rounded-full -mr-8 -mt-8 opacity-40" />
-                                            <p className="text-[9px] font-black text-orange-800 uppercase tracking-[0.3em] mb-2 flex items-center gap-2">
-                                                <span className="w-1.5 h-1.5 bg-orange-600 rounded-full"></span>
-                                                Official Union Resolution
-                                            </p>
-                                            <p className="text-[13px] text-[#002316] font-bold leading-relaxed">"{g.response}"</p>
-                                        </div>
-                                    )}
-                                </div>
-                            )) : (
-                                <div className="p-24 text-center bg-[#fcfaf7] rounded-[2.5rem] border-2 border-dashed border-orange-100 opacity-60">
-                                    <p className="text-[10px] font-black text-[#002316]/60 uppercase tracking-[0.3em]">No legal submissions recorded</p>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            )}
 
             {/* Surveys Section (Only in Home tab for Member) */}
             {(activeTab === 'dashboard' || activeTab === 'overview') && (

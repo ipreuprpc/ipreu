@@ -25,12 +25,17 @@ service cloud.firestore {
     }
 
     match /announcements/{announcementId} {
-      allow read: if isMemberOrAdmin();
+      allow read: if true; 
       allow write: if isAdmin();
     }
 
     match /calendar/{eventId} {
-      allow read: if isMemberOrAdmin();
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /stats/{docId} {
+      allow read: if true;
       allow write: if isAdmin();
     }
 

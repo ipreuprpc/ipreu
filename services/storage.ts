@@ -1,7 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
-import { getFirestore, collection, doc, setDoc, getDoc, getDocs, updateDoc, deleteDoc, query, where, orderBy, addDoc, limit } from 'firebase/firestore';
+import { getFirestore, collection, doc, setDoc, getDoc, getDocs, updateDoc, deleteDoc, query, where, orderBy, addDoc, limit, increment } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 const firebaseConfig = {
@@ -107,6 +107,8 @@ export const api = {
       ...announcement,
       createdAt,
     });
+    // Update public stats count
+    await setDoc(doc(db, 'stats', 'totals'), { announcementCount: increment(1) }, { merge: true });
     return { id: docRef.id, ...announcement, createdAt };
   },
   deleteAnnouncement: async (id: string) => {
@@ -137,6 +139,8 @@ export const api = {
       role: 'MEMBER',
       memberNo: memberNo
     });
+    // Update public stats count for members
+    await setDoc(doc(db, 'stats', 'totals'), { memberCount: increment(1) }, { merge: true });
     return true;
   },
   getSurveys: async () => {

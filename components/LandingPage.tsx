@@ -39,7 +39,7 @@ const LeadershipCard: React.FC<{ name: string; post: string }> = ({ name, post }
 );
 
 const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
-    const { calendarEvents, announcements, users, grievances } = useAppContext();
+    const { calendarEvents, announcements, users, grievances, stats } = useAppContext();
     
     const upcomingEvents = calendarEvents
         .filter(e => new Date(e.date) >= new Date(new Date().setHours(0,0,0,0)))
@@ -249,13 +249,13 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
                         <div className="space-y-2 group">
                              <p className="text-4xl md:text-5xl font-extrabold text-orange-500 font-display transition-transform group-hover:scale-110 duration-300">
-                                {users.filter(u => u.role !== 'PENDING').length || 1}
+                                {stats.memberCount || 1100}
                              </p>
                              <p className="text-sm font-black text-gray-500 uppercase tracking-widest">Registered Members</p>
                         </div>
                         <div className="space-y-2 group">
                              <p className="text-4xl md:text-5xl font-extrabold text-orange-500 font-display transition-transform group-hover:scale-110 duration-300">
-                                {announcements.length}
+                                {stats.announcementCount || announcements.length}
                              </p>
                              <p className="text-sm font-black text-gray-500 uppercase tracking-widest">Digital Circulars</p>
                         </div>
@@ -331,9 +331,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
                     <div>
                          <h5 className="text-orange-300 font-bold mb-4 uppercase text-xs tracking-widest font-display">Navigation</h5>
                         <ul className="space-y-2 text-sm text-orange-100/60">
-                            <li><button onClick={onLoginClick} className="hover:text-orange-300 transition-colors">Member Login</button></li>
-                            <li><a href="#leadership" className="hover:text-orange-300 transition-colors">Executive Body</a></li>
-                            <li><button onClick={() => onLoginClick('grievances')} className="hover:text-orange-300 transition-colors">Grievance Portal</button></li>
+                            <li><button onClick={() => onLoginClick('calendar')} className="hover:text-orange-300 transition-colors">Union Calendar</button></li>
                         </ul>
                     </div>
                 </div>

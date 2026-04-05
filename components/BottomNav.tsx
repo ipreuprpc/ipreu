@@ -19,7 +19,6 @@ const BottomNav: React.FC<BottomNavProps> = ({ activeTab, setActiveTab, role }) 
   ] : [
     { id: 'dashboard', label: 'Home', icon: HomeIcon },
     { id: 'calendar', label: 'Events', icon: CalendarIcon },
-    { id: 'grievances', label: 'Secure', icon: MegaphoneIcon },
   ];
 
   return (
