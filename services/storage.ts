@@ -204,7 +204,7 @@ export const api = {
       img.src = URL.createObjectURL(file);
       img.onload = () => {
         const canvas = document.createElement('canvas');
-        const MAX_WIDTH = 800; // Perfect for Digital ID Cards
+        const MAX_WIDTH = 400; // Optimal for 2x Retina Badges
         const scale = MAX_WIDTH / img.width;
         if (scale < 1) {
           canvas.width = MAX_WIDTH;
@@ -218,7 +218,7 @@ export const api = {
         canvas.toBlob((blob) => {
           if (blob) resolve(blob);
           else reject(new Error("Image compression failed"));
-        }, 'image/jpeg', 0.7); // High quality, low file size
+        }, 'image/jpeg', 0.6); // Perfect balance for speed
         URL.revokeObjectURL(img.src);
       };
       img.onerror = () => reject(new Error("Could not load image for optimization"));
