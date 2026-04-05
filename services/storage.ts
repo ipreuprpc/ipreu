@@ -14,8 +14,9 @@ const firebaseConfig = {
 };
 
 const CLOUDINARY_CONFIG = {
-  cloudName: "dkisozv2k",
-  uploadPreset: "ipreu_unsigned"
+  cloudName: "dznm7b5jm",
+  uploadPreset: "ipreu_unsigned",
+  apiKey: "272145236368789"
 };
 
 // Production Guard: Immediate configuration check
