@@ -383,7 +383,8 @@ const RegistrationForm: React.FC<{ onToggle: () => void }> = ({ onToggle }) => {
                         </div>
                     </div>
                 </div>
-                <button type="submit" disabled={regStatus !== 'IDLE'} className="w-full py-4 bg-orange-600 text-white rounded-xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-orange-700 transition-all shadow-xl shadow-orange-600/20 active:scale-[0.98] disabled:bg-orange-300">
+                <button type="submit" disabled={regStatus !== 'IDLE'} className="w-full py-4 bg-orange-600 text-white rounded-xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-orange-700 transition-all shadow-xl shadow-orange-600/20 active:scale-[0.98] disabled:bg-orange-300 relative overflow-hidden group">
+                    <span className="absolute top-0 right-0 bg-white/20 px-2 py-0.5 rounded-bl-lg text-[7px] font-black tracking-tighter group-hover:bg-white/30 transition-colors">V2.5 HIGH SPEED</span>
                     {regStatus === 'OPTIMIZING' ? 'OPTIMIZING PHOTO...' : 
                      regStatus === 'UPLOADING' ? 'UPLOADING TO SECURE CLOUD...' : 
                      regStatus === 'REGISTERING' ? 'FINALIZING ACCOUNT...' : 

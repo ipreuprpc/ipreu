@@ -261,15 +261,15 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
                         </div>
                         <div className="space-y-2 group">
                              <p className="text-4xl md:text-5xl font-extrabold text-orange-500 font-display transition-transform group-hover:scale-110 duration-300">
-                                {grievances.filter(g => g.status === 'RESOLVED').length}
+                                 {UNION_CONTACT_INFO.regdNo}
                              </p>
-                             <p className="text-sm font-black text-gray-500 uppercase tracking-widest">Resolved Grievances</p>
+                             <p className="text-sm font-black text-gray-500 uppercase tracking-widest">Registration No.</p>
                         </div>
                         <div className="space-y-2 group">
                              <p className="text-4xl md:text-5xl font-extrabold text-orange-500 font-display transition-transform group-hover:scale-110 duration-300">
-                                {UNION_CONTACT_INFO.regdNo}
+                                 Active
                              </p>
-                             <p className="text-sm font-black text-gray-500 uppercase tracking-widest">Registration No.</p>
+                             <p className="text-sm font-black text-gray-500 uppercase tracking-widest">Network Status</p>
                         </div>
                     </div>
                  </div>
