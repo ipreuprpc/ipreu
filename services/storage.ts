@@ -199,7 +199,13 @@ export const api = {
   
   
   compressImage: (file: Blob): Promise<Blob> => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
+      // Senior-Level Fallback: If optimization hangs for more than 5s, use original photo
+      const safetyTimeout = setTimeout(() => {
+        console.warn("Photo optimization timed out, using original file.");
+        resolve(file); 
+      }, 5000);
+
       const img = new Image();
       img.src = URL.createObjectURL(file);
       img.onload = () => {
@@ -216,24 +222,28 @@ export const api = {
         const ctx = canvas.getContext('2d');
         ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
         canvas.toBlob((blob) => {
+          clearTimeout(safetyTimeout);
+          URL.revokeObjectURL(img.src);
           if (blob) resolve(blob);
-          else reject(new Error("Image compression failed"));
-        }, 'image/jpeg', 0.6); // Perfect balance for speed
-        URL.revokeObjectURL(img.src);
+          else resolve(file); // Fallback to original
+        }, 'image/jpeg', 0.6);
       };
-      img.onerror = () => reject(new Error("Could not load image for optimization"));
+      img.onerror = () => {
+        clearTimeout(safetyTimeout);
+        URL.revokeObjectURL(img.src);
+        resolve(file); // Fallback on error
+      };
     });
   },
 
   uploadToCloudinary: async (file: Blob) => {
-    // Senior Level Optimization: Compress massive mobile photos (>200KB) before upload
+    // Optimization trigger (>200KB)
     let optimizedFile = file;
     if (file.size > 200 * 1024) { 
         try {
             optimizedFile = await api.compressImage(file);
-        } catch (compressErr) {
-            console.error("Compression failed, uploading original:", compressErr);
-            // Fallback: upload original if compression fails for some reason
+        } catch (err) {
+            console.error("Compression failed:", err);
         }
     }
 
@@ -241,7 +251,7 @@ export const api = {
     const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
     
     if (!cloudName || cloudName === "your_cloud_name_here") {
-      throw new Error("Cloudinary configuration error. Please check your admin setup.");
+      throw new Error("Cloudinary configuration error. Please check your admin configuration.");
     }
 
     const formData = new FormData();
@@ -249,9 +259,9 @@ export const api = {
     formData.append('upload_preset', uploadPreset);
     formData.append('folder', 'ipreu_registrations');
 
-    // 30-Second Timeout Protection (AbortController)
+    // 60-Second Network Window for slow mobile data
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 30000);
+    const timeoutId = setTimeout(() => controller.abort(), 60000);
 
     try {
         const response = await fetch(
@@ -263,22 +273,24 @@ export const api = {
             }
         );
 
-        clearTimeout(timeoutId);
-
         if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.error?.message || "Failed to upload to Cloudinary");
+            let errorText = "Failed to upload to Cloudinary";
+            try {
+                const errorData = await response.json();
+                errorText = errorData.error?.message || errorText;
+            } catch (e) { /* non-JSON error */ }
+            throw new Error(errorText);
         }
 
         const data = await response.json();
         return data.secure_url;
     } catch (err: any) {
         if (err.name === 'AbortError') {
-            throw new Error("Connection timed out. Please check your internet and try again.");
+            throw new Error("Connection timed out. Please try again with a better signal.");
         }
         throw err;
     } finally {
-        if (timeoutId) clearTimeout(timeoutId);
+        clearTimeout(timeoutId);
     }
   }
 };

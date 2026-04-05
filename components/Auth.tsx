@@ -208,9 +208,9 @@ const RegistrationForm: React.FC<{ onToggle: () => void }> = ({ onToggle }) => {
         email: '', employeeNumber: '', employeeName: '', dob: '', doj: '', department: '', unit: '', fatherName: '', motherName: '', nativePlace: '', state: '', caste: '', mobileNumber: '', password: '',
         postingLocation: '', pocName: '', shift: ''
     });
+    const [regStatus, setRegStatus] = useState<'IDLE' | 'OPTIMIZING' | 'UPLOADING' | 'REGISTERING'>('IDLE');
     const [photo, setPhoto] = useState<File | null>(null);
     const [photoPreview, setPhotoPreview] = useState<string | null>(null);
-    const [uploading, setUploading] = useState(false);
     const [confirmPassword, setConfirmPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [message, setMessage] = useState({ type: '', text: '' });
@@ -244,9 +244,9 @@ const RegistrationForm: React.FC<{ onToggle: () => void }> = ({ onToggle }) => {
             return;
         }
 
-        setUploading(true);
+        setRegStatus('OPTIMIZING');
         try {
-            const success = await register(formData, photo);
+            const success = await register(formData, photo, (status: any) => setRegStatus(status));
             if (success) {
                 setSubmittedData(formData);
                 setMessage({ type: 'success', text: 'Registration successful! Your application is pending approval.' });
@@ -254,7 +254,7 @@ const RegistrationForm: React.FC<{ onToggle: () => void }> = ({ onToggle }) => {
         } catch (err: any) {
             setMessage({ type: 'error', text: err.message || 'An error occurred during registration.' });
         } finally {
-            setUploading(false);
+            setRegStatus('IDLE');
         }
     };
 
@@ -383,8 +383,11 @@ const RegistrationForm: React.FC<{ onToggle: () => void }> = ({ onToggle }) => {
                         </div>
                     </div>
                 </div>
-                <button type="submit" disabled={uploading} className="w-full py-4 bg-orange-600 text-white rounded-xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-orange-700 transition-all shadow-xl shadow-orange-600/20 active:scale-[0.98] disabled:bg-orange-300">
-                    {uploading ? 'Processing Secure Upload...' : 'Submit Intelligence Dossier'}
+                <button type="submit" disabled={regStatus !== 'IDLE'} className="w-full py-4 bg-orange-600 text-white rounded-xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-orange-700 transition-all shadow-xl shadow-orange-600/20 active:scale-[0.98] disabled:bg-orange-300">
+                    {regStatus === 'OPTIMIZING' ? 'OPTIMIZING PHOTO...' : 
+                     regStatus === 'UPLOADING' ? 'UPLOADING TO SECURE CLOUD...' : 
+                     regStatus === 'REGISTERING' ? 'FINALIZING ACCOUNT...' : 
+                     'Submit Intelligence Dossier'}
                 </button>
             </form>
             <p className="mt-6 text-center text-sm text-gray-800">

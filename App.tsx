@@ -42,7 +42,7 @@ interface AppContextType {
     memberLogin: (email: string, password?: string) => Promise<{ success: boolean; pending?: boolean; error?: string }>;
     adminLogin: (email: string, password?: string) => Promise<{ success: boolean; error?: string }>;
     logout: () => void;
-    register: (newUser: Omit<User, 'id' | 'role'>, photo: Blob) => Promise<boolean>;
+    register: (newUser: Omit<User, 'id' | 'role'>, photo: Blob, onProgress?: (status: 'OPTIMIZING' | 'UPLOADING' | 'REGISTERING') => void) => Promise<boolean>;
     approveRegistration: (id: string) => Promise<void>;
     rejectRegistration: (id: string) => Promise<void>;
     createSurvey: (survey: Omit<Survey, 'id' | 'votes'>) => void;
@@ -288,16 +288,17 @@ function App() {
             setCurrentUser(null);
             clearSession();
         },
-        register: async (newUser: Omit<User, 'id' | 'role'>, photo: Blob) => {
+        register: async (newUser: Omit<User, 'id' | 'role'>, photo: Blob, onProgress?: (status: any) => void) => {
             let photoUrl = '';
             try {
-                const photoUrlResult = await api.uploadToCloudinary(photo);
-                photoUrl = photoUrlResult;
+                onProgress?.('UPLOADING');
+                photoUrl = await api.uploadToCloudinary(photo);
             } catch (err: any) {
                 console.error("Photo upload failed:", err);
                 throw new Error(err.message || "Failed to upload profile photo to Cloudinary. Please check your admin configuration.");
             }
 
+            onProgress?.('REGISTERING');
             await api.register({ ...newUser, photoUrl });
             return true;
         },
