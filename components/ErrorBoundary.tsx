@@ -1,27 +1,18 @@
-import React, { Component, ErrorInfo, ReactNode } from 'react';
+import * as React from 'react';
 
-interface Props {
-  children?: ReactNode;
-}
-
-interface State {
-  hasError: boolean;
-}
-
-class ErrorBoundary extends React.Component<Props, State> {
-  public state: State = {
+export class ErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean }
+> {
+  public state = {
     hasError: false
   };
 
-  constructor(props: Props) {
-    super(props);
-  }
-
-  public static getDerivedStateFromError(_: Error): State {
+  public static getDerivedStateFromError(_: Error) {
     return { hasError: true };
   }
 
-  public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+  public componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('PWA Stability Error:', error, errorInfo);
   }
 
@@ -50,7 +41,7 @@ class ErrorBoundary extends React.Component<Props, State> {
       );
     }
 
-    return this.props.children;
+    return (this.props as any).children;
   }
 }
 
