@@ -221,26 +221,6 @@ const RegistrationForm: React.FC<{ onToggle: () => void }> = ({ onToggle }) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const compressImage = (file: File): Promise<Blob> => {
-        return new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = (event) => {
-                const img = new Image();
-                img.src = event.target?.result as string;
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 400;
-                    const scaleSize = MAX_WIDTH / img.width;
-                    canvas.width = MAX_WIDTH;
-                    canvas.height = img.height * scaleSize;
-                    const ctx = canvas.getContext('2d');
-                    ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    canvas.toBlob((blob) => resolve(blob!), 'image/jpeg', 0.7);
-                };
-            };
-        });
-    };
 
     const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
@@ -266,8 +246,7 @@ const RegistrationForm: React.FC<{ onToggle: () => void }> = ({ onToggle }) => {
 
         setUploading(true);
         try {
-            const compressedPhoto = await compressImage(photo);
-            const success = await register(formData, compressedPhoto);
+            const success = await register(formData, photo);
             if (success) {
                 setSubmittedData(formData);
                 setMessage({ type: 'success', text: 'Registration successful! Your application is pending approval.' });

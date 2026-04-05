@@ -295,7 +295,7 @@ function App() {
                 photoUrl = photoUrlResult;
             } catch (err: any) {
                 console.error("Photo upload failed:", err);
-                throw new Error(err.message || "Failed to upload profile photo to Cloudinary. Please check your .env iconfiguration.");
+                throw new Error(err.message || "Failed to upload profile photo to Cloudinary. Please check your admin configuration.");
             }
 
             await api.register({ ...newUser, photoUrl });

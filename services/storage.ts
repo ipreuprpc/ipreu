@@ -197,36 +197,89 @@ export const api = {
     await updateDoc(userRef, { fcmToken: token });
   },
   
+  
+  compressImage: (file: Blob): Promise<Blob> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.src = URL.createObjectURL(file);
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const MAX_WIDTH = 800; // Perfect for Digital ID Cards
+        const scale = MAX_WIDTH / img.width;
+        if (scale < 1) {
+          canvas.width = MAX_WIDTH;
+          canvas.height = img.height * scale;
+        } else {
+          canvas.width = img.width;
+          canvas.height = img.height;
+        }
+        const ctx = canvas.getContext('2d');
+        ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
+        canvas.toBlob((blob) => {
+          if (blob) resolve(blob);
+          else reject(new Error("Image compression failed"));
+        }, 'image/jpeg', 0.7); // High quality, low file size
+        URL.revokeObjectURL(img.src);
+      };
+      img.onerror = () => reject(new Error("Could not load image for optimization"));
+    });
+  },
+
   uploadToCloudinary: async (file: Blob) => {
+    // Senior Level Optimization: Compress massive mobile photos (>200KB) before upload
+    let optimizedFile = file;
+    if (file.size > 200 * 1024) { 
+        try {
+            optimizedFile = await api.compressImage(file);
+        } catch (compressErr) {
+            console.error("Compression failed, uploading original:", compressErr);
+            // Fallback: upload original if compression fails for some reason
+        }
+    }
+
     const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
     const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
     
     if (!cloudName || cloudName === "your_cloud_name_here") {
-      throw new Error("Cloudinary Cloud Name is not configured in .env.local");
+      throw new Error("Cloudinary configuration error. Please check your admin setup.");
     }
 
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append('file', optimizedFile);
     formData.append('upload_preset', uploadPreset);
-    
-    // Optional: Add folder grouping
     formData.append('folder', 'ipreu_registrations');
 
-    const response = await fetch(
-      `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-      {
-        method: 'POST',
-        body: formData,
-      }
-    );
+    // 30-Second Timeout Protection (AbortController)
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000);
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error?.message || "Failed to upload to Cloudinary");
+    try {
+        const response = await fetch(
+            `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+            {
+                method: 'POST',
+                body: formData,
+                signal: controller.signal
+            }
+        );
+
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error?.message || "Failed to upload to Cloudinary");
+        }
+
+        const data = await response.json();
+        return data.secure_url;
+    } catch (err: any) {
+        if (err.name === 'AbortError') {
+            throw new Error("Connection timed out. Please check your internet and try again.");
+        }
+        throw err;
+    } finally {
+        if (timeoutId) clearTimeout(timeoutId);
     }
-
-    const data = await response.json();
-    return data.secure_url; // Returns the optimized HTTPS link
   }
 };
 
