@@ -266,7 +266,7 @@ export const api = {
     const formData = new FormData();
     formData.append('file', optimizedFile);
     formData.append('upload_preset', uploadPreset);
-    formData.append('folder', 'ipreu_registrations');
+    // (Folder is handled automatically by the preset in your Cloudinary Dashboard)
 
     // 60-Second Network Window for slow mobile data
     const controller = new AbortController();
