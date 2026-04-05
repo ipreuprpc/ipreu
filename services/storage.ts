@@ -5,12 +5,17 @@ import { getFirestore, collection, doc, setDoc, getDoc, getDocs, updateDoc, dele
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID
+  apiKey: "AIzaSyDuxT03D9vxSWE5Fw29sdsnCohTtGj32fo",
+  authDomain: "ipreu-95300.firebaseapp.com",
+  projectId: "ipreu-95300",
+  storageBucket: "ipreu-95300.firebasestorage.app",
+  messagingSenderId: "921313347665",
+  appId: "1:921313347665:web:128cdbb3e428b113a71070"
+};
+
+const CLOUDINARY_CONFIG = {
+  cloudName: "dkisozv2k",
+  uploadPreset: "ipreu_unsigned"
 };
 
 // Production Guard: Immediate configuration check
@@ -252,8 +257,7 @@ export const api = {
         }
     }
 
-    const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
-    const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+    const { cloudName, uploadPreset } = CLOUDINARY_CONFIG;
     
     if (!cloudName || cloudName === "your_cloud_name_here") {
       throw new Error("Cloudinary configuration error. Please check your admin configuration.");
