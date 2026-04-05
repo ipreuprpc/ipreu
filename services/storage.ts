@@ -191,6 +191,38 @@ export const api = {
   saveFcmToken: async (userId: string, token: string) => {
     const userRef = doc(db, 'users', userId);
     await updateDoc(userRef, { fcmToken: token });
+  },
+  
+  uploadToCloudinary: async (file: Blob) => {
+    const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+    const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+    
+    if (!cloudName || cloudName === "your_cloud_name_here") {
+      throw new Error("Cloudinary Cloud Name is not configured in .env.local");
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', uploadPreset);
+    
+    // Optional: Add folder grouping
+    formData.append('folder', 'ipreu_registrations');
+
+    const response = await fetch(
+      `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+      {
+        method: 'POST',
+        body: formData,
+      }
+    );
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error?.message || "Failed to upload to Cloudinary");
+    }
+
+    const data = await response.json();
+    return data.secure_url; // Returns the optimized HTTPS link
   }
 };
 

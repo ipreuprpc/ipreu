@@ -2,8 +2,7 @@ import React, { useState, FormEvent } from 'react';
 import { useAppContext } from '../App';
 import { INDIAN_STATES } from '../constants';
 import { User, UserRole } from '../types';
-import { loadSession, saveSession, clearSession, api, storage } from '../services/storage';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { loadSession, saveSession, clearSession, api } from '../services/storage';
 
 
 const Auth: React.FC<{ onBack?: () => void }> = ({ onBack }) => {

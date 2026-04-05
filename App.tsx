@@ -7,9 +7,8 @@ import BrandingBadge from './components/BrandingBadge';
 import ErrorBoundary from './components/ErrorBoundary';
 import {
     loadSession, saveSession, clearSession,
-    api, messaging, db, auth, storage
+    api, messaging, db, auth
 } from './services/storage';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { getToken, onMessage } from 'firebase/messaging';
 import { onAuthStateChanged } from 'firebase/auth';
 import { collection, query, orderBy, onSnapshot, where, limit } from 'firebase/firestore';
@@ -274,12 +273,11 @@ function App() {
         register: async (newUser: Omit<User, 'id' | 'role'>, photo: Blob) => {
             let photoUrl = '';
             try {
-                const photoRef = ref(storage, `profile_photos/${Date.now()}_${newUser.employeeNumber}.jpg`);
-                await uploadBytes(photoRef, photo);
-                photoUrl = await getDownloadURL(photoRef);
-            } catch (err) {
+                const photoUrlResult = await api.uploadToCloudinary(photo);
+                photoUrl = photoUrlResult;
+            } catch (err: any) {
                 console.error("Photo upload failed:", err);
-                throw new Error("Failed to upload profile photo. Please try again.");
+                throw new Error(err.message || "Failed to upload profile photo to Cloudinary. Please check your .env iconfiguration.");
             }
 
             await api.register({ ...newUser, photoUrl });
