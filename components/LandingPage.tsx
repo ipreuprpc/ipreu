@@ -249,7 +249,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
                         <div className="space-y-2 group">
                              <p className="text-4xl md:text-5xl font-extrabold text-orange-500 font-display transition-transform group-hover:scale-110 duration-300">
-                                {stats.memberCount || 1100}
+                                {users.filter(u => u.role === 'MEMBER').length}
                              </p>
                              <p className="text-sm font-black text-gray-500 uppercase tracking-widest">Registered Members</p>
                         </div>
