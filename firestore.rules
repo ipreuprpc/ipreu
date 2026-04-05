@@ -15,7 +15,7 @@ service cloud.firestore {
     match /users/{userId} {
       allow create: if request.auth != null && request.auth.uid == userId && request.resource.data.role == 'PENDING';
       allow read: if request.auth != null && (request.auth.uid == userId || isAdmin());
-      // Only Admins can change roles, but users can update their own fcmToken
+      // Only Admins can change roles, but users can update their own fcmToken and photoUrl
       allow update: if request.auth != null && (
         isAdmin() || 
         (request.auth.uid == userId && 
