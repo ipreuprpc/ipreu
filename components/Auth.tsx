@@ -67,21 +67,27 @@ const LoginForm: React.FC<{ onToggleRegister: () => void; onToggleAdminLogin: ()
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [isPending, setIsPending] = useState(false);
     const { memberLogin } = useAppContext();
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         setError('');
+        setIsSubmitting(true);
         setIsPending(false);
 
-        const res = await memberLogin(email, password);
-        if (res.success) {
-            // App will re-render and show dashboard
-        } else if (res.pending) {
-            setIsPending(true);
-        } else {
-            setError(res.error || 'Login failed');
+        try {
+            const res = await memberLogin(email, password);
+            if (res.success) {
+                // App will re-render and show dashboard
+            } else if (res.pending) {
+                setIsPending(true);
+            } else {
+                setError(res.error || 'Login failed');
+            }
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -119,8 +125,12 @@ const LoginForm: React.FC<{ onToggleRegister: () => void; onToggleAdminLogin: ()
                         </button>
                     </div>
                 </div>
-                <button type="submit" className="w-full py-4 bg-orange-600 text-white rounded-xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-orange-700 transition-all shadow-xl shadow-orange-600/20 active:scale-[0.98]">
-                    Establish Session
+                <button 
+                    type="submit" 
+                    disabled={isSubmitting}
+                    className="w-full py-4 bg-orange-600 text-white rounded-xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-orange-700 transition-all shadow-xl shadow-orange-600/20 active:scale-[0.98] disabled:bg-orange-200 disabled:cursor-not-allowed"
+                >
+                    {isSubmitting ? 'Authenticating...' : 'Establish Session'}
                 </button>
             </form>
             <div className="mt-6 space-y-2 text-center text-sm text-gray-800">
@@ -136,14 +146,20 @@ const AdminLoginForm: React.FC<{ onToggle: () => void }> = ({ onToggle }) => {
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const { adminLogin } = useAppContext();
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         setError('');
-        const res = await adminLogin(email, password);
-        if (!res.success) {
-            setError(res.error || 'Admin login failed');
+        setIsSubmitting(true);
+        try {
+            const res = await adminLogin(email, password);
+            if (!res.success) {
+                setError(res.error || 'Admin login failed');
+            }
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -173,8 +189,12 @@ const AdminLoginForm: React.FC<{ onToggle: () => void }> = ({ onToggle }) => {
                         </button>
                     </div>
                 </div>
-                <button type="submit" className="w-full py-4 bg-orange-600 text-white rounded-xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-orange-700 transition-all shadow-xl shadow-orange-600/20 active:scale-[0.98]">
-                    Login as Admin
+                <button 
+                    type="submit" 
+                    disabled={isSubmitting}
+                    className="w-full py-4 bg-orange-600 text-white rounded-xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-orange-700 transition-all shadow-xl shadow-orange-600/20 active:scale-[0.98] disabled:bg-orange-200 disabled:cursor-not-allowed"
+                >
+                    {isSubmitting ? 'Verifying Admin Access...' : 'Establish Secure Admin Session'}
                 </button>
             </form>
             <p className="mt-6 text-center text-sm text-gray-800">

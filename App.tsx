@@ -287,7 +287,6 @@ function App() {
         },
         rejectRegistration: async (id: string) => {
             await api.rejectUser(id);
-            setUsers(prev => prev.filter(u => u.id !== id));
         },
         approveRegistration: async (id: string) => {
             const approvedCount = users.filter(u => u.role === UserRole.MEMBER).length;
@@ -295,15 +294,12 @@ function App() {
             const memberNo = `IPREU-${nextSerial}`;
             
             await api.approveUser(id, memberNo);
-            setUsers(prev => prev.map(u => u.id === id ? { ...u, role: UserRole.MEMBER, memberNo } : u));
         },
         createSurvey: async (surveyData: Omit<Survey, 'id' | 'votes'>) => {
-            const newSurvey = await api.createSurvey({ ...surveyData, votes: {} });
-            setSurveys(prev => [newSurvey as Survey, ...prev]);
+            await api.createSurvey({ ...surveyData, votes: {} });
         },
         deleteSurvey: async (id: string) => {
             await api.deleteSurvey(id);
-            setSurveys(prev => prev.filter(s => s.id !== id));
         },
         submitVote: async (surveyId: string, optionId: string) => {
             if (!currentUser) return;
@@ -312,32 +308,21 @@ function App() {
             // Support re-voting by overwriting the specific user's choice in the votes map
             const newVotes = { ...survey.votes, [currentUser.id]: optionId };
             await api.updateSurvey(surveyId, { votes: newVotes });
-            setSurveys(prev => prev.map(s => {
-                if (s.id === surveyId) {
-                    return { ...s, votes: newVotes };
-                }
-                return s;
-            }));
         },
         createAnnouncement: async (title: string, content: string, driveAttachment?: Announcement['attachment'] | null) => {
-            const res = await api.createAnnouncement({ title, content, attachment: driveAttachment ?? undefined });
-            setAnnouncements(prev => [res as Announcement, ...prev]);
+            await api.createAnnouncement({ title, content, attachment: driveAttachment ?? undefined });
         },
         updateAnnouncement: async (id: string, title: string, content: string) => {
             await api.updateAnnouncement(id, { title, content });
-            setAnnouncements(prev => prev.map(ann => ann.id === id ? { ...ann, title, content } : ann));
         },
         deleteAnnouncement: async (announcementId: string) => {
             await api.deleteAnnouncement(announcementId);
-            setAnnouncements(prev => prev.filter(ann => ann.id !== announcementId));
         },
         createCalendarEvent: async (event: Omit<CalendarEvent, 'id' | 'createdAt'>) => {
-            const res = await api.createCalendarEvent({ ...event, createdAt: new Date().toISOString() });
-            setCalendarEvents(prev => [...prev, res as CalendarEvent]);
+            await api.createCalendarEvent({ ...event, createdAt: new Date().toISOString() });
         },
         deleteCalendarEvent: async (id: string) => {
             await api.deleteCalendarEvent(id);
-            setCalendarEvents(prev => prev.filter(e => e.id !== id));
         },
         submitGrievance: async (subject: string, description: string, category: string) => {
             if (!auth.currentUser) {
@@ -356,13 +341,11 @@ function App() {
                 status: 'NEW',
                 createdAt: new Date().toISOString()
             };
-            const res = await api.createGrievance(newGrievance);
-            setGrievances(prev => [res as Grievance, ...prev]);
+            await api.createGrievance(newGrievance);
         },
         respondToGrievance: async (id: string, response: string) => {
             const updates = { response, respondedAt: new Date().toISOString(), status: 'RESOLVED' as const };
             await api.updateGrievance(id, updates);
-            setGrievances(prev => prev.map(g => g.id === id ? { ...g, ...updates } : g));
         },
     }), [currentUser, users, surveys, announcements, calendarEvents, grievances, isDarkMode]);
 

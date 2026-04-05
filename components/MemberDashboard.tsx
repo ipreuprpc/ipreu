@@ -14,11 +14,17 @@ import { useWindowSize } from 'react-use';
 // Helper: Survey Card for Voting
 const SurveyCard: React.FC<{ survey: Survey; onSubmit: (surveyId: string, optionId: string) => void; }> = ({ survey, onSubmit }) => {
     const [selectedOption, setSelectedOption] = useState<string | null>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (selectedOption) {
-            onSubmit(survey.id, selectedOption);
+            setIsSubmitting(true);
+            try {
+                await onSubmit(survey.id, selectedOption);
+            } finally {
+                setIsSubmitting(false);
+            }
         }
     };
 
@@ -54,10 +60,10 @@ const SurveyCard: React.FC<{ survey: Survey; onSubmit: (surveyId: string, option
                 </fieldset>
                 <button
                     type="submit"
-                    disabled={!selectedOption}
+                    disabled={!selectedOption || isSubmitting}
                     className="mt-8 w-full py-4 px-6 bg-orange-600 hover:bg-orange-700 text-white rounded-2xl font-black uppercase tracking-[0.2em] transition-all shadow-xl shadow-orange-600/20 disabled:bg-orange-200 disabled:shadow-none active:scale-95"
                 >
-                    SUBMIT SECURE VOTE
+                    {isSubmitting ? 'LOGGING VOTE...' : 'SUBMIT SECURE VOTE'}
                 </button>
             </form>
         </div>

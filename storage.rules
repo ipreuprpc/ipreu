@@ -7,10 +7,27 @@ service firebase.storage {
     // If strict cross-service lookup is enabled, we use firestore.get()
     
     match /announcements/{imageId} {
-      // Anyone signed in can read attachments
-      allow read: if request.auth != null;
-      // Anyone signed in can write files under 6MB (but only Admins have UI controls)
-      allow write: if request.auth != null && request.resource.size < 6 * 1024 * 1024;
+      allow read: if isMemberOrAdmin();
+      allow write: if isAdmin() && request.resource.size < 10 * 1024 * 1024;
+    }
+
+    match /profile_photos/{userId} {
+      // Profile photos are public for the dashboard/landing page celebratory features
+      allow read: if true;
+      // Allow users to upload their own photo during registration or profile update
+      allow write: if request.auth != null && 
+                    request.resource.size < 2 * 1024 * 1024 &&
+                    request.resource.contentType.matches('image/.*');
+    }
+
+    function isAdmin() {
+      return request.auth != null && firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'ADMIN';
+    }
+
+    function isMemberOrAdmin() {
+      return request.auth != null && 
+             (firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'MEMBER' || 
+              firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'ADMIN');
     }
   }
 }

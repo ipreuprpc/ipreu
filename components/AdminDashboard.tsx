@@ -779,10 +779,12 @@ const CalendarManager: React.FC = () => {
 const GrievanceInbox: React.FC = () => {
     const { grievances, respondToGrievance } = useAppContext();
     const [responseMap, setResponseMap] = useState<Record<string, string>>({});
+    const [isRespondingMap, setIsRespondingMap] = useState<Record<string, boolean>>({});
 
     const handleRespond = async (id: string) => {
         const reply = responseMap[id];
         if (!reply?.trim()) return;
+        setIsRespondingMap(prev => ({ ...prev, [id]: true }));
         try {
             await respondToGrievance(id, reply);
             setResponseMap(prev => {
@@ -792,6 +794,8 @@ const GrievanceInbox: React.FC = () => {
             });
         } catch (err: any) {
             alert(err.message || 'Failed to respond');
+        } finally {
+            setIsRespondingMap(prev => ({ ...prev, [id]: false }));
         }
     };
 
@@ -842,9 +846,10 @@ const GrievanceInbox: React.FC = () => {
                                     />
                                     <button
                                         onClick={() => handleRespond(g.id)}
-                                        className="px-4 py-1.5 bg-orange-600 text-white rounded-lg text-xs font-bold hover:bg-orange-700 transition-colors shadow-sm"
+                                        disabled={isRespondingMap[g.id]}
+                                        className="px-4 py-1.5 bg-orange-600 text-white rounded-lg text-xs font-bold hover:bg-orange-700 transition-colors shadow-sm disabled:bg-orange-200 disabled:cursor-not-allowed"
                                     >
-                                        Send Reply & Mark Resolved
+                                        {isRespondingMap[g.id] ? 'SENDING...' : 'Send Reply & Mark Resolved'}
                                     </button>
                                 </div>
                             )}

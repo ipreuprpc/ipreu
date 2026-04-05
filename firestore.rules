@@ -36,7 +36,9 @@ service cloud.firestore {
 
     match /grievances/{grievanceId} {
       allow read: if request.auth != null && (resource.data.userId == request.auth.uid || isAdmin());
-      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+      allow create: if request.auth != null && 
+                    request.resource.data.userId == request.auth.uid &&
+                    request.resource.data.status == 'NEW';
       // Admins can update for responses, but users cannot update after posting
       allow update: if isAdmin();
       allow delete: if isAdmin();
@@ -48,9 +50,10 @@ service cloud.firestore {
       allow update: if isAdmin() || (
         isMemberOrAdmin() && 
         request.resource.data.diff(resource.data).affectedKeys().hasOnly(['votes']) &&
-        // Ensure only the user's own vote is being added/changed, and no other votes are removed
-        request.resource.data.votes.keys().hasAll(resource.data.votes.keys()) &&
-        request.resource.data.votes[request.auth.uid] != null
+        // Ensure only the user's own vote is being modified
+        request.resource.data.votes.diff(resource.data.votes).affectedKeys().hasOnly([request.auth.uid]) &&
+        // Ensure no existing votes are removed
+        request.resource.data.votes.keys().hasAll(resource.data.votes.keys())
       );
     }
   }
