@@ -21,7 +21,7 @@ const StatCard: React.FC<{ title: string; value: number; icon: React.ReactNode; 
             {icon}
         </div>
         <div className="relative z-10">
-            <p className="text-[10px] text-[#002316]/70 font-black tracking-[0.2em] uppercase mb-1">{title}</p>
+            <p className="text-[10px] text-[#002316]/90 font-black tracking-[0.2em] uppercase mb-1">{title}</p>
             <p className="text-4xl font-black text-[#002316] tracking-tighter drop-shadow-sm">
                 {value}
             </p>
@@ -47,11 +47,11 @@ const PendingMemberCard: React.FC<{
         
         <div className="space-y-2.5 mb-6">
             <div className="flex items-center gap-2 text-xs font-bold text-orange-900">
-                <span className="text-[9px] uppercase tracking-widest opacity-40 w-16">Mobile:</span>
+                <span className="text-[9px] uppercase tracking-widest opacity-70 w-16">Mobile:</span>
                 <span>{member.mobileNumber}</span>
             </div>
             <div className="flex items-center gap-2 text-xs font-bold text-orange-900">
-                <span className="text-[9px] uppercase tracking-widest opacity-40 w-16">Native:</span>
+                <span className="text-[9px] uppercase tracking-widest opacity-70 w-16">Native:</span>
                 <span>{member.nativePlace}</span>
             </div>
         </div>
@@ -112,7 +112,7 @@ const VoterListModal: React.FC<{ isOpen: boolean; onClose: () => void; title: st
                             <div key={i} className="flex items-center justify-between p-4 bg-orange-50/50 rounded-2xl border border-transparent hover:border-orange-200 transition-all group">
                                 <div>
                                     <p className="font-black text-[#002316] group-hover:text-orange-600 transition-colors uppercase text-sm">{v.name}</p>
-                                    <p className="text-[10px] font-black text-[#002316]/70 uppercase tracking-widest mt-0.5">{v.dept}</p>
+                                    <p className="text-[10px] font-black text-[#002316]/90 uppercase tracking-widest mt-0.5">{v.dept}</p>
                                 </div>
                                 <div className="text-right">
                                     <p className="font-mono text-xs font-black text-orange-700">{v.empNo}</p>
@@ -121,7 +121,7 @@ const VoterListModal: React.FC<{ isOpen: boolean; onClose: () => void; title: st
                         ))
                     ) : (
                         <div className="py-20 text-center">
-                            <p className="text-orange-900/20 font-black uppercase tracking-widest">No matching members found</p>
+                            <p className="text-orange-900/60 font-black uppercase tracking-widest">No matching members found</p>
                         </div>
                     )}
                 </div>
@@ -204,7 +204,7 @@ const SurveyResultCard: React.FC<{ survey: Survey }> = ({ survey }) => {
                         <div key={option.id} className="group/row">
                             <div className="flex justify-between items-end mb-3">
                                 <div>
-                                    <span className="text-[10px] font-black text-orange-800/60 uppercase tracking-widest mb-1 block">Option Category</span>
+                                    <span className="text-[10px] font-black text-orange-800/80 uppercase tracking-widest mb-1 block">Option Category</span>
                                     <p className="text-sm font-black text-[#002316] uppercase tracking-tight">{option.text}</p>
                                 </div>
                                 <div className="text-right">
@@ -291,15 +291,15 @@ const SurveyCreator: React.FC = () => {
             <h3 className="text-2xl font-black text-[#002316] mb-6 uppercase tracking-tight">Post New Strategic Survey</h3>
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                    <label htmlFor="survey-question" className="block text-[10px] font-black text-orange-800/60 uppercase tracking-[0.2em] mb-2">Primary Question</label>
-                    <textarea id="survey-question" value={question} onChange={e => setQuestion(e.target.value)} required rows={2} className="mt-1 block w-full px-4 py-3 bg-orange-50 border-2 border-orange-100 rounded-2xl shadow-sm text-[#002316] focus:outline-none focus:border-orange-500 transition-all font-bold placeholder:text-[#002316]/30" placeholder="What is the union's stance on..." />
+                    <label htmlFor="survey-question" className="block text-[10px] font-black text-orange-800/80 uppercase tracking-[0.2em] mb-2">Primary Question</label>
+                    <textarea id="survey-question" value={question} onChange={e => setQuestion(e.target.value)} required rows={2} className="mt-1 block w-full px-4 py-3 bg-orange-50 border-2 border-orange-100 rounded-2xl shadow-sm text-[#002316] focus:outline-none focus:border-orange-500 transition-all font-bold placeholder:text-[#002316]/60" placeholder="What is the union's stance on..." />
                 </div>
                 <div>
-                    <label className="block text-[10px] font-black text-orange-800/60 uppercase tracking-[0.2em] mb-3">Response Options</label>
+                    <label className="block text-[10px] font-black text-orange-800/80 uppercase tracking-[0.2em] mb-3">Response Options</label>
                     <div className="space-y-3">
                         {options.map((option, index) => (
                             <div key={index} className="flex items-center gap-3">
-                                <input type="text" value={option} onChange={e => handleOptionChange(index, e.target.value)} required className="flex-grow px-4 py-3 bg-orange-50 border-2 border-orange-100 rounded-2xl shadow-sm text-[#002316] focus:outline-none focus:border-orange-500 transition-all font-bold placeholder:text-[#002316]/30" placeholder={`Option ${index + 1}`} />
+                                <input type="text" value={option} onChange={e => handleOptionChange(index, e.target.value)} required className="flex-grow px-4 py-3 bg-orange-50 border-2 border-orange-100 rounded-2xl shadow-sm text-[#002316] focus:outline-none focus:border-orange-500 transition-all font-bold placeholder:text-[#002316]/60" placeholder={`Option ${index + 1}`} />
                                 <button type="button" onClick={() => removeOption(index)} disabled={options.length <= 2} className="p-3 text-red-400 hover:text-red-600 disabled:opacity-20 transition-colors">
                                     <TrashIcon className="w-5 h-5" />
                                 </button>
@@ -427,21 +427,21 @@ const AnnouncementManager: React.FC = () => {
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <label htmlFor="ann-title" className="block text-[10px] font-black text-orange-800/60 uppercase tracking-[0.2em] mb-1.5">Strategic Title</label>
+                        <label htmlFor="ann-title" className="block text-[10px] font-black text-orange-800/80 uppercase tracking-[0.2em] mb-1.5">Strategic Title</label>
                         <input
                             id="ann-title"
                             value={title}
                             onChange={e => setTitle(e.target.value)}
                             required
-                            className="block w-full px-4 py-3 bg-orange-50 border border-orange-200 rounded-xl text-[#002316] focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all font-bold placeholder:text-[#002316]/30"
+                            className="block w-full px-4 py-3 bg-orange-50 border border-orange-200 rounded-xl text-[#002316] focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all font-bold placeholder:text-[#002316]/60"
                             placeholder="Immediate Action Required: ..."
                         />
                     </div>
 
                     <div>
                         <div className="flex justify-between items-center mb-1.5">
-                            <label htmlFor="ann-content" className="block text-[10px] font-black text-orange-800/60 uppercase tracking-[0.2em]">Detailed Content</label>
-                            <span className={`text-[10px] font-black uppercase tracking-widest ${content.length > 800 ? 'text-red-500' : 'text-orange-400/60'}`}>
+                            <label htmlFor="ann-content" className="block text-[10px] font-black text-orange-800/80 uppercase tracking-[0.2em]">Detailed Content</label>
+                            <span className={`text-[10px] font-black uppercase tracking-widest ${content.length > 800 ? 'text-red-500' : 'text-orange-400/90'}`}>
                                 {content.length} / 800
                             </span>
                         </div>
@@ -451,7 +451,7 @@ const AnnouncementManager: React.FC = () => {
                             onChange={e => setContent(e.target.value)}
                             required
                             rows={4}
-                            className="block w-full px-4 py-3 bg-orange-50 border border-orange-200 rounded-xl text-[#002316] focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all font-bold placeholder:text-[#002316]/30"
+                            className="block w-full px-4 py-3 bg-orange-50 border border-orange-200 rounded-xl text-[#002316] focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all font-bold placeholder:text-[#002316]/60"
                             placeholder="Enter the official announcement details here..."
                         />
                     </div>
@@ -602,7 +602,7 @@ const AnnouncementManager: React.FC = () => {
                                 )}
 
                                 {ann.createdAt && (
-                                    <p className="text-xs text-gray-500 font-bold mt-2">
+                                    <p className="text-xs text-gray-700 font-bold mt-2">
                                         {new Date(ann.createdAt).toLocaleString()}
                                     </p>
                                 )}
@@ -646,7 +646,7 @@ const AnnouncementManager: React.FC = () => {
                         </div>
                     ))
                 ) : (
-                    <p className="text-gray-600 font-bold italic">No announcements posted yet.</p>
+                    <p className="text-gray-800 font-bold italic">No announcements posted yet.</p>
                 )}
             </div>
         </div>
@@ -695,11 +695,11 @@ const CalendarManager: React.FC = () => {
                 <form onSubmit={handleSubmit} className="bg-white p-8 rounded-[2rem] shadow-xl border border-orange-100 space-y-6 animate-fade-in">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label className="block text-[10px] font-black text-orange-800/60 uppercase tracking-[0.2em] mb-1.5">Event Identity</label>
+                            <label className="block text-[10px] font-black text-orange-800/80 uppercase tracking-[0.2em] mb-1.5">Event Identity</label>
                             <input type="text" value={title} onChange={e => setTitle(e.target.value)} required className="block w-full px-4 py-3 bg-orange-50 border border-orange-200 rounded-xl text-[#002316] focus:outline-none focus:ring-2 focus:ring-orange-500 font-bold" />
                         </div>
                         <div>
-                            <label className="block text-[10px] font-black text-orange-800/60 uppercase tracking-[0.2em] mb-1.5">Action Category</label>
+                            <label className="block text-[10px] font-black text-orange-800/80 uppercase tracking-[0.2em] mb-1.5">Action Category</label>
                             <select value={category} onChange={e => setCategory(e.target.value as any)} className="block w-full px-4 py-3 bg-orange-50 border border-orange-200 rounded-xl text-[#002316] focus:outline-none focus:ring-2 focus:ring-orange-500 font-bold">
                                 <option value="MEETING">Strategic Meeting</option>
                                 <option value="HOLIDAY">Union Holiday</option>
@@ -709,16 +709,16 @@ const CalendarManager: React.FC = () => {
                             </select>
                         </div>
                         <div>
-                            <label className="block text-[10px] font-black text-orange-800/60 uppercase tracking-[0.2em] mb-1.5">Target Date</label>
+                            <label className="block text-[10px] font-black text-orange-800/80 uppercase tracking-[0.2em] mb-1.5">Target Date</label>
                             <input type="date" value={date} onChange={e => setDate(e.target.value)} required className="block w-full px-4 py-3 bg-orange-50 border border-orange-200 rounded-xl text-[#002316] focus:outline-none focus:ring-2 focus:ring-orange-500 font-bold" />
                         </div>
                         <div>
-                            <label className="block text-[10px] font-black text-orange-800/60 uppercase tracking-[0.2em] mb-1.5">Commencement Time</label>
+                            <label className="block text-[10px] font-black text-orange-800/80 uppercase tracking-[0.2em] mb-1.5">Commencement Time</label>
                             <input type="time" value={startTime} onChange={e => setStartTime(e.target.value)} required className="block w-full px-4 py-3 bg-orange-50 border border-orange-200 rounded-xl text-[#002316] focus:outline-none focus:ring-2 focus:ring-orange-500 font-bold font-mono" />
                         </div>
                     </div>
                     <div>
-                        <label className="block text-[10px] font-black text-orange-800/60 uppercase tracking-[0.2em] mb-1.5">Strategic Location (Optional)</label>
+                        <label className="block text-[10px] font-black text-orange-800/80 uppercase tracking-[0.2em] mb-1.5">Strategic Location (Optional)</label>
                         <input type="text" value={location} onChange={e => setLocation(e.target.value)} className="block w-full px-4 py-3 bg-orange-50 border border-orange-200 rounded-xl text-[#002316] focus:outline-none focus:ring-2 focus:ring-orange-500 font-bold" />
                     </div>
                     <div>
@@ -751,10 +751,10 @@ const CalendarManager: React.FC = () => {
                                     </span>
                                     <h4 className="font-bold text-gray-800 dark:text-gray-100">{event.title}</h4>
                                 </div>
-                                <p className="text-xs text-gray-600 font-bold mt-1">
+                                <p className="text-xs text-gray-800 font-bold mt-1">
                                     {new Date(event.date).toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' })} at {event.startTime}
                                 </p>
-                                {event.location && <p className="text-[10px] text-gray-400">📍 {event.location}</p>}
+                                {event.location && <p className="text-[10px] text-gray-600">📍 {event.location}</p>}
                             </div>
                             <button
                                 onClick={() => { if(confirm('Delete this event?')) deleteCalendarEvent(event.id); }}
@@ -765,9 +765,9 @@ const CalendarManager: React.FC = () => {
                         </div>
                     ))
                 ) : (
-                    <div className="text-center py-12 bg-white dark:bg-gray-900 rounded-lg border border-dashed dark:border-gray-800">
-                      <ClockIcon className="w-12 h-12 text-gray-300 mx-auto mb-2" />
-                      <p className="text-gray-600 font-bold italic">No upcoming events scheduled.</p>
+                    <div className="text-center py-12 bg-white dark:bg-gray-900 rounded-lg border border-dashed dark:border-gray-700">
+                      <ClockIcon className="w-12 h-12 text-gray-400 mx-auto mb-2" />
+                      <p className="text-gray-900 font-bold italic">No upcoming events scheduled.</p>
                     </div>
                 )}
             </div>
@@ -814,14 +814,14 @@ const GrievanceInbox: React.FC = () => {
                                         </span>
                                         <h4 className="font-bold text-[#002316]">{g.subject}</h4>
                                     </div>
-                                    <p className="text-xs text-orange-900/60 mt-0.5">From: <span className="font-semibold">{g.userName}</span> (ID: {g.employeeNumber})</p>
+                                    <p className="text-xs text-orange-900/90 mt-0.5">From: <span className="font-semibold">{g.userName}</span> (ID: {g.employeeNumber})</p>
                                     <div className="flex flex-wrap gap-2 mt-2">
                                         <span className="text-[9px] font-black bg-orange-100 text-orange-700 px-2 py-0.5 rounded uppercase tracking-tighter">Loc: {g.postingLocation}</span>
                                         <span className="text-[9px] font-black bg-orange-100 text-orange-700 px-2 py-0.5 rounded uppercase tracking-tighter">POC: {g.pocName}</span>
                                         <span className="text-[9px] font-black bg-orange-100 text-orange-700 px-2 py-0.5 rounded uppercase tracking-tighter">Shift: {g.shift}</span>
                                     </div>
                                 </div>
-                                <span className="text-[10px] text-orange-400 italic">{new Date(g.createdAt).toLocaleDateString()}</span>
+                                <span className="text-[10px] text-orange-700 italic">{new Date(g.createdAt).toLocaleDateString()}</span>
                             </div>
                             <p className="text-sm text-orange-900 bg-orange-50/50 p-3 rounded-lg border border-orange-100 mb-4 italic">"{g.description}"</p>
                             
@@ -853,7 +853,7 @@ const GrievanceInbox: React.FC = () => {
                 ) : (
                   <div className="text-center py-20 bg-white rounded-xl border border-dashed border-orange-200">
                     <CheckCircleIcon className="w-12 h-12 text-orange-500/30 mx-auto mb-2" />
-                    <p className="text-[#002316]/60">No grievances reported. Excellent!</p>
+                    <p className="text-[#002316]/80">No grievances reported. Excellent!</p>
                   </div>
                 )}
             </div>
@@ -870,7 +870,7 @@ const GrievanceInbox: React.FC = () => {
                             <p className="text-[10px] font-black text-orange-600 uppercase tracking-widest mt-1">Free Forever Push Infrastructure Active</p>
                         </div>
                     </div>
-                    <p className="text-sm text-orange-900/70 mb-8 leading-relaxed max-w-2xl">
+                    <p className="text-sm text-orange-900/90 mb-8 leading-relaxed max-w-2xl">
                         To transmit broadcast intelligence to all mobile units, utilize the <strong>Firebase Control Center</strong>. This secure protocol ensures 100% reach with no operational overhead.
                     </p>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -907,26 +907,26 @@ const MemberDetailsModal: React.FC<{ member: User; onClose: () => void }> = ({ m
             <div className="flex justify-between items-start mb-8">
                 <div>
                         <h2 className="text-5xl font-black text-[#002316] uppercase tracking-tighter mb-2">Admin Command Center</h2>
-                        <p className="text-lg font-bold text-[#002316]/70 uppercase tracking-[0.3em]">IPREU Union Connect Portal</p>
+                        <p className="text-lg font-bold text-[#002316]/90 uppercase tracking-[0.3em]">IPREU Union Connect Portal</p>
                 </div>
-                <button onClick={onClose} className="p-2 bg-orange-50 text-[#002316]/40 hover:text-orange-700 rounded-xl transition-all">
+                <button onClick={onClose} className="p-2 bg-orange-50 text-[#002316]/70 hover:text-orange-700 rounded-xl transition-all">
                     <XMarkIcon className="w-6 h-6" />
                 </button>
             </div>
             <div className="flex flex-col md:flex-row gap-8">
                 <div className="space-y-4 text-xs font-bold text-orange-900/80 flex-1 bg-orange-50/50 p-6 rounded-2xl border border-orange-100">
                     <div className="flex justify-between border-b border-orange-100 pb-2">
-                        <span className="text-[9px] uppercase tracking-widest opacity-40">Status</span>
+                        <span className="text-[9px] uppercase tracking-widest opacity-70">Status</span>
                         <span className="text-emerald-600">ACTIVE MEMBER</span>
                     </div>
-                    <p className="flex justify-between"><span className="opacity-40 uppercase text-[9px] tracking-widest">Emp No</span>{member.employeeNumber}</p>
-                    <p className="flex justify-between"><span className="opacity-40 uppercase text-[9px] tracking-widest">Birth</span>{member.dob}</p>
-                    <p className="flex justify-between"><span className="opacity-40 uppercase text-[9px] tracking-widest">Contact</span>{member.mobileNumber}</p>
-                    <p className="flex justify-between"><span className="opacity-40 uppercase text-[9px] tracking-widest">Region</span>{member.nativePlace}</p>
-                    <p className="flex justify-between"><span className="opacity-40 uppercase text-[9px] tracking-widest">Authority</span><span className="capitalize">{member.role?.toLowerCase()}</span></p>
+                    <p className="flex justify-between"><span className="opacity-70 uppercase text-[9px] tracking-widest">Emp No</span>{member.employeeNumber}</p>
+                    <p className="flex justify-between"><span className="opacity-70 uppercase text-[9px] tracking-widest">Birth</span>{member.dob}</p>
+                    <p className="flex justify-between"><span className="opacity-70 uppercase text-[9px] tracking-widest">Contact</span>{member.mobileNumber}</p>
+                    <p className="flex justify-between"><span className="opacity-70 uppercase text-[9px] tracking-widest">Region</span>{member.nativePlace}</p>
+                    <p className="flex justify-between"><span className="opacity-70 uppercase text-[9px] tracking-widest">Authority</span><span className="capitalize">{member.role?.toLowerCase()}</span></p>
                 </div>
                 <div className="flex flex-col items-center justify-center p-6 bg-orange-100/30 rounded-[2rem] border border-orange-200/50 shadow-inner">
-                    <p className="text-[9px] font-black text-orange-400 uppercase tracking-[0.2em] mb-4">Strategic Digital Intelligence</p>
+                    <p className="text-[9px] font-black text-orange-700 uppercase tracking-[0.2em] mb-4">Strategic Digital Intelligence</p>
                     <div className="scale-90 origin-top hover:scale-[1.1] transition-transform duration-500">
                         <MembershipCard user={member} logoUrl="/logo.png" />
                     </div>
@@ -980,7 +980,7 @@ const BirthdayWidget: React.FC = () => {
                             </div>
                             <div>
                                 <p className="text-sm font-black text-[#002316] uppercase">{m.employeeName}</p>
-                                <p className="text-[10px] font-bold text-orange-900/40 uppercase">{m.employeeNumber} • {m.postingLocation}</p>
+                                <p className="text-[10px] font-bold text-orange-900/70 uppercase">{m.employeeNumber} • {m.postingLocation}</p>
                             </div>
                         </div>
                         <button 
@@ -1024,27 +1024,27 @@ const EliteOverview: React.FC = () => {
                     </div>
                     <div>
                         <h3 className="text-xl font-bold text-[#002316]">Elite Platform Status</h3>
-                        <p className="text-sm text-orange-900/60">Your union communication infrastructure is active and healthy.</p>
+                        <p className="text-sm text-orange-900/90">Your union communication infrastructure is active and healthy.</p>
                     </div>
                  </div>
 
                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="p-4 rounded-xl bg-orange-50/50 border border-orange-100">
-                        <p className="text-[10px] font-bold text-orange-400 uppercase tracking-widest mb-1">Push Notifications</p>
+                        <p className="text-[10px] font-bold text-orange-700 uppercase tracking-widest mb-1">Push Notifications</p>
                         <div className="flex items-center gap-2">
                              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
                              <span className="text-sm font-bold text-orange-900">FCM Operational</span>
                         </div>
                     </div>
                     <div className="p-4 rounded-xl bg-orange-50/50 border border-orange-100">
-                        <p className="text-[10px] font-bold text-orange-400 uppercase tracking-widest mb-1">Member ID System</p>
+                        <p className="text-[10px] font-bold text-orange-700 uppercase tracking-widest mb-1">Member ID System</p>
                         <div className="flex items-center gap-2">
                              <div className="w-2 h-2 rounded-full bg-blue-500"></div>
                              <span className="text-sm font-bold text-orange-900">QR Engine Active</span>
                         </div>
                     </div>
                     <div className="p-4 rounded-xl bg-orange-50/50 border border-orange-100">
-                        <p className="text-[10px] font-bold text-orange-400 uppercase tracking-widest mb-1">Grievance Hub</p>
+                        <p className="text-[10px] font-bold text-orange-700 uppercase tracking-widest mb-1">Grievance Hub</p>
                         <div className="flex items-center gap-2">
                              <div className={`w-2 h-2 rounded-full ${openGrievances > 0 ? 'bg-orange-500' : 'bg-emerald-500'}`}></div>
                              <span className="text-sm font-bold text-orange-900">
@@ -1108,7 +1108,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ activeTab, setActiveTab
                             className={`flex-1 min-w-[120px] flex items-center justify-center gap-2 py-3 px-6 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${
                                 activeTab === tab.id
                                     ? 'bg-orange-600 text-white shadow-lg shadow-orange-200 scale-[1.02]'
-                                    : 'text-[#002316]/60 hover:text-[#002316] hover:bg-orange-50'
+                                    : 'text-[#002316]/90 hover:text-[#002316] hover:bg-orange-50'
                             }`}
                         >
                             {tab.icon}
@@ -1124,7 +1124,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ activeTab, setActiveTab
                             <span className="text-orange-700">Hub Active</span>
                         </div>
                         <div className="w-[1px] h-4 bg-orange-200 mx-2"></div>
-                        <span className="text-orange-900/60 font-mono">{currentTime.toLocaleTimeString()}</span>
+                        <span className="text-orange-900/90 font-mono">{currentTime.toLocaleTimeString()}</span>
                     </div>
                 </div>
 
@@ -1155,7 +1155,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ activeTab, setActiveTab
                     {pendingMembers.length === 0 && (
                         <div className="bg-white rounded-xl shadow-xl p-8 text-center border border-orange-100 animate-fade-in">
                             <CheckCircleIcon className="w-12 h-12 text-emerald-500/30 mx-auto mb-3" />
-                            <p className="text-[#002316]/60">No pending approvals. All caught up!</p>
+                            <p className="text-[#002316]/80">No pending approvals. All caught up!</p>
                         </div>
                     )}
                 </div>
@@ -1173,7 +1173,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ activeTab, setActiveTab
                             placeholder="Search members..."
                             value={searchTerm}
                             onChange={e => setSearchTerm(e.target.value)}
-                            className="px-4 py-2 bg-white border border-orange-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 w-60 text-[#002316] placeholder:text-[#002316]/30 shadow-sm"
+                            className="px-4 py-2 bg-white border border-orange-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 w-60 text-[#002316] placeholder:text-[#002316]/60 shadow-sm"
                         />
                     </div>
 
@@ -1195,8 +1195,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ activeTab, setActiveTab
                                         <tr key={m.id} className="hover:bg-orange-50/30 transition-colors group">
                                             <td className="px-8 py-5 text-orange-950 font-mono text-[11px]">{m.memberNo || m.pfNumber || 'N/A'}</td>
                                             <td className="px-8 py-5 font-bold text-[#002316] group-hover:text-orange-600 transition-colors">{m.employeeName}</td>
-                                            <td className="px-8 py-5 text-orange-900/60 hidden md:table-cell font-mono">{m.employeeNumber}</td>
-                                            <td className="px-8 py-5 text-orange-900/60 hidden lg:table-cell">{m.email}</td>
+                                            <td className="px-8 py-5 text-orange-900/90 hidden md:table-cell font-mono">{m.employeeNumber}</td>
+                                            <td className="px-8 py-5 text-orange-900/90 hidden lg:table-cell">{m.email}</td>
                                             <td className="px-8 py-5">
                                                 <span className={`px-4 py-1 rounded-full text-[9px] font-black uppercase tracking-widest shadow-sm ${
                                                     m.role === UserRole.ADMIN
@@ -1209,7 +1209,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ activeTab, setActiveTab
                                             <td className="px-8 py-5 text-center">
                                                 <button
                                                     onClick={() => setSelectedMember(m)}
-                                                    className="text-[10px] font-black text-orange-600/40 hover:text-orange-600 uppercase tracking-widest transition-all underline underline-offset-4"
+                                                    className="text-[10px] font-black text-orange-600/70 hover:text-orange-600 uppercase tracking-widest transition-all underline underline-offset-4"
                                                 >
                                                     View File
                                                 </button>
@@ -1221,7 +1221,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ activeTab, setActiveTab
                         </div>
                     ) : (
                         <div className="bg-white rounded-xl shadow-xl p-8 text-center border border-orange-100">
-                             <p className="text-[#002316]/60 font-bold">No members found matching "{searchTerm}".</p>
+                             <p className="text-[#002316]/80 font-bold">No members found matching "{searchTerm}".</p>
                         </div>
                     )}
                 </div>
@@ -1246,7 +1246,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ activeTab, setActiveTab
                         ))
                     ) : (
                         <div className="bg-white rounded-xl shadow-xl p-8 text-center border border-orange-100">
-                             <p className="text-[#002316]/60 font-bold">No active surveys found. Deploy one above.</p>
+                             <p className="text-[#002316]/80 font-bold">No active surveys found. Deploy one above.</p>
                         </div>
                     )}
                 </div>

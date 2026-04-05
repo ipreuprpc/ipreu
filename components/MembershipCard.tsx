@@ -93,7 +93,7 @@ const MembershipCard: React.FC<MembershipCardProps> = ({ user, logoUrl }) => {
                     <div className="flex justify-between items-end gap-2">
                         <div className="flex-1 min-w-0">
                              <div className="mb-4">
-                                <p className="text-[7px] text-orange-300 uppercase tracking-[0.4em] font-black opacity-60 mb-1">MEMBER IDENTITY</p>
+                                <p className="text-[7px] text-orange-300 uppercase tracking-[0.4em] font-black opacity-90 mb-1">MEMBER IDENTITY</p>
                                 <p className="text-[22px] font-black tracking-tight leading-[0.95] text-white break-words drop-shadow-xl max-w-[200px]">
                                     {user.employeeName}
                                 </p>
@@ -101,7 +101,7 @@ const MembershipCard: React.FC<MembershipCardProps> = ({ user, logoUrl }) => {
                             
                             <div className="flex items-center gap-6">
                                 <div>
-                                    <p className="text-[7px] text-orange-300 uppercase tracking-[0.3em] font-black opacity-60">EMP ID</p>
+                                    <p className="text-[7px] text-orange-300 uppercase tracking-[0.3em] font-black opacity-90">EMP ID</p>
                                     <p className="text-sm font-black tracking-widest text-[#fbbf24] shadow-sm">#{user.employeeNumber}</p>
                                 </div>
                             </div>
@@ -120,7 +120,7 @@ const MembershipCard: React.FC<MembershipCardProps> = ({ user, logoUrl }) => {
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                                 </svg>
                             </div>
-                            <p className="absolute -bottom-6 left-0 right-0 text-[7px] text-orange-200/40 font-black uppercase tracking-[0.3em] text-center">Verified ID</p>
+                            <p className="absolute -bottom-6 left-0 right-0 text-[7px] text-orange-200/70 font-black uppercase tracking-[0.3em] text-center">Verified ID</p>
                         </div>
                     </div>
                 </div>

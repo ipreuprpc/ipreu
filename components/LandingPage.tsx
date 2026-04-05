@@ -137,7 +137,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
                                             </div>
                                             <div>
                                                 <h4 className="font-bold text-orange-950 group-hover:text-orange-600 transition-colors">{event.title}</h4>
-                                                <div className="flex items-center gap-3 text-xs text-orange-900/40 mt-1">
+                                                <div className="flex items-center gap-3 text-xs text-orange-900/70 mt-1">
                                                     <span className="flex items-center gap-1"><ClockIcon className="w-3 h-3" /> {event.startTime}</span>
                                                     {event.location && <span className="flex items-center gap-1">📍 {event.location}</span>}
                                                 </div>
@@ -146,7 +146,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
                                         <button onClick={onLoginClick} className="text-xs font-bold text-orange-700 hover:text-orange-600 uppercase tracking-widest px-3 py-1 bg-orange-50 rounded-full border border-orange-100">Details</button>
                                     </div>
                                 )) : (
-                                    <p className="text-orange-950/60 font-black uppercase tracking-[0.2em] italic py-8 text-center bg-white rounded-xl border border-dashed border-orange-200">No upcoming events listed for this month.</p>
+                                    <p className="text-orange-950/80 font-black uppercase tracking-[0.2em] italic py-8 text-center bg-white rounded-xl border border-dashed border-orange-200">No upcoming events listed for this month.</p>
                                 )}
                                 <p className="text-center">
                                     <button onClick={onLoginClick} className="text-sm font-semibold text-orange-700 hover:text-orange-800">View Full Calendar &rarr;</button>
@@ -169,9 +169,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
                                             <h4 className="font-bold text-orange-950 line-clamp-1">{ann.title}</h4>
                                             <span className="text-[10px] bg-orange-50 text-orange-700 px-2 py-0.5 rounded-full font-bold">OFFICIAL</span>
                                         </div>
-                                        <p className="text-sm text-orange-900/60 line-clamp-2 mb-3">{ann.content}</p>
+                                        <p className="text-sm text-orange-900/80 line-clamp-2 mb-3">{ann.content}</p>
                                         <div className="flex items-center justify-between">
-                                            <span className="text-[10px] text-orange-900/30 font-medium italic">{new Date(ann.createdAt).toLocaleDateString()}</span>
+                                            <span className="text-[10px] text-orange-900/60 font-medium italic">{new Date(ann.createdAt).toLocaleDateString()}</span>
                                             {ann.attachment && (
                                                 <button onClick={onLoginClick} className="flex items-center gap-1.5 text-xs font-bold text-orange-600 hover:text-orange-700">
                                                     <PaperClipIcon className="w-3.5 h-3.5" />
@@ -181,7 +181,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
                                         </div>
                                     </div>
                                 )) : (
-                                    <p className="text-orange-950/60 font-black uppercase tracking-[0.2em] italic py-10 text-center bg-white rounded-2xl border-2 border-dashed border-orange-100/50 shadow-inner">No public notices available at this time.</p>
+                                    <p className="text-orange-950/80 font-black uppercase tracking-[0.2em] italic py-10 text-center bg-white rounded-2xl border-2 border-dashed border-orange-100/50 shadow-inner">No public notices available at this time.</p>
                                 )}
                                 <p className="text-center">
                                     <button onClick={onLoginClick} className="text-sm font-semibold text-orange-600 hover:text-orange-700">Read All Circulars &rarr;</button>
@@ -199,7 +199,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
                     <div className="text-center mb-20">
                         <h2 className="text-3xl md:text-5xl font-bold text-orange-950 mb-6 font-display uppercase tracking-tight">Executive Body of <span className="text-orange-600">IPREU</span></h2>
                         <div className="w-32 h-2 bg-gradient-to-r from-orange-400 to-red-800 mx-auto rounded-full mb-8 opacity-80"></div>
-                        <p className="text-base md:text-lg text-orange-950/60 max-w-3xl mx-auto leading-relaxed font-medium">Serving with dedication, integrity, and a commitment to member welfare and industrial harmony.</p>
+                        <p className="text-base md:text-lg text-orange-950/80 max-w-3xl mx-auto leading-relaxed font-medium">Serving with dedication, integrity, and a commitment to member welfare and industrial harmony.</p>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -218,7 +218,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
                         <div className="text-center mb-16 relative z-10">
                             <span className="text-orange-600 font-black uppercase tracking-[0.4em] text-[10px] mb-4 block">Celebrations</span>
                             <h2 className="text-5xl md:text-7xl font-black text-[#013220] uppercase tracking-tighter mb-4">Birthday Stars 🎂</h2>
-                            <p className="text-lg md:text-xl text-gray-500 font-bold max-w-2xl mx-auto">Wishing our dedicated union members a year of pride and prosperity!</p>
+                            <p className="text-lg md:text-xl text-gray-700 font-bold max-w-2xl mx-auto">Wishing our dedicated union members a year of pride and prosperity!</p>
                         </div>
 
                         <div className="flex flex-wrap justify-center gap-8 md:gap-12 relative z-10">
@@ -234,7 +234,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
                                         </div>
                                     </div>
                                     <h3 className="text-xl md:text-2xl font-black text-[#013220] uppercase tracking-tight group-hover:text-orange-600 transition-colors">{m.employeeName}</h3>
-                                    <p className="text-[10px] font-black text-orange-950/40 uppercase tracking-[0.2em] mt-1">{m.employeeNumber} • {m.postingLocation}</p>
+                                    <p className="text-[10px] font-black text-orange-950/70 uppercase tracking-[0.2em] mt-1">{m.employeeNumber} • {m.postingLocation}</p>
                                 </div>
                             ))}
                         </div>

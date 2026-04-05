@@ -99,7 +99,7 @@ const LoginForm: React.FC<{ onToggleRegister: () => void; onToggleAdminLogin: ()
             {error && <p className="bg-red-100 text-red-700 p-3 rounded-md mb-4 text-sm">{error}</p>}
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                    <label htmlFor="login-email" className="block text-[10px] font-black text-[#002316]/70 uppercase tracking-[0.2em] mb-1.5">Email Identity</label>
+                    <label htmlFor="login-email" className="block text-[10px] font-black text-[#002316]/90 uppercase tracking-[0.2em] mb-1.5">Email Identity</label>
                     <input
                         id="login-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email"
                         className="block w-full px-4 py-3 bg-white border border-orange-200 rounded-xl text-[#002316] focus:outline-none focus:ring-2 focus:ring-orange-500 font-bold"
@@ -107,14 +107,14 @@ const LoginForm: React.FC<{ onToggleRegister: () => void; onToggleAdminLogin: ()
                     />
                 </div>
                 <div>
-                    <label htmlFor="login-password" className="block text-[10px] font-black text-[#002316]/70 uppercase tracking-[0.2em] mb-1.5">Secure Key</label>
+                    <label htmlFor="login-password" className="block text-[10px] font-black text-[#002316]/90 uppercase tracking-[0.2em] mb-1.5">Secure Key</label>
                     <div className="relative">
                         <input
                             id="login-password" type={showPassword ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="current-password"
                             className="block w-full px-4 py-3 bg-white border border-orange-200 rounded-xl text-[#002316] focus:outline-none focus:ring-2 focus:ring-orange-500 font-bold"
                             placeholder="••••••••"
                         />
-                        <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pr-4 flex items-center text-[10px] font-black uppercase text-orange-400 hover:text-orange-600 tracking-widest">
+                        <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pr-4 flex items-center text-[10px] font-black uppercase text-orange-600 hover:text-orange-700 tracking-widest">
                             {showPassword ? 'Hide' : 'Show'}
                         </button>
                     </div>
@@ -123,7 +123,7 @@ const LoginForm: React.FC<{ onToggleRegister: () => void; onToggleAdminLogin: ()
                     Establish Session
                 </button>
             </form>
-            <div className="mt-6 space-y-2 text-center text-sm text-gray-600">
+            <div className="mt-6 space-y-2 text-center text-sm text-gray-800">
                 <p>Not a member yet? <button onClick={onToggleRegister} className="font-medium text-orange-600 hover:text-orange-500">Register here</button></p>
                 <p>Are you an administrator? <button onClick={onToggleAdminLogin} className="font-medium text-orange-600 hover:text-orange-500">Admin Login</button></p>
             </div>
@@ -153,7 +153,7 @@ const AdminLoginForm: React.FC<{ onToggle: () => void }> = ({ onToggle }) => {
             {error && <p className="bg-red-100 text-red-700 p-3 rounded-md mb-4 text-sm">{error}</p>}
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                    <label htmlFor="admin-login-email" className="block text-[10px] font-black text-[#002316]/60 uppercase tracking-[0.2em] mb-1.5">Admin Email</label>
+                    <label htmlFor="admin-login-email" className="block text-[10px] font-black text-[#002316]/80 uppercase tracking-[0.2em] mb-1.5">Admin Email</label>
                     <input
                         id="admin-login-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email"
                         className="mt-1 block w-full px-4 py-3 bg-white border border-orange-200 rounded-xl text-[#002316] focus:outline-none focus:ring-2 focus:ring-orange-500 font-bold"
@@ -161,7 +161,7 @@ const AdminLoginForm: React.FC<{ onToggle: () => void }> = ({ onToggle }) => {
                     />
                 </div>
                 <div>
-                    <label htmlFor="admin-login-password" className="block text-[10px] font-black text-[#002316]/60 uppercase tracking-[0.2em] mb-1.5">Password</label>
+                    <label htmlFor="admin-login-password" className="block text-[10px] font-black text-[#002316]/80 uppercase tracking-[0.2em] mb-1.5">Password</label>
                     <div className="relative mt-1">
                         <input
                             id="admin-login-password" type={showPassword ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="current-password"
@@ -177,7 +177,7 @@ const AdminLoginForm: React.FC<{ onToggle: () => void }> = ({ onToggle }) => {
                     Login as Admin
                 </button>
             </form>
-            <p className="mt-6 text-center text-sm text-gray-600">
+            <p className="mt-6 text-center text-sm text-gray-800">
                 <button onClick={onToggle} className="font-medium text-orange-600 hover:text-orange-500">Back to Member Login</button>
             </p>
         </>
@@ -284,8 +284,8 @@ const RegistrationForm: React.FC<{ onToggle: () => void }> = ({ onToggle }) => {
                     <svg className="w-16 h-16 text-orange-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
-                    <span className="text-[10px] text-gray-600 font-black uppercase tracking-[0.2em]">Secure Premium Infrastructure</span>
-                    <p className="text-orange-900/60 mt-2 font-bold">Your application is now under Executive Review.</p>
+                    <span className="text-[10px] text-gray-800 font-black uppercase tracking-[0.2em]">Secure Premium Infrastructure</span>
+                    <p className="text-orange-900/90 mt-2 font-bold">Your application is now under Executive Review.</p>
                 </div>
                 <div className="bg-gray-50 p-5 rounded-md border border-gray-200 text-sm space-y-3 mb-8">
                     <p><span className="font-semibold text-gray-700">Email Address:</span> {submittedData.email}</p>
@@ -315,7 +315,7 @@ const RegistrationForm: React.FC<{ onToggle: () => void }> = ({ onToggle }) => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {registrationFields.map(({ name, label, type, autoComplete, required }) => (
                         <div key={name}>
-                            <label htmlFor={`register-${name}`} className="block text-[10px] font-black text-[#002316]/60 uppercase tracking-[0.2em] mb-1.5">{label}</label>
+                            <label htmlFor={`register-${name}`} className="block text-[10px] font-black text-[#002316]/80 uppercase tracking-[0.2em] mb-1.5">{label}</label>
                             <input
                                 type={type} name={name} id={`register-${name}`} value={formData[name as keyof typeof formData] || ''} onChange={handleChange} required={required} autoComplete={autoComplete}
                                 className="mt-1 block w-full px-4 py-3 bg-white border border-orange-200 rounded-xl text-[#002316] focus:outline-none focus:ring-2 focus:ring-orange-500 font-bold sm:text-sm"
@@ -323,7 +323,7 @@ const RegistrationForm: React.FC<{ onToggle: () => void }> = ({ onToggle }) => {
                         </div>
                     ))}
                     <div className="md:col-span-2">
-                        <label className="block text-[10px] font-black text-[#002316]/60 uppercase tracking-[0.2em] mb-3">Profile Photo (Mandatory)</label>
+                        <label className="block text-[10px] font-black text-[#002316]/80 uppercase tracking-[0.2em] mb-3">Profile Photo (Mandatory)</label>
                         <div className="flex items-center gap-6 p-4 bg-orange-50 border-2 border-dashed border-orange-200 rounded-2xl group hover:border-orange-500 transition-all">
                             <div className="relative w-20 h-20 bg-white rounded-2xl overflow-hidden border border-orange-100 flex-shrink-0 shadow-sm">
                                 {photoPreview ? (
@@ -339,12 +339,12 @@ const RegistrationForm: React.FC<{ onToggle: () => void }> = ({ onToggle }) => {
                                 <label htmlFor="photo-upload" className="inline-block px-6 py-2.5 bg-white border border-orange-200 text-[10px] font-black uppercase text-orange-600 rounded-xl cursor-pointer hover:bg-orange-600 hover:text-white transition-all tracking-widest shadow-sm">
                                     {photo ? 'Change Photo' : 'Select Official Photo'}
                                 </label>
-                                <p className="text-[10px] text-orange-900/40 font-bold uppercase mt-2 tracking-tighter">JPG/PNG accepted. Max size 5MB.</p>
+                                <p className="text-[10px] text-orange-900/70 font-bold uppercase mt-2 tracking-tighter">JPG/PNG accepted. Max size 5MB.</p>
                             </div>
                         </div>
                     </div>
                     <div>
-                        <label htmlFor="register-postingLocation" className="block text-[10px] font-black text-[#002316]/60 uppercase tracking-[0.2em] mb-1.5">Posting Location</label>
+                        <label htmlFor="register-postingLocation" className="block text-[10px] font-black text-[#002316]/80 uppercase tracking-[0.2em] mb-1.5">Posting Location</label>
                         <select id="register-postingLocation" name="postingLocation" value={formData.postingLocation} onChange={handleChange} required className="mt-1 block w-full pl-4 pr-10 py-3 text-base border border-orange-200 text-[#002316] bg-white focus:outline-none focus:ring-2 focus:ring-orange-500 font-bold sm:text-sm rounded-xl">
                             <option value="">Select Location</option>
                             <option value="PR">PR</option>
@@ -352,7 +352,7 @@ const RegistrationForm: React.FC<{ onToggle: () => void }> = ({ onToggle }) => {
                         </select>
                     </div>
                     <div>
-                        <label htmlFor="register-shift" className="block text-[10px] font-black text-[#002316]/60 uppercase tracking-[0.2em] mb-1.5">Shift</label>
+                        <label htmlFor="register-shift" className="block text-[10px] font-black text-[#002316]/80 uppercase tracking-[0.2em] mb-1.5">Shift</label>
                         <select id="register-shift" name="shift" value={formData.shift} onChange={handleChange} required className="mt-1 block w-full pl-4 pr-10 py-3 text-base border border-orange-200 text-[#002316] bg-white focus:outline-none focus:ring-2 focus:ring-orange-500 font-bold sm:text-sm rounded-xl">
                             <option value="">Select Shift</option>
                             <option value="General">General</option>
@@ -361,14 +361,14 @@ const RegistrationForm: React.FC<{ onToggle: () => void }> = ({ onToggle }) => {
                         </select>
                     </div>
                     <div>
-                        <label htmlFor="register-state" className="block text-[10px] font-black text-[#002316]/60 uppercase tracking-[0.2em] mb-1.5">State</label>
+                        <label htmlFor="register-state" className="block text-[10px] font-black text-[#002316]/80 uppercase tracking-[0.2em] mb-1.5">State</label>
                         <select id="register-state" name="state" value={formData.state} onChange={handleChange} required autoComplete="address-level1" className="mt-1 block w-full pl-4 pr-10 py-3 text-base border border-orange-200 text-[#002316] bg-white focus:outline-none focus:ring-2 focus:ring-orange-500 font-bold sm:text-sm rounded-xl">
                             <option value="">Select a state</option>
                             {INDIAN_STATES.map(state => <option key={state} value={state}>{state}</option>)}
                         </select>
                     </div>
                     <div>
-                        <label htmlFor="register-password" className="block text-[10px] font-black text-[#002316]/60 uppercase tracking-[0.2em] mb-1.5">Password</label>
+                        <label htmlFor="register-password" className="block text-[10px] font-black text-[#002316]/80 uppercase tracking-[0.2em] mb-1.5">Password</label>
                         <div className="relative mt-1">
                             <input type={showPassword ? "text" : "password"} name="password" id="register-password" value={formData.password} onChange={handleChange} required autoComplete="new-password"
                                 className="block w-full px-4 py-3 bg-white border border-orange-200 rounded-xl text-[#002316] focus:outline-none focus:ring-2 focus:ring-orange-500 font-bold sm:text-sm" />
@@ -378,7 +378,7 @@ const RegistrationForm: React.FC<{ onToggle: () => void }> = ({ onToggle }) => {
                         </div>
                     </div>
                     <div>
-                        <label htmlFor="register-confirmPassword" className="block text-[10px] font-black text-[#002316]/60 uppercase tracking-[0.2em] mb-1.5">Confirm Password</label>
+                        <label htmlFor="register-confirmPassword" className="block text-[10px] font-black text-[#002316]/80 uppercase tracking-[0.2em] mb-1.5">Confirm Password</label>
                         <div className="relative mt-1">
                             <input type={showPassword ? "text" : "password"} name="confirmPassword" id="register-confirmPassword" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} required autoComplete="new-password"
                                 className="block w-full px-4 py-3 bg-white border border-orange-200 rounded-xl text-[#002316] focus:outline-none focus:ring-2 focus:ring-orange-500 font-bold sm:text-sm" />
@@ -389,7 +389,7 @@ const RegistrationForm: React.FC<{ onToggle: () => void }> = ({ onToggle }) => {
                     {uploading ? 'Processing Secure Upload...' : 'Submit Intelligence Dossier'}
                 </button>
             </form>
-            <p className="mt-6 text-center text-sm text-gray-600">
+            <p className="mt-6 text-center text-sm text-gray-800">
                 Already registered? <button onClick={onToggle} className="font-medium text-orange-600 hover:text-orange-500">Login here</button>
             </p>
         </>

@@ -45,7 +45,7 @@ const SurveyCard: React.FC<{ survey: Survey; onSubmit: (surveyId: string, option
                                     onChange={() => setSelectedOption(option.id)}
                                     className="h-5 w-5 text-orange-600 border-orange-300 focus:ring-orange-500 bg-white"
                                 />
-                                <span className={`ml-4 text-sm font-black ${selectedOption === option.id ? 'text-orange-950' : 'text-orange-900/40'}`}>
+                                <span className={`ml-4 text-sm font-black ${selectedOption === option.id ? 'text-orange-950' : 'text-orange-900/70'}`}>
                                     {option.text}
                                 </span>
                             </label>
@@ -95,7 +95,7 @@ const VotedSurveyCard: React.FC<{ survey: Survey; userVoteOptionId: string; onRe
                     )}
                 </div>
             )}
-            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">{totalVotes} verified votes</p>
+            <p className="text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-4">{totalVotes} verified votes</p>
             <div className="space-y-4">
                 {survey.options.map(option => {
                     const voteCount = getVoteCountForOption(option.id);
@@ -104,10 +104,10 @@ const VotedSurveyCard: React.FC<{ survey: Survey; userVoteOptionId: string; onRe
                     return (
                         <div key={option.id} className="relative">
                             <div className="flex justify-between items-center text-[11px] font-black uppercase tracking-tight mb-1.5">
-                                <span className={isUserVote ? 'text-orange-600' : 'text-orange-900/40'}>
+                                <span className={isUserVote ? 'text-orange-600' : 'text-orange-900/70'}>
                                     {option.text} {isUserVote && ' (SELECTED)'}
                                 </span>
-                                <span className="text-orange-900/20">{percentage.toFixed(0)}%</span>
+                                <span className="text-orange-900/50">{percentage.toFixed(0)}%</span>
                             </div>
                             <div className="w-full bg-orange-100 rounded-full h-2.5 overflow-hidden">
                                 <div 
@@ -170,11 +170,11 @@ const GrievanceForm: React.FC<{ onSubmit: (subject: string, desc: string, cat: s
 
             <div className="grid grid-cols-1 gap-6">
                 <div>
-                    <label className="block text-[10px] font-black text-orange-950/60 uppercase tracking-widest mb-1.5">Subject / Case Title</label>
+                    <label className="block text-[10px] font-black text-orange-950/80 uppercase tracking-widest mb-1.5">Subject / Case Title</label>
                     <input type="text" value={subject} onChange={e => setSubject(e.target.value)} required placeholder="e.g., Salary discrepancy" className="mt-1 block w-full px-4 py-3 bg-white border border-orange-200 focus:border-orange-600 rounded-xl text-sm text-orange-950 outline-none transition-all font-bold shadow-sm" />
                 </div>
                 <div>
-                    <label className="block text-[10px] font-black text-orange-950/60 uppercase tracking-widest mb-1.5">Category</label>
+                    <label className="block text-[10px] font-black text-orange-950/80 uppercase tracking-widest mb-1.5">Category</label>
                     <select value={category} onChange={e => setCategory(e.target.value)} className="mt-1 block w-full px-4 py-3 bg-white border border-orange-200 focus:border-orange-600 rounded-xl text-sm text-orange-950 outline-none transition-all font-bold shadow-sm">
                         <option value="GENERAL">General Support</option>
                         <option value="SALARY">Salary / Benefits</option>
@@ -184,7 +184,7 @@ const GrievanceForm: React.FC<{ onSubmit: (subject: string, desc: string, cat: s
                 </div>
             </div>
             <div>
-                <label className="block text-[10px] font-black text-orange-950/60 uppercase tracking-widest mb-1.5">Detailed Description (Private)</label>
+                <label className="block text-[10px] font-black text-orange-950/80 uppercase tracking-widest mb-1.5">Detailed Description (Private)</label>
                 <textarea value={description} onChange={e => setDescription(e.target.value)} required rows={4} placeholder="Please provide all relevant details here..." className="mt-1 block w-full px-4 py-3 bg-white border border-orange-200 focus:border-orange-600 rounded-xl text-sm text-orange-950 outline-none transition-all font-bold shadow-sm" />
             </div>
             <button type="submit" disabled={isSubmitting} className="w-full py-4 bg-orange-600 text-white rounded-2xl font-black uppercase tracking-[0.2em] hover:bg-orange-700 transition-all shadow-xl shadow-orange-600/20 active:scale-95 disabled:bg-orange-200">
@@ -288,7 +288,7 @@ const MemberDashboard: React.FC<MemberDashboardProps> = ({ activeTab, setActiveT
                             <div className="flex-1 text-center md:text-left">
                                 <div className="inline-flex items-center gap-2 bg-orange-600/20 backdrop-blur-xl px-5 py-2 rounded-full border border-orange-500/20 text-[10px] font-black uppercase tracking-[0.3em] mb-8 shadow-inner">
                                     <span className="w-2 h-2 bg-orange-500 rounded-full animate-pulse shadow-[0_0_10px_#f97316]"></span>
-                                    <span className="opacity-80">Authenticated Member Session</span>
+                                    <span className="opacity-100">Authenticated Member Session</span>
                                 </div>
                                 <h1 className="text-5xl md:text-7xl font-black mb-8 tracking-tighter leading-[0.9] uppercase">
                                     {greeting}, <br/>
@@ -304,19 +304,19 @@ const MemberDashboard: React.FC<MemberDashboardProps> = ({ activeTab, setActiveT
                         
                         <div className="mt-14 flex flex-wrap items-center gap-4 relative z-10">
                             <div className="bg-white/5 backdrop-blur-2xl px-6 py-4 rounded-2xl border border-white/10 text-xs font-black shadow-2xl flex items-center gap-3">
-                                <span className="text-orange-500 opacity-60 uppercase tracking-widest text-[9px]">Location</span> 
+                                <span className="text-orange-500 opacity-90 uppercase tracking-widest text-[9px]">Location</span> 
                                 <span className="text-white">{currentUser.postingLocation}</span>
                             </div>
                             <div className="bg-white/5 backdrop-blur-2xl px-6 py-4 rounded-2xl border border-white/10 text-xs font-black shadow-2xl flex items-center gap-3">
-                                <span className="text-orange-500 opacity-60 uppercase tracking-widest text-[9px]">POC</span> 
+                                <span className="text-orange-500 opacity-90 uppercase tracking-widest text-[9px]">POC</span> 
                                 <span className="text-white">{currentUser.pocName}</span>
                             </div>
                             <div className="bg-white/5 backdrop-blur-2xl px-6 py-4 rounded-2xl border border-white/10 text-xs font-black shadow-2xl flex items-center gap-3">
-                                <span className="text-orange-500 opacity-60 uppercase tracking-widest text-[9px]">Shift</span> 
+                                <span className="text-orange-500 opacity-90 uppercase tracking-widest text-[9px]">Shift</span> 
                                 <span className="text-white">{currentUser.shift}</span>
                             </div>
                             <div className="bg-white/5 backdrop-blur-2xl px-6 py-4 rounded-2xl border border-white/10 text-xs font-black shadow-2xl flex items-center gap-3">
-                                <span className="text-orange-500 opacity-60 uppercase tracking-widest text-[9px]">Emp No</span>
+                                <span className="text-orange-500 opacity-90 uppercase tracking-widest text-[9px]">Emp No</span>
                                 <span className="text-white font-mono tracking-widest">#{currentUser.employeeNumber}</span>
                             </div>
                         </div>
@@ -330,7 +330,7 @@ const MemberDashboard: React.FC<MemberDashboardProps> = ({ activeTab, setActiveT
                         <div className="w-full transform group-hover:scale-[1.02] transition-transform duration-500">
                             <MembershipCard user={currentUser} logoUrl="/logo.png" />
                         </div>
-                        <div className="mt-8 flex items-center gap-3 text-orange-900/20">
+                        <div className="mt-8 flex items-center gap-3 text-orange-900/60">
                             <div className="h-[2px] w-8 bg-orange-100" />
                             <p className="text-[9px] font-black uppercase tracking-widest text-center italic">
                                 SECURE SMART ID BY IPREU
@@ -351,7 +351,7 @@ const MemberDashboard: React.FC<MemberDashboardProps> = ({ activeTab, setActiveT
                         </div>
                         <div>
                             <h3 className="font-black text-orange-950 uppercase tracking-tight">Register Grievance</h3>
-                            <p className="text-[10px] font-bold text-orange-900/40 uppercase tracking-widest mt-1">Direct support channel</p>
+                            <p className="text-[10px] font-bold text-orange-900/70 uppercase tracking-widest mt-1">Direct support channel</p>
                         </div>
                     </button>
 
@@ -364,17 +364,17 @@ const MemberDashboard: React.FC<MemberDashboardProps> = ({ activeTab, setActiveT
                         </div>
                         <div>
                             <h3 className="font-black text-orange-950 uppercase tracking-tight">Union Calendar</h3>
-                            <p className="text-[10px] font-bold text-orange-900/40 uppercase tracking-widest mt-1">Upcoming schedules</p>
+                            <p className="text-[10px] font-bold text-orange-900/70 uppercase tracking-widest mt-1">Upcoming schedules</p>
                         </div>
                     </button>
 
                     <div className="bg-orange-50/50 p-6 rounded-3xl border border-dashed border-orange-200 flex items-center gap-6">
-                        <div className="p-4 bg-white rounded-2xl text-orange-300">
+                        <div className="p-4 bg-white rounded-2xl text-orange-500">
                             <CheckCircleIcon className="w-8 h-8" />
                         </div>
                         <div>
-                            <h3 className="font-black text-orange-950/30 uppercase tracking-tight">More Features</h3>
-                            <p className="text-[10px] font-bold text-orange-900/20 uppercase tracking-widest mt-1">Coming soon...</p>
+                            <h3 className="font-black text-orange-950/60 uppercase tracking-tight">More Features</h3>
+                            <p className="text-[10px] font-bold text-orange-900/60 uppercase tracking-widest mt-1">Coming soon...</p>
                         </div>
                     </div>
                 </div>
@@ -388,7 +388,7 @@ const MemberDashboard: React.FC<MemberDashboardProps> = ({ activeTab, setActiveT
                             </div>
                             <div>
                                 <h2 className="text-3xl font-black text-orange-950 tracking-tight leading-none uppercase">Latest Circulars</h2>
-                                <p className="text-[10px] font-bold text-orange-900/40 uppercase tracking-widest mt-1.5">Official Union Updates & News</p>
+                                <p className="text-[10px] font-bold text-orange-900/70 uppercase tracking-widest mt-1.5">Official Union Updates & News</p>
                             </div>
                         </div>
                         <div className="w-full max-w-[100px] h-1 bg-gradient-to-r from-orange-600 to-transparent rounded-full hidden md:block"></div>
@@ -405,7 +405,7 @@ const MemberDashboard: React.FC<MemberDashboardProps> = ({ activeTab, setActiveT
                                             </div>
                                         )}
                                         <h3 className="font-black text-xl text-orange-950 pr-10 mb-3 group-hover:text-orange-600 transition-colors leading-tight uppercase tracking-tight">{ann.title}</h3>
-                                        <p className="text-sm text-orange-900/60 mb-6 whitespace-pre-wrap leading-relaxed line-clamp-3 font-medium italic">"{ann.content}"</p>
+                                        <p className="text-sm text-orange-900/80 mb-6 whitespace-pre-wrap leading-relaxed line-clamp-3 font-medium italic">"{ann.content}"</p>
                                     </div>
                                     
                                     {ann.attachment && (
@@ -424,7 +424,7 @@ const MemberDashboard: React.FC<MemberDashboardProps> = ({ activeTab, setActiveT
                             <div className="mx-auto w-20 h-20 bg-orange-50 rounded-full flex items-center justify-center mb-6 text-orange-200 shadow-inner">
                                 <MegaphoneIcon className="w-10 h-10" />
                             </div>
-                            <p className="text-sm font-black text-orange-900/20 uppercase tracking-[0.3em]">No incoming intelligence recorded</p>
+                            <p className="text-sm font-black text-orange-900/60 uppercase tracking-[0.3em]">No incoming intelligence recorded</p>
                         </div>
                     )}
                 </div>
@@ -440,7 +440,7 @@ const MemberDashboard: React.FC<MemberDashboardProps> = ({ activeTab, setActiveT
                         </div>
                         <div>
                             <h2 className="text-3xl font-black text-[#002316] tracking-tight leading-none uppercase">Union Intelligence Hub</h2>
-                            <p className="text-[10px] font-bold text-[#002316]/40 uppercase tracking-widest mt-1.5">Official Circulars & Strategic Bulletins</p>
+                            <p className="text-[10px] font-bold text-[#002316]/70 uppercase tracking-widest mt-1.5">Official Circulars & Strategic Bulletins</p>
                         </div>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-10">
@@ -451,16 +451,16 @@ const MemberDashboard: React.FC<MemberDashboardProps> = ({ activeTab, setActiveT
                                         <div className="flex-shrink-0 w-20 h-24 bg-gradient-to-b from-white to-orange-50 rounded-2xl flex flex-col items-center justify-center text-orange-700 border border-orange-100 shadow-lg group-hover:scale-105 transition-transform">
                                             <span className="text-[10px] font-black uppercase tracking-widest mb-1">{new Date(event.date).toLocaleDateString(undefined, { month: 'short' })}</span>
                                             <span className="text-4xl font-black leading-none tracking-tighter">{new Date(event.date).getDate()}</span>
-                                            <span className="text-[8px] font-black uppercase mt-1.5 opacity-40">{new Date(event.date).getFullYear()}</span>
+                                            <span className="text-[8px] font-black uppercase mt-1.5 opacity-70">{new Date(event.date).getFullYear()}</span>
                                         </div>
                                         <div className="flex-1 min-w-0">
                                             <h4 className="font-black text-[#002316] text-xl mb-3 pr-2 leading-tight uppercase group-hover:text-orange-600 transition-colors truncate">{event.title}</h4>
                                             <div className="space-y-2">
-                                                <div className="flex items-center gap-3 text-[#002316]/40">
+                                                <div className="flex items-center gap-3 text-[#002316]/70">
                                                     <ClockIcon className="w-4 h-4 text-orange-600 opacity-60" /> 
                                                     <span className="text-[11px] font-bold uppercase">{event.startTime}</span>
                                                 </div>
-                                                <div className="flex items-center gap-3 text-[#002316]/40">
+                                                <div className="flex items-center gap-3 text-[#002316]/70">
                                                     <div className="w-4 h-4 flex items-center justify-center"><span className="text-[10px] font-black text-orange-600">@</span></div>
                                                     <span className="text-[11px] font-bold uppercase truncate">{event.location || 'TBA'}</span>
                                                 </div>
@@ -476,7 +476,7 @@ const MemberDashboard: React.FC<MemberDashboardProps> = ({ activeTab, setActiveT
                             ))
                         ) : (
                             <div className="col-span-full py-32 text-center bg-[#fcfaf7] rounded-[3rem] border-2 border-dashed border-orange-100">
-                                <p className="text-xs font-black text-[#002316]/20 uppercase tracking-[0.3em] italic">No upcoming strategic schedules available</p>
+                                <p className="text-xs font-black text-[#002316]/60 uppercase tracking-[0.3em] italic">No upcoming strategic schedules available</p>
                             </div>
                         )}
                     </div>
@@ -492,7 +492,7 @@ const MemberDashboard: React.FC<MemberDashboardProps> = ({ activeTab, setActiveT
                         </div>
                         <div>
                             <h2 className="text-3xl font-black text-[#002316] tracking-tight leading-none uppercase">Public Grievance Redressal Hub</h2>
-                            <p className="text-[10px] font-bold text-[#002316]/70 uppercase tracking-widest mt-1.5">Secure Grievance Redressal Mechanism</p>
+                            <p className="text-[10px] font-bold text-[#002316]/90 uppercase tracking-widest mt-1.5">Secure Grievance Redressal Mechanism</p>
                         </div>
                     </div>
                     <div className="grid grid-cols-1 xl:grid-cols-2 gap-10">
@@ -505,7 +505,7 @@ const MemberDashboard: React.FC<MemberDashboardProps> = ({ activeTab, setActiveT
                                         <span className="w-3 h-3 bg-orange-600 rounded-full animate-pulse shadow-lg shadow-orange-600/50"></span>
                                         Grievance Reports
                                     </h3>
-                                <p className="text-[10px] font-bold text-[#002316]/20 uppercase tracking-widest">{grievances.length} Submissions</p>
+                                <p className="text-[10px] font-bold text-[#002316]/60 uppercase tracking-widest">{grievances.length} Submissions</p>
                             </div>
                             {grievances.length > 0 ? grievances.map(g => (
                                 <div key={g.id} className="bg-white p-6 rounded-[1.5rem] shadow-sm border border-orange-100 transition-all hover:border-orange-600/20">
@@ -517,7 +517,7 @@ const MemberDashboard: React.FC<MemberDashboardProps> = ({ activeTab, setActiveT
                                             {g.status}
                                         </span>
                                     </div>
-                                    <p className="text-xs text-[#002316]/40 line-clamp-3 leading-relaxed mb-6 font-medium italic">"{g.description}"</p>
+                                    <p className="text-xs text-[#002316]/70 line-clamp-3 leading-relaxed mb-6 font-medium italic">"{g.description}"</p>
                                     {g.status === 'RESOLVED' && (
                                         <div className="p-6 bg-orange-50 rounded-2xl border-2 border-orange-100 relative overflow-hidden">
                                             <div className="absolute top-0 right-0 w-16 h-16 bg-orange-100 rounded-full -mr-8 -mt-8 opacity-40" />
@@ -531,7 +531,7 @@ const MemberDashboard: React.FC<MemberDashboardProps> = ({ activeTab, setActiveT
                                 </div>
                             )) : (
                                 <div className="p-24 text-center bg-[#fcfaf7] rounded-[2.5rem] border-2 border-dashed border-orange-100 opacity-60">
-                                    <p className="text-[10px] font-black text-[#002316]/20 uppercase tracking-[0.3em]">No legal submissions recorded</p>
+                                    <p className="text-[10px] font-black text-[#002316]/60 uppercase tracking-[0.3em]">No legal submissions recorded</p>
                                 </div>
                             )}
                         </div>
@@ -549,7 +549,7 @@ const MemberDashboard: React.FC<MemberDashboardProps> = ({ activeTab, setActiveT
                         </div>
                         <div>
                             <h2 className="text-3xl font-black text-[#002316] tracking-tight leading-none uppercase">Public Survey / Suggestion</h2>
-                            <p className="text-[10px] font-bold text-[#002316]/70 uppercase tracking-widest mt-1.5">Your Voice in Union Governance</p>
+                            <p className="text-[10px] font-bold text-[#002316]/90 uppercase tracking-widest mt-1.5">Your Voice in Union Governance</p>
                         </div>
                     </div>
                     {availableSurveys.length > 0 ? (
@@ -563,7 +563,7 @@ const MemberDashboard: React.FC<MemberDashboardProps> = ({ activeTab, setActiveT
                             <div className="mx-auto w-20 h-20 bg-orange-50 rounded-full flex items-center justify-center mb-6 text-orange-200">
                                 <CheckCircleIcon className="w-10 h-10 shadow-inner" />
                             </div>
-                            <p className="text-xs font-black text-orange-900/20 uppercase tracking-[0.3em]">No active referendums at retrieval</p>
+                            <p className="text-xs font-black text-orange-900/60 uppercase tracking-[0.3em]">No active referendums at retrieval</p>
                         </div>
                     )}
                 </div>
@@ -574,7 +574,7 @@ const MemberDashboard: React.FC<MemberDashboardProps> = ({ activeTab, setActiveT
                         <div className="p-3 bg-orange-100 rounded-2xl text-orange-600 shadow-sm">
                             <CheckCircleIcon className="w-4 h-4 opacity-50"/>
                         </div>
-                        <h2 className="text-lg font-black text-orange-900/20 tracking-widest uppercase mb-1">Archived Consultations</h2>
+                        <h2 className="text-lg font-black text-orange-900/60 tracking-widest uppercase mb-1">Archived Consultations</h2>
                     </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {votedSurveys.map(survey => (
