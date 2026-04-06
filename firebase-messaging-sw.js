@@ -22,7 +22,7 @@ messaging.onBackgroundMessage((payload) => {
   const notificationTitle = payload.notification.title;
   const notificationOptions = {
     body: payload.notification.body,
-    icon: '/logo.png'
+    icon: '/ipreu-logo-hd.png'
   };
 
   self.registration.showNotification(notificationTitle, notificationOptions);
