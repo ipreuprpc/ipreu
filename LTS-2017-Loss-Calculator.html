@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculate your losses after LTS 2017</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f7f6;
+        }
+        
+        .dashboard {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap; 
+        }
+
+        .master-input-section {
+            background-color: #ffffff;
+            padding: 20px;
+            border: 1px solid #004080;
+            border-left: 5px solid #004080;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            flex: 1;
+            min-width: 400px;
+        }
+
+        .master-input-section label {
+            font-size: 14px;
+            font-weight: bold;
+            color: #004080;
+            display: block;
+            margin-bottom: 5px;
+            margin-top: 15px;
+        }
+        
+        .master-input-section label:first-child {
+            margin-top: 0;
+        }
+
+        .auto-calc-note {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+            display: block;
+            font-style: italic;
+        }
+
+        input[type="number"], select {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .control-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .control-group select {
+            flex: 1;
+        }
+
+        /* Checkbox Styling */
+        .toggle-group {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .toggle-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .toggle-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .toggle-row input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .toggle-row label {
+            margin: 0;
+            font-size: 14px;
+            font-weight: normal;
+            cursor: pointer;
+            color: #333;
+        }
+
+        .summary-card {
+            background-color: #ffffff;
+            padding: 20px;
+            border: 1px solid #cc0000;
+            border-left: 5px solid #cc0000;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            flex: 2;
+            min-width: 500px;
+        }
+
+        .summary-card h3 {
+            margin: 0 0 15px 0;
+            color: #cc0000;
+            font-size: 16px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .summary-item {
+            font-weight: bold;
+            font-size: 15px;
+            background-color: #fff5f5;
+            padding: 15px 10px;
+            border-radius: 4px;
+            border: 1px solid #ffcccc;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+        
+        .summary-label {
+            font-size: 12px;
+            color: #555;
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .summary-val {
+            font-family: monospace;
+            font-size: 20px;
+            color: #000;
+            display: block;
+            margin-bottom: 12px;
+        }
+        
+        .summary-val:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Housing Perk Alert Box */
+        .housing-alert {
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 15px;
+            font-size: 13px;
+        }
+
+        .housing-alert strong {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        /* Graph Container */
+        .chart-container {
+            width: 100%;
+            height: 350px;
+            background-color: #ffffff;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+
+        /* Tabs Styling */
+        .tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 0;
+            flex-wrap: wrap;
+        }
+
+        .tab-button {
+            padding: 12px 20px;
+            background: #e6e6e6;
+            border: 1px solid #ccc;
+            border-bottom: none;
+            cursor: pointer;
+            font-weight: bold;
+            color: #555;
+            border-radius: 6px 6px 0 0;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+
+        .tab-button:hover {
+            background: #d9d9d9;
+        }
+
+        .tab-button.active {
+            background: #ffffff;
+            color: #004080;
+            border-top: 4px solid #004080;
+            border-bottom: 1px solid #ffffff;
+            margin-bottom: -1px; /* Overlaps border to create seamless tab */
+            z-index: 2;
+            position: relative;
+        }
+
+        .tab-content {
+            display: none;
+            width: 100%;
+            height: 600px;
+            overflow-y: auto; 
+            overflow-x: auto; 
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            background-color: #ffffff;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        table { 
+            border-collapse: collapse; 
+            width: 100%; 
+        }
+        
+        th, td { 
+            border: 1px solid #dddddd; 
+            padding: 8px 10px; 
+            text-align: right; 
+            white-space: nowrap; 
+            font-size: 14px;
+        }
+
+        td:first-child, th:first-child {
+            text-align: left;
+        }
+        
+        th { 
+            background-color: #004080; 
+            color: #ffffff;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .negative-val {
+            color: #cc0000;
+        }
+
+        .promo-highlight {
+            background-color: #e6f2ff !important;
+            font-weight: bold;
+        }
+        
+        .zero-val {
+            color: #999;
+        }
+
+        @media (max-width: 768px) {
+            body { margin: 10px; }
+            .dashboard { flex-direction: column; gap: 15px; }
+            .master-input-section, .summary-card { flex: none; width: 100%; min-width: 100%; box-sizing: border-box; }
+            .summary-grid { grid-template-columns: 1fr; }
+            .chart-container { height: 300px; padding: 10px; }
+            th, td { padding: 6px 8px; font-size: 13px; }
+            .tab-button { padding: 10px; font-size: 12px; flex: 1; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Calculate your losses after LTS 2017</h2>
+    <p>Dynamically calculate backpay losses and project into future months. Toggle allowances based on individual eligibility to instantly recalculate all values.</p>
+    
+    <div class="dashboard">
+        <div class="master-input-section">
+            
+            <label for="basic-2016">Old Basic Pay as on 31.12.2016 (₹)</label>
+            <span class="auto-calc-note">Auto-calculates 2017 Basics below (IDA @ 119.5% + 15% Fitment + 3% Annual Inc.)</span>
+            <input type="number" id="basic-2016" value="12630" min="0" step="10" />
+            
+            <div class="toggle-row" style="display: none;">
+                <input type="checkbox" id="add-2017-increment" checked>
+                <label for="add-2017-increment">Includes 01.01.2017 Annual Increment (3%)</label>
+            </div>
+
+            <div style="display: none;">
+                <label for="basic-pay-0">Revised Basic Pay as on 01.01.2017 (Actual Without Increment - LTS 2017) (₹)</label>
+                <input type="number" id="basic-pay-0" value="32850" min="0" step="10" />
+
+                <label for="basic-pay-1">Revised Basic Pay as on 01.01.2017 (If 1 Increment given in LTS 2017) (₹)</label>
+                <input type="number" id="basic-pay-1" value="33840" min="0" step="10" />
+
+                <label for="basic-pay-2">Revised Basic Pay as on 01.01.2017 (If 2 Increment given in LTS 2017) (₹)</label>
+                <input type="number" id="basic-pay-2" value="34860" min="0" step="10" />
+            </div>
+
+            <div style="background-color: #f0f7ff; padding: 15px; border-left: 4px solid #004080; margin-top: 20px; border-radius: 4px;">
+                <label for="gross-salary" style="margin-top: 0;">Estimated Gross Annual Salary (₹)</label>
+                <span class="auto-calc-note">Used to calculate your Company Owned House Perk Tax Loss</span>
+                <input type="number" id="gross-salary" value="2000000" min="0" step="100000" />
+                
+                <div class="housing-alert" id="housing-perk-display">
+                    </div>
+            </div>
+
+            <div style="background-color: #f9f9f9; padding: 15px; border-left: 4px solid #004080; margin-top: 20px; border-radius: 4px;">
+                <h4 style="margin-top: 0; margin-bottom: 10px; color: #004080;">Basic-Dependent Allowances (PSU / IOCL Standard)</h4>
+                <span class="auto-calc-note" style="margin-bottom: 10px;">These percentages compound your losses massively when increments are missed.</span>
+                
+                <div class="toggle-row" style="margin-bottom: 0;">
+                    <input type="checkbox" id="include-cafeteria" checked>
+                    <label for="include-cafeteria">Include Cafeteria Perks (35% of Basic)</label>
+                </div>
+            </div>
+
+            <div class="toggle-group">
+                <div class="toggle-row">
+                    <input type="checkbox" id="include-soa" checked>
+                    <label for="include-soa">Include Special Oil Allowance (8% SOA)</label>
+                </div>
+                <div class="toggle-row">
+                    <input type="checkbox" id="include-ccl" checked>
+                    <label for="include-ccl">Include CCL Loss factor</label>
+                </div>
+                <div class="toggle-row">
+                    <input type="checkbox" id="include-housing-tax" checked>
+                    <label for="include-housing-tax">Include Housing Perk Tax Loss in Grand Totals</label>
+                </div>
+                
+                <div class="toggle-row" style="display: none;">
+                    <input type="checkbox" id="round-next-ten" checked>
+                    <label for="round-next-ten">Round off all values to the Next 10 (₹)</label>
+                </div>
+            </div>
+
+            <label>Promotion 1 (Month & Year)</label>
+            <div class="control-group">
+                <select id="promo1-month">
+                    <option value="0">January</option>
+                    <option value="1">February</option>
+                    <option value="2">March</option>
+                    <option value="3">April</option>
+                    <option value="4">May</option>
+                    <option value="5">June</option>
+                    <option value="6" selected>July</option>
+                    <option value="7">August</option>
+                    <option value="8">September</option>
+                    <option value="9">October</option>
+                    <option value="10">November</option>
+                    <option value="11">December</option>
+                </select>
+                <select id="promo1-year">
+                    <option value="none">None</option>
+                </select>
+            </div>
+
+            <label>Promotion 2 (Month & Year)</label>
+            <div class="control-group">
+                <select id="promo2-month">
+                    <option value="0">January</option>
+                    <option value="1">February</option>
+                    <option value="2">March</option>
+                    <option value="3">April</option>
+                    <option value="4">May</option>
+                    <option value="5">June</option>
+                    <option value="6" selected>July</option>
+                    <option value="7">August</option>
+                    <option value="8">September</option>
+                    <option value="9">October</option>
+                    <option value="10">November</option>
+                    <option value="11">December</option>
+                </select>
+                <select id="promo2-year">
+                    <option value="none">None</option>
+                </select>
+            </div>
+            
+            <label>Calculate Upto (End Date)</label>
+            <div class="control-group">
+                <select id="end-month">
+                    <option value="0">January</option>
+                    <option value="1">February</option>
+                    <option value="2">March</option>
+                    <option value="3">April</option>
+                    <option value="4">May</option>
+                    <option value="5">June</option>
+                    <option value="6">July</option>
+                    <option value="7">August</option>
+                    <option value="8">September</option>
+                    <option value="9">October</option>
+                    <option value="10">November</option>
+                    <option value="11">December</option>
+                </select>
+                <select id="end-year">
+                </select>
+            </div>
+        </div>
+
+        <div class="summary-card">
+            <h3>TOTAL LOSS & CURRENT BASIC PAY</h3>
+            <p style="font-size: 12px; color: #666; margin-top: -10px; margin-bottom: 15px;">Tracking from 01.01.2017 to your Selected End Date</p>
+            
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <span class="summary-label">Current Basic (Actual Without Increment)</span>
+                    <span class="summary-val" id="current-basic-0" style="color: #004080;">₹0.00</span>
+                    
+                    <span class="summary-label" style="border-top: 1px solid #ffcccc; padding-top: 10px;">Total Cumulative Loss</span>
+                    <span class="summary-val negative-val" id="loss-0">₹0.00</span>
+                </div>
+
+                <div class="summary-item">
+                    <span class="summary-label">Current Basic (If 1 Increment given in LTS 2017)</span>
+                    <span class="summary-val" id="current-basic-1" style="color: #004080;">₹0.00</span>
+                    
+                    <span class="summary-label" style="border-top: 1px solid #ffcccc; padding-top: 10px;">Total Cumulative Loss</span>
+                    <span class="summary-val negative-val" id="loss-1">₹0.00</span>
+
+                    <span class="summary-label" style="display: none; border-top: 1px dashed #ffcccc; padding-top: 10px; font-size: 11px;">Loss due to 1 Missed Increment<br>(Basic, DA, SOA, 35% Perks)</span>
+                    <span class="summary-val negative-val" id="missed-loss-1" style="display: none; font-size: 16px; margin-top: 2px;">₹0.00</span>
+                </div>
+
+                <div class="summary-item">
+                    <span class="summary-label">Current Basic (If 2 Increment given in LTS 2017)</span>
+                    <span class="summary-val" id="current-basic-2" style="color: #004080;">₹0.00</span>
+                    
+                    <span class="summary-label" style="border-top: 1px solid #ffcccc; padding-top: 10px;">Total Cumulative Loss</span>
+                    <span class="summary-val negative-val" id="loss-2">₹0.00</span>
+
+                    <span class="summary-label" style="display: none; border-top: 1px dashed #ffcccc; padding-top: 10px; font-size: 11px;">Loss due to 2 Missed Increments<br>(Basic, DA, SOA, 35% Perks)</span>
+                    <span class="summary-val negative-val" id="missed-loss-2" style="display: none; font-size: 16px; margin-top: 2px;">₹0.00</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="chart-container">
+        <canvas id="lossChart"></canvas>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-button active" id="btn-tab-main" onclick="switchTab('tab-main', 'btn-tab-main')">Main Components</button>
+        <button class="tab-button" id="btn-tab-loss1" onclick="switchTab('tab-loss1', 'btn-tab-loss1')">Loss (1 Missed Inc)</button>
+        <button class="tab-button" id="btn-tab-loss2" onclick="switchTab('tab-loss2', 'btn-tab-loss2')">Loss (2 Missed Inc)</button>
+        <button class="tab-button" id="btn-tab-cafe" onclick="switchTab('tab-cafe', 'btn-tab-cafe')">Cafeteria @ 35%</button>
+        <button class="tab-button" id="btn-tab-ccl" onclick="switchTab('tab-ccl', 'btn-tab-ccl')">CCL Details</button>
+    </div>
+
+    <div id="tab-main" class="tab-content active">
+        <table id="dynamic-data-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Current Basic</th>
+                    <th>DA %</th>
+                    <th>DA Amount</th>
+                    <th>8% SOA</th>
+                    <th>SOA Loss (-2%)</th>
+                    <th style="background-color: #e6f2ff; color: #004080;">Cafeteria (35%)</th>
+                    <th>SCO Amount</th>
+                    <th>Diff (SOA vs SCO)</th>
+                    <th>CCL Loss (Without Inc)</th>
+                </tr>
+            </thead>
+            <tbody id="table-body-main">
+                </tbody>
+        </table>
+    </div>
+
+    <div id="tab-loss1" class="tab-content">
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Basic Pay Diff</th>
+                    <th>DA Amount Diff</th>
+                    <th>8% SOA Diff</th>
+                    <th style="background-color: #fff0e6; color: #cc4400;">Cafeteria Diff (35%)</th>
+                    <th>Total Monthly Loss</th>
+                    <th>Cumulative Increment Loss</th>
+                </tr>
+            </thead>
+            <tbody id="table-body-loss1">
+                </tbody>
+        </table>
+    </div>
+
+    <div id="tab-loss2" class="tab-content">
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Basic Pay Diff</th>
+                    <th>DA Amount Diff</th>
+                    <th>8% SOA Diff</th>
+                    <th style="background-color: #fff0e6; color: #cc4400;">Cafeteria Diff (35%)</th>
+                    <th>Total Monthly Loss</th>
+                    <th>Cumulative Increment Loss</th>
+                </tr>
+            </thead>
+            <tbody id="table-body-loss2">
+                </tbody>
+        </table>
+    </div>
+
+    <div id="tab-cafe" class="tab-content">
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Cafeteria (Actual)</th>
+                    <th>Cafeteria (If 1 Inc)</th>
+                    <th>Cafeteria (If 2 Inc)</th>
+                    <th style="background-color: #fff0e6; color: #cc4400;">Loss (1 Inc Missed)</th>
+                    <th style="background-color: #fff0e6; color: #cc4400;">Loss (2 Inc Missed)</th>
+                </tr>
+            </thead>
+            <tbody id="table-body-cafe">
+                </tbody>
+        </table>
+    </div>
+
+    <div id="tab-ccl" class="tab-content">
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>CCL (Actual)</th>
+                    <th>CCL (If 1 Inc)</th>
+                    <th>CCL (If 2 Inc)</th>
+                    <th style="background-color: #fff0e6; color: #cc4400;">Diff (1 Inc Missed)</th>
+                    <th style="background-color: #fff0e6; color: #cc4400;">Diff (2 Inc Missed)</th>
+                </tr>
+            </thead>
+            <tbody id="table-body-ccl">
+                </tbody>
+        </table>
+    </div>
+
+    <script>
+        // DOM Elements
+        const basic2016Input = document.getElementById('basic-2016');
+        const add2017Increment = document.getElementById('add-2017-increment');
+        
+        const basicPay0Input = document.getElementById('basic-pay-0');
+        const basicPay1Input = document.getElementById('basic-pay-1');
+        const basicPay2Input = document.getElementById('basic-pay-2');
+        const grossSalaryInput = document.getElementById('gross-salary');
+        const housingPerkDisplay = document.getElementById('housing-perk-display');
+        
+        // Cafeteria Only Toggle
+        const includeCafeteria = document.getElementById('include-cafeteria');
+        
+        const promo1Month = document.getElementById('promo1-month');
+        const promo1Year = document.getElementById('promo1-year');
+        const promo2Month = document.getElementById('promo2-month');
+        const promo2Year = document.getElementById('promo2-year');
+        const endMonthSelect = document.getElementById('end-month');
+        const endYearSelect = document.getElementById('end-year');
+        
+        const includeSOA = document.getElementById('include-soa');
+        const includeCCL = document.getElementById('include-ccl');
+        const includeHousingTax = document.getElementById('include-housing-tax');
+        const roundNextTen = document.getElementById('round-next-ten');
+        
+        // Table Bodies for the Tabs
+        const tableBodyMain = document.getElementById('table-body-main');
+        const tableBodyLoss1 = document.getElementById('table-body-loss1');
+        const tableBodyLoss2 = document.getElementById('table-body-loss2');
+        const tableBodyCafe = document.getElementById('table-body-cafe');
+        const tableBodyCcl = document.getElementById('table-body-ccl');
+        
+        // Chart Instance Variable
+        let lossChartInstance = null;
+
+        // Tab Switcher Logic
+        function switchTab(tabId, btnId) {
+            document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+            document.querySelectorAll('.tab-button').forEach(tb => tb.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            document.getElementById(btnId).classList.add('active');
+        }
+        
+        // Exact historical DA% schedule
+        const daSchedule = [
+            0, 0, 0, 1.3, 1.3, 1.3, 2, 2, 2, 2.2, 2.2, 2.2,             // 2017
+            3.5, 3.5, 3.5, 3.4, 3.4, 3.4, 3.8, 3.8, 3.8, 5.4, 5.4, 5.4, // 2018
+            7.5, 7.5, 7.5, 8.8, 8.8, 8.8, 10, 10, 10, 12.4, 12.4, 12.4, // 2019
+            14.8, 14.8, 14.8, 16, 16, 16, 18.4, 18.4, 18.4, 18.7, 18.7, 18.7, // 2020
+            23.2, 23.2, 23.2, 23.2, 23.2, 23.2, 24.6, 24.6, 24.6, 27.2, 27.2, 27.2, // 2021
+            29.4, 29.4, 29.4, 29.4, 29.4, 29.4, 32.5, 32.5, 32.5, 34.8, 34.8, 34.8, // 2022
+            37.2, 37.2, 37.2, 38.3, 38.3, 38.3, 39.2, 39.2, 39.2, 43.8, 43.8, 43.8, // 2023
+            43.7, 43.7, 43.77, 44.3, 44.3, 44.3, 44.8, 44.8, 44.8, 47.7, 47.7, 47.7, // 2024
+            49.6, 49.6, 49.6, 48.7, 48.7, 48.7, 49, 49, 49, 51.8, 51.8, 51.8, // 2025
+            53.4, 53.4, 53.4, // 2026 (Jan, Feb, Mar)
+            
+            55.0, 55.0, 55.0, // 2026 (Apr, May, Jun)
+            58.0, 58.0, 58.0, // 2026 (Jul, Aug, Sep)
+            58.0, 58.0, 58.0  // 2026 (Oct, Nov, Dec)
+        ];
+
+        function initializeDates() {
+            const now = new Date();
+            const currentY = now.getFullYear();
+            const currentM = now.getMonth();
+
+            let yearOptions = '';
+            for(let y = 2017; y <= 2055; y++) {
+                yearOptions += `<option value="${y}">${y}</option>`;
+            }
+            
+            promo1Year.innerHTML += yearOptions;
+            promo2Year.innerHTML += yearOptions;
+            endYearSelect.innerHTML = yearOptions;
+
+            promo1Year.value = "2021";
+            promo2Year.value = "2025";
+            endYearSelect.value = currentY.toString();
+            endMonthSelect.value = currentM.toString();
+        }
+
+        function formatCurrency(val) {
+            return val.toFixed(2);
+        }
+
+        function roundToNext10(val) {
+            if (val === 0) return 0;
+            return Math.ceil(Number(val.toFixed(2)) / 10) * 10;
+        }
+
+        function getHousingTaxLossPerYear() {
+            const gross = parseFloat(grossSalaryInput.value) || 0;
+            if (gross === 0) return 0;
+
+            const perkValuation = gross * 0.05; 
+            const taxSlab = gross < 2000000 ? 0.20 : 0.30; 
+            const totalTax = perkValuation * taxSlab;
+            const employeeLossPerYear = totalTax * 0.50; 
+
+            housingPerkDisplay.innerHTML = `
+                <strong>Housing Tax Shift Impact:</strong>
+                Housing Perk Value (5%): ₹${formatCurrency(perkValuation)}<br>
+                Tax Slab Assumed: ${taxSlab * 100}%<br>
+                Total Tax: ₹${formatCurrency(totalTax)}<br>
+                <b>Your Direct Loss (Tax Born by You): ₹${formatCurrency(employeeLossPerYear)} / Year</b>
+            `;
+
+            return employeeLossPerYear;
+        }
+
+        function handle2016BasicChange() {
+            const oldBasic = parseFloat(basic2016Input.value) || 0;
+            const includesIncrement = add2017Increment.checked;
+
+            if(oldBasic > 0) {
+                let idaAmount = oldBasic * 1.195;
+                let subtotal = oldBasic + idaAmount;
+                let fitment = subtotal * 0.15;
+                let aggregate = subtotal + fitment;
+                
+                let base2017 = Math.ceil(Number(aggregate.toFixed(2)) / 10) * 10;
+                
+                if (includesIncrement) {
+                    let annualIncrement = base2017 * 0.03;
+                    let postIncrementBasic = base2017 + annualIncrement;
+                    base2017 = Math.ceil(Number(postIncrementBasic.toFixed(2)) / 10) * 10;
+                }
+                
+                basicPay0Input.value = base2017;
+
+                let inc1 = Math.ceil(Number((base2017 * 1.03).toFixed(2)) / 10) * 10;
+                basicPay1Input.value = inc1;
+
+                let inc2 = Math.ceil(Number((inc1 * 1.03).toFixed(2)) / 10) * 10;
+                basicPay2Input.value = inc2;
+                
+                calculateAndRenderSheet();
+            }
+        }
+
+        function calculateAndRenderSheet() {
+            const initialBasic0 = parseFloat(basicPay0Input.value) || 0;
+            const initialBasic1 = parseFloat(basicPay1Input.value) || 0;
+            const initialBasic2 = parseFloat(basicPay2Input.value) || 0;
+
+            const p1M = parseInt(promo1Month.value);
+            const p1Y = promo1Year.value; 
+            const p2M = parseInt(promo2Month.value);
+            const p2Y = promo2Year.value; 
+            
+            const targetEndMonth = parseInt(endMonthSelect.value);
+            const targetEndYear = parseInt(endYearSelect.value);
+
+            const getsSOA = includeSOA.checked;
+            const getsCCL = includeCCL.checked;
+            const getsRounding = roundNextTen.checked;
+            const getsHousingTaxLoss = includeHousingTax.checked;
+            
+            // Cafeteria Allowance Logic
+            const cafePct = includeCafeteria.checked ? 0.35 : 0;
+            
+            const yearlyHousingLoss = getsHousingTaxLoss ? getHousingTaxLossPerYear() : 0;
+            const monthlyHousingLoss = yearlyHousingLoss / 12;
+
+            if(!getsHousingTaxLoss) {
+                housingPerkDisplay.innerHTML = `<strong>Housing Tax Loss excluded from totals.</strong>`;
+            }
+
+            let basic0 = initialBasic0;
+            let basic1 = initialBasic1;
+            let basic2 = initialBasic2;
+
+            if (getsRounding) {
+                basic0 = roundToNext10(basic0);
+                basic1 = roundToNext10(basic1);
+                basic2 = roundToNext10(basic2);
+            }
+
+            // Trackers for Policy Losses
+            let sumDiff0 = 0, sumDiff1 = 0, sumDiff2 = 0;
+            let sumCCL0 = 0, sumCCL1 = 0, sumCCL2 = 0;
+            let sumHousingLoss = 0;
+            
+            let sumSOAReductionLoss0 = 0;
+            let sumSOAReductionLoss1 = 0;
+            let sumSOAReductionLoss2 = 0;
+
+            // Trackers for Missed Increment Cash Losses
+            let sumMissedIncLoss1 = 0;
+            let sumMissedIncLoss2 = 0;
+
+            // HTML Accumulators for Tabs
+            let htmlMain = '';
+            let htmlLoss1 = '';
+            let htmlLoss2 = '';
+            let htmlCafe = '';
+            let htmlCcl = ''; 
+
+            let currentYear = 2017;
+            let currentMonth = 0; 
+            let arrayIndex = 0; 
+            
+            let chartLabels = [];
+            let chartData0 = [];
+            let chartData1 = [];
+            let chartData2 = [];
+
+            while (currentYear < targetEndYear || (currentYear === targetEndYear && currentMonth <= targetEndMonth)) {
+                
+                let incrementsThisMonth = 0;
+                let isPromoMonth = false;
+
+                if (currentMonth === 0 && currentYear > 2017) {
+                    incrementsThisMonth++;
+                }
+
+                if (p1Y !== "none" && currentMonth === p1M && currentYear === parseInt(p1Y)) {
+                    incrementsThisMonth++;
+                    isPromoMonth = true;
+                }
+                if (p2Y !== "none" && currentMonth === p2M && currentYear === parseInt(p2Y)) {
+                    incrementsThisMonth++;
+                    isPromoMonth = true;
+                }
+
+                for(let inc = 0; inc < incrementsThisMonth; inc++) {
+                    basic0 *= 1.03;
+                    basic1 *= 1.03;
+                    basic2 *= 1.03;
+                    
+                    if (getsRounding) {
+                        basic0 = roundToNext10(basic0);
+                        basic1 = roundToNext10(basic1);
+                        basic2 = roundToNext10(basic2);
+                    }
+                }
+
+                let activeDA = (arrayIndex < daSchedule.length) ? daSchedule[arrayIndex] : daSchedule[daSchedule.length - 1];
+                let daPct = activeDA / 100;
+
+                // ===================================
+                // Scenario 0 (Actuals)
+                // ===================================
+                let da0 = basic0 * daPct;
+                let soa0 = getsSOA ? (basic0 * 0.08) : 0;
+                let soaReduction0 = getsSOA ? (basic0 * 0.02) : 0; 
+                let sco0 = (basic0 + da0) * 0.10;
+                let cclLossMag0 = (1.62 * basic0 / 26) + (1.5 * da0 / 26);
+                let cafe0 = basic0 * cafePct; 
+                
+                if (getsRounding) {
+                    da0 = roundToNext10(da0);
+                    soa0 = getsSOA ? roundToNext10(soa0) : 0;
+                    soaReduction0 = getsSOA ? roundToNext10(soaReduction0) : 0;
+                    sco0 = roundToNext10(sco0);
+                    cclLossMag0 = roundToNext10(cclLossMag0);
+                    cafe0 = roundToNext10(cafe0);
+                }
+
+                let diff0 = soa0 - sco0;
+                let ccl0 = getsCCL ? -cclLossMag0 : 0;
+
+                // ===================================
+                // Scenario 1 (If 1 Increment Given)
+                // ===================================
+                let da1 = basic1 * daPct;
+                let soa1 = getsSOA ? (basic1 * 0.08) : 0;
+                let soaReduction1 = getsSOA ? (basic1 * 0.02) : 0; 
+                let sco1 = (basic1 + da1) * 0.10;
+                let cclLossMag1 = (1.62 * basic1 / 26) + (1.5 * da1 / 26);
+                let cafe1 = basic1 * cafePct; 
+                
+                if (getsRounding) {
+                    da1 = roundToNext10(da1);
+                    soa1 = getsSOA ? roundToNext10(soa1) : 0;
+                    soaReduction1 = getsSOA ? roundToNext10(soaReduction1) : 0;
+                    sco1 = roundToNext10(sco1);
+                    cclLossMag1 = roundToNext10(cclLossMag1);
+                    cafe1 = roundToNext10(cafe1);
+                }
+
+                let diff1 = soa1 - sco1;
+                let ccl1 = getsCCL ? -cclLossMag1 : 0;
+
+                // ===================================
+                // Scenario 2 (If 2 Increments Given)
+                // ===================================
+                let da2 = basic2 * daPct;
+                let soa2 = getsSOA ? (basic2 * 0.08) : 0;
+                let soaReduction2 = getsSOA ? (basic2 * 0.02) : 0; 
+                let sco2 = (basic2 + da2) * 0.10;
+                let cclLossMag2 = (1.62 * basic2 / 26) + (1.5 * da2 / 26);
+                let cafe2 = basic2 * cafePct; 
+                
+                if (getsRounding) {
+                    da2 = roundToNext10(da2);
+                    soa2 = getsSOA ? roundToNext10(soa2) : 0;
+                    soaReduction2 = getsSOA ? roundToNext10(soaReduction2) : 0;
+                    sco2 = roundToNext10(sco2);
+                    cclLossMag2 = roundToNext10(cclLossMag2);
+                    cafe2 = roundToNext10(cafe2);
+                }
+
+                let diff2 = soa2 - sco2;
+                let ccl2 = getsCCL ? -cclLossMag2 : 0;
+
+                // ===================================
+                // Global Accumulators
+                // ===================================
+                sumDiff0 += diff0; sumDiff1 += diff1; sumDiff2 += diff2;
+                sumCCL0 += ccl0; sumCCL1 += ccl1; sumCCL2 += ccl2;
+                
+                sumHousingLoss -= monthlyHousingLoss; 
+                
+                sumSOAReductionLoss0 -= soaReduction0;
+                sumSOAReductionLoss1 -= soaReduction1;
+                sumSOAReductionLoss2 -= soaReduction2;
+
+                // Difference Math for Missing Increments
+                let diffBasic1 = basic1 - basic0;
+                let diffDA1 = da1 - da0;
+                let diffSOA1 = soa1 - soa0;
+                let diffCafe1 = cafe1 - cafe0;
+                let monthlyMissedLoss1 = diffBasic1 + diffDA1 + diffSOA1 + diffCafe1;
+                
+                let diffBasic2 = basic2 - basic0;
+                let diffDA2 = da2 - da0;
+                let diffSOA2 = soa2 - soa0;
+                let diffCafe2 = cafe2 - cafe0;
+                let monthlyMissedLoss2 = diffBasic2 + diffDA2 + diffSOA2 + diffCafe2;
+
+                // Difference Math for CCL Deductions 
+                let diffCcl1 = ccl1 - ccl0; 
+                let diffCcl2 = ccl2 - ccl0;
+
+                sumMissedIncLoss1 -= monthlyMissedLoss1; // Stored as negative
+                sumMissedIncLoss2 -= monthlyMissedLoss2; // Stored as negative
+
+                // ===================================
+                // Row UI Generations for Tabs
+                // ===================================
+                let dateStr = `01.${(currentMonth + 1).toString().padStart(2, '0')}.${currentYear}`;
+                let rowClass = isPromoMonth ? "promo-highlight" : "";
+                let promoLabel = isPromoMonth ? " ⭐" : "";
+
+                // Tab 1: Main
+                htmlMain += `
+                    <tr class="${rowClass}">
+                        <td>${dateStr}${promoLabel}</td>
+                        <td>${formatCurrency(basic0)}</td>
+                        <td>${activeDA}%</td>
+                        <td>${formatCurrency(da0)}</td>
+                        <td class="${!getsSOA ? 'zero-val' : ''}">${formatCurrency(soa0)}</td>
+                        <td class="${!getsSOA ? 'zero-val' : 'negative-val'}">${formatCurrency(-soaReduction0)}</td>
+                        <td style="background-color: #f0f8ff;">${formatCurrency(cafe0)}</td>
+                        <td>${formatCurrency(sco0)}</td>
+                        <td class="${diff0 < 0 ? 'negative-val' : ''}">${formatCurrency(diff0)}</td>
+                        <td class="${!getsCCL ? 'zero-val' : (ccl0 < 0 ? 'negative-val' : '')}">${formatCurrency(ccl0)}</td>
+                    </tr>
+                `;
+
+                // Tab 2: Loss 1 Inc
+                htmlLoss1 += `
+                    <tr class="${rowClass}">
+                        <td>${dateStr}${promoLabel}</td>
+                        <td class="negative-val">-${formatCurrency(diffBasic1)}</td>
+                        <td class="negative-val">-${formatCurrency(diffDA1)}</td>
+                        <td class="${diffSOA1 > 0 ? 'negative-val' : 'zero-val'}">-${formatCurrency(diffSOA1)}</td>
+                        <td class="negative-val" style="background-color: #fff0e6;">-${formatCurrency(diffCafe1)}</td>
+                        <td class="negative-val" style="font-weight: bold;">-${formatCurrency(monthlyMissedLoss1)}</td>
+                        <td class="negative-val" style="font-weight: bold;">${formatCurrency(sumMissedIncLoss1)}</td>
+                    </tr>
+                `;
+
+                // Tab 3: Loss 2 Inc
+                htmlLoss2 += `
+                    <tr class="${rowClass}">
+                        <td>${dateStr}${promoLabel}</td>
+                        <td class="negative-val">-${formatCurrency(diffBasic2)}</td>
+                        <td class="negative-val">-${formatCurrency(diffDA2)}</td>
+                        <td class="${diffSOA2 > 0 ? 'negative-val' : 'zero-val'}">-${formatCurrency(diffSOA2)}</td>
+                        <td class="negative-val" style="background-color: #fff0e6;">-${formatCurrency(diffCafe2)}</td>
+                        <td class="negative-val" style="font-weight: bold;">-${formatCurrency(monthlyMissedLoss2)}</td>
+                        <td class="negative-val" style="font-weight: bold;">${formatCurrency(sumMissedIncLoss2)}</td>
+                    </tr>
+                `;
+
+                // Tab 4: Cafeteria Specifics
+                htmlCafe += `
+                    <tr class="${rowClass}">
+                        <td>${dateStr}${promoLabel}</td>
+                        <td>${formatCurrency(cafe0)}</td>
+                        <td>${formatCurrency(cafe1)}</td>
+                        <td>${formatCurrency(cafe2)}</td>
+                        <td class="negative-val" style="background-color: #fff0e6;">-${formatCurrency(diffCafe1)}</td>
+                        <td class="negative-val" style="background-color: #fff0e6;">-${formatCurrency(diffCafe2)}</td>
+                    </tr>
+                `;
+
+                // Tab 5: CCL Details
+                htmlCcl += `
+                    <tr class="${rowClass}">
+                        <td>${dateStr}${promoLabel}</td>
+                        <td class="${ccl0 < 0 ? 'negative-val' : 'zero-val'}">${formatCurrency(ccl0)}</td>
+                        <td class="${ccl1 < 0 ? 'negative-val' : 'zero-val'}">${formatCurrency(ccl1)}</td>
+                        <td class="${ccl2 < 0 ? 'negative-val' : 'zero-val'}">${formatCurrency(ccl2)}</td>
+                        <td class="${diffCcl1 < 0 ? 'negative-val' : 'zero-val'}" style="background-color: #fff0e6;">${formatCurrency(diffCcl1)}</td>
+                        <td class="${diffCcl2 < 0 ? 'negative-val' : 'zero-val'}" style="background-color: #fff0e6;">${formatCurrency(diffCcl2)}</td>
+                    </tr>
+                `;
+
+                // Calculate cumulative grand totals 
+                let currentRunningGrand0 = sumDiff0 + sumCCL0 + sumHousingLoss + sumSOAReductionLoss0;
+                let currentRunningGrand1 = sumDiff1 + sumCCL1 + sumHousingLoss + sumSOAReductionLoss1 + sumMissedIncLoss1;
+                let currentRunningGrand2 = sumDiff2 + sumCCL2 + sumHousingLoss + sumSOAReductionLoss2 + sumMissedIncLoss2;
+                
+                chartLabels.push(`${(currentMonth + 1)}/${currentYear}`);
+                chartData0.push(currentRunningGrand0);
+                chartData1.push(currentRunningGrand1);
+                chartData2.push(currentRunningGrand2);
+
+                arrayIndex++;
+                currentMonth++;
+                if (currentMonth > 11) {
+                    currentMonth = 0;
+                    currentYear++;
+                }
+            }
+            
+            // Inject Tables into DOM
+            tableBodyMain.innerHTML = htmlMain;
+            tableBodyLoss1.innerHTML = htmlLoss1;
+            tableBodyLoss2.innerHTML = htmlLoss2;
+            tableBodyCafe.innerHTML = htmlCafe;
+            tableBodyCcl.innerHTML = htmlCcl; 
+
+            // Grand Totals Computation
+            let grandTotal0 = sumDiff0 + sumCCL0 + sumHousingLoss + sumSOAReductionLoss0;
+            let grandTotal1 = sumDiff1 + sumCCL1 + sumHousingLoss + sumSOAReductionLoss1 + sumMissedIncLoss1;
+            let grandTotal2 = sumDiff2 + sumCCL2 + sumHousingLoss + sumSOAReductionLoss2 + sumMissedIncLoss2;
+
+            document.getElementById('current-basic-0').textContent = `₹${formatCurrency(basic0)}`;
+            document.getElementById('current-basic-1').textContent = `₹${formatCurrency(basic1)}`;
+            document.getElementById('current-basic-2').textContent = `₹${formatCurrency(basic2)}`;
+
+            document.getElementById('loss-0').textContent = `₹${formatCurrency(grandTotal0)}`;
+            document.getElementById('loss-1').textContent = `₹${formatCurrency(grandTotal1)}`;
+            document.getElementById('loss-2').textContent = `₹${formatCurrency(grandTotal2)}`;
+            
+            // Missed Increment Sub-Lines (Hidden per User Request to Declutter Dashboard)
+            document.getElementById('missed-loss-1').textContent = `₹${formatCurrency(sumMissedIncLoss1)}`;
+            document.getElementById('missed-loss-2').textContent = `₹${formatCurrency(sumMissedIncLoss2)}`;
+            
+            renderChart(chartLabels, chartData0, chartData1, chartData2);
+        }
+        
+        function renderChart(labels, data0, data1, data2) {
+            const ctx = document.getElementById('lossChart').getContext('2d');
+            if (lossChartInstance) { lossChartInstance.destroy(); }
+            
+            lossChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        { label: 'Loss (Actual Without Increment)', data: data0, borderColor: '#cc0000', backgroundColor: 'rgba(204, 0, 0, 0.1)', borderWidth: 2, fill: true, pointRadius: 0 },
+                        { label: 'Loss (If 1 Increment Given)', data: data1, borderColor: '#e67300', backgroundColor: 'transparent', borderWidth: 2, borderDash: [5, 5], fill: false, pointRadius: 0 },
+                        { label: 'Loss (If 2 Increments Given)', data: data2, borderColor: '#004080', backgroundColor: 'transparent', borderWidth: 2, borderDash: [2, 2], fill: false, pointRadius: 0 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: {
+                        title: { display: true, text: 'Cumulative Financial Loss Trajectory', font: { size: 16 } },
+                        tooltip: { callbacks: { label: function(context) { let label = context.dataset.label || ''; if (label) { label += ': '; } if (context.parsed.y !== null) { label += new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(context.parsed.y); } return label; } } }
+                    },
+                    scales: {
+                        x: { title: { display: true, text: 'Timeline (Month/Year)' }, ticks: { maxTicksLimit: 20 } },
+                        y: { title: { display: true, text: 'Cumulative Loss (₹)' }, ticks: { callback: function(value) { return '₹' + value.toLocaleString('en-IN'); } } }
+                    }
+                }
+            });
+        }
+
+        basic2016Input.addEventListener('input', handle2016BasicChange);
+        add2017Increment.addEventListener('change', handle2016BasicChange);
+
+        const otherInputs = [
+            basicPay0Input, basicPay1Input, basicPay2Input, grossSalaryInput,
+            includeCafeteria,
+            promo1Month, promo1Year, promo2Month, promo2Year, 
+            endMonthSelect, endYearSelect, includeSOA, includeCCL, includeHousingTax, roundNextTen
+        ];
+        
+        otherInputs.forEach(input => {
+            input.addEventListener('change', calculateAndRenderSheet);
+            if(input.type === 'number') { input.addEventListener('input', calculateAndRenderSheet); }
+        });
+
+        initializeDates();
+        calculateAndRenderSheet();
+    </script>
+</body>
+</html>
