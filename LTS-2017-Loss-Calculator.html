@@ -399,6 +399,27 @@
                     <option value="none">None</option>
                 </select>
             </div>
+
+            <label>Promotion 3 (Month & Year)</label>
+            <div class="control-group">
+                <select id="promo3-month">
+                    <option value="0">January</option>
+                    <option value="1">February</option>
+                    <option value="2">March</option>
+                    <option value="3">April</option>
+                    <option value="4">May</option>
+                    <option value="5">June</option>
+                    <option value="6" selected>July</option>
+                    <option value="7">August</option>
+                    <option value="8">September</option>
+                    <option value="9">October</option>
+                    <option value="10">November</option>
+                    <option value="11">December</option>
+                </select>
+                <select id="promo3-year">
+                    <option value="none">None</option>
+                </select>
+            </div>
             
             <label>Calculate Upto (End Date)</label>
             <div class="control-group">
@@ -438,7 +459,7 @@
                     <span class="summary-label">Current Basic (If 1 Increment given in LTS 2017)</span>
                     <span class="summary-val" id="current-basic-1" style="color: #004080;">₹0.00</span>
                     
-                    <span class="summary-label" style="border-top: 1px solid #ffcccc; padding-top: 10px;">Total Cumulative Loss</span>
+                    <span class="summary-label" style="border-top: 1px solid #ffcccc; padding-top: 10px;">Total Cumulative Loss (Due to 1 Increment Miss)</span>
                     <span class="summary-val negative-val" id="loss-1">₹0.00</span>
 
                     <span class="summary-label" style="display: none; border-top: 1px dashed #ffcccc; padding-top: 10px; font-size: 11px;">Loss due to 1 Missed Increment<br>(Basic, DA, SOA, 35% Perks)</span>
@@ -449,7 +470,7 @@
                     <span class="summary-label">Current Basic (If 2 Increment given in LTS 2017)</span>
                     <span class="summary-val" id="current-basic-2" style="color: #004080;">₹0.00</span>
                     
-                    <span class="summary-label" style="border-top: 1px solid #ffcccc; padding-top: 10px;">Total Cumulative Loss</span>
+                    <span class="summary-label" style="border-top: 1px solid #ffcccc; padding-top: 10px;">Total Cumulative Loss (Due to 2 Increment Miss)</span>
                     <span class="summary-val negative-val" id="loss-2">₹0.00</span>
 
                     <span class="summary-label" style="display: none; border-top: 1px dashed #ffcccc; padding-top: 10px; font-size: 11px;">Loss due to 2 Missed Increments<br>(Basic, DA, SOA, 35% Perks)</span>
@@ -580,6 +601,9 @@
         const promo1Year = document.getElementById('promo1-year');
         const promo2Month = document.getElementById('promo2-month');
         const promo2Year = document.getElementById('promo2-year');
+        const promo3Month = document.getElementById('promo3-month');
+        const promo3Year = document.getElementById('promo3-year');
+        
         const endMonthSelect = document.getElementById('end-month');
         const endYearSelect = document.getElementById('end-year');
         
@@ -637,10 +661,12 @@
             
             promo1Year.innerHTML += yearOptions;
             promo2Year.innerHTML += yearOptions;
+            promo3Year.innerHTML += yearOptions;
             endYearSelect.innerHTML = yearOptions;
 
             promo1Year.value = "2021";
             promo2Year.value = "2025";
+            promo3Year.value = "none";
             endYearSelect.value = currentY.toString();
             endMonthSelect.value = currentM.toString();
         }
@@ -713,6 +739,8 @@
             const p1Y = promo1Year.value; 
             const p2M = parseInt(promo2Month.value);
             const p2Y = promo2Year.value; 
+            const p3M = parseInt(promo3Month.value);
+            const p3Y = promo3Year.value; 
             
             const targetEndMonth = parseInt(endMonthSelect.value);
             const targetEndYear = parseInt(endYearSelect.value);
@@ -785,6 +813,10 @@
                     isPromoMonth = true;
                 }
                 if (p2Y !== "none" && currentMonth === p2M && currentYear === parseInt(p2Y)) {
+                    incrementsThisMonth++;
+                    isPromoMonth = true;
+                }
+                if (p3Y !== "none" && currentMonth === p3M && currentYear === parseInt(p3Y)) {
                     incrementsThisMonth++;
                     isPromoMonth = true;
                 }
@@ -1013,7 +1045,7 @@
             document.getElementById('loss-1').textContent = `₹${formatCurrency(grandTotal1)}`;
             document.getElementById('loss-2').textContent = `₹${formatCurrency(grandTotal2)}`;
             
-            // Missed Increment Sub-Lines (Hidden per User Request to Declutter Dashboard)
+            // Output explicit Missed Increment Values (Hidden from UI but calculation preserved)
             document.getElementById('missed-loss-1').textContent = `₹${formatCurrency(sumMissedIncLoss1)}`;
             document.getElementById('missed-loss-2').textContent = `₹${formatCurrency(sumMissedIncLoss2)}`;
             
@@ -1056,7 +1088,7 @@
         const otherInputs = [
             basicPay0Input, basicPay1Input, basicPay2Input, grossSalaryInput,
             includeCafeteria,
-            promo1Month, promo1Year, promo2Month, promo2Year, 
+            promo1Month, promo1Year, promo2Month, promo2Year, promo3Month, promo3Year,
             endMonthSelect, endYearSelect, includeSOA, includeCCL, includeHousingTax, roundNextTen
         ];
         
