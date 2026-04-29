@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculate your losses after LTS 2017</title>
+    <title>LTS 2017 Loss Calculator</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
@@ -293,15 +293,51 @@
 </head>
 <body>
 
-    <h2>Calculate your losses after LTS 2017</h2>
+    <h2>LTS 2017 Loss Calculator</h2>
     <p>Dynamically calculate backpay losses and project into future months. Toggle allowances based on individual eligibility to instantly recalculate all values.</p>
     
     <div class="dashboard">
         <div class="master-input-section">
             
-            <label for="basic-2016">Old Basic Pay as on 31.12.2016 (₹)</label>
-            <span class="auto-calc-note">Auto-calculates 2017 Basics below (IDA @ 119.5% + 15% Fitment + 3% Annual Inc.)</span>
-            <input type="number" id="basic-2016" value="12630" min="0" step="10" />
+            <label for="emp-joining-status">When did you join the Corporation?</label>
+            <div class="control-group" style="margin-bottom: 15px;">
+                <select id="emp-joining-status" style="font-weight: bold; color: #004080; background-color: #f0f7ff;">
+                    <option value="before">Joined Before 01.01.2017</option>
+                    <option value="after">Joined On or After 01.01.2017</option>
+                </select>
+            </div>
+
+            <div id="section-joined-before">
+                <label for="basic-2016" style="margin-top: 0;">Old Basic Pay as on 31.12.2016 (₹)</label>
+                <span class="auto-calc-note">Auto-calculates 2017 Basics below (IDA @ 119.5% + 15% Fitment + 3% Annual Inc.)</span>
+                <input type="number" id="basic-2016" value="12630" min="0" step="10" />
+            </div>
+
+            <div id="section-joined-after" style="display: none; background-color: #f9f9f9; padding: 15px; border-left: 4px solid #cc7a00; border-radius: 4px; margin-bottom: 15px;">
+                <label style="margin-top: 0; color: #cc7a00;">Date of Joining</label>
+                <div class="control-group" style="margin-bottom: 10px;">
+                    <select id="joining-month">
+                        <option value="0">January</option>
+                        <option value="1">February</option>
+                        <option value="2">March</option>
+                        <option value="3">April</option>
+                        <option value="4">May</option>
+                        <option value="5">June</option>
+                        <option value="6">July</option>
+                        <option value="7">August</option>
+                        <option value="8">September</option>
+                        <option value="9">October</option>
+                        <option value="10">November</option>
+                        <option value="11">December</option>
+                    </select>
+                    <select id="joining-year">
+                        </select>
+                </div>
+                
+                <label for="joining-basic" style="color: #cc7a00;">Basic Pay at Joining (₹)</label>
+                <span class="auto-calc-note">Missed increment differences will be projected from your starting basic.</span>
+                <input type="number" id="joining-basic" value="30000" min="0" step="10" />
+            </div>
             
             <div class="toggle-row" style="display: none;">
                 <input type="checkbox" id="add-2017-increment" checked>
@@ -444,7 +480,7 @@
 
         <div class="summary-card">
             <h3>TOTAL LOSS & CURRENT BASIC PAY</h3>
-            <p style="font-size: 12px; color: #666; margin-top: -10px; margin-bottom: 15px;">Tracking from 01.01.2017 to your Selected End Date</p>
+            <p style="font-size: 12px; color: #666; margin-top: -10px; margin-bottom: 15px;">Tracking from your start date to your Selected End Date</p>
             
             <div class="summary-grid">
                 <div class="summary-item">
@@ -459,7 +495,7 @@
                     <span class="summary-label">Current Basic (If 1 Increment given in LTS 2017)</span>
                     <span class="summary-val" id="current-basic-1" style="color: #004080;">₹0.00</span>
                     
-                    <span class="summary-label" style="border-top: 1px solid #ffcccc; padding-top: 10px;">Total Cumulative Loss (Due to 1 Increment Miss)</span>
+                    <span class="summary-label" style="border-top: 1px solid #ffcccc; padding-top: 10px;">Total Cumulative Loss (Due to 1 Incr. Miss)</span>
                     <span class="summary-val negative-val" id="loss-1">₹0.00</span>
 
                     <span class="summary-label" style="display: none; border-top: 1px dashed #ffcccc; padding-top: 10px; font-size: 11px;">Loss due to 1 Missed Increment<br>(Basic, DA, SOA, 35% Perks)</span>
@@ -470,7 +506,7 @@
                     <span class="summary-label">Current Basic (If 2 Increment given in LTS 2017)</span>
                     <span class="summary-val" id="current-basic-2" style="color: #004080;">₹0.00</span>
                     
-                    <span class="summary-label" style="border-top: 1px solid #ffcccc; padding-top: 10px;">Total Cumulative Loss (Due to 2 Increment Miss)</span>
+                    <span class="summary-label" style="border-top: 1px solid #ffcccc; padding-top: 10px;">Total Cumulative Loss (Due to 2 Incr. Miss)</span>
                     <span class="summary-val negative-val" id="loss-2">₹0.00</span>
 
                     <span class="summary-label" style="display: none; border-top: 1px dashed #ffcccc; padding-top: 10px; font-size: 11px;">Loss due to 2 Missed Increments<br>(Basic, DA, SOA, 35% Perks)</span>
@@ -585,6 +621,13 @@
 
     <script>
         // DOM Elements
+        const empJoiningStatus = document.getElementById('emp-joining-status');
+        const sectionJoinedBefore = document.getElementById('section-joined-before');
+        const sectionJoinedAfter = document.getElementById('section-joined-after');
+        const joiningMonthSelect = document.getElementById('joining-month');
+        const joiningYearSelect = document.getElementById('joining-year');
+        const joiningBasicInput = document.getElementById('joining-basic');
+
         const basic2016Input = document.getElementById('basic-2016');
         const add2017Increment = document.getElementById('add-2017-increment');
         
@@ -630,6 +673,18 @@
             document.getElementById(tabId).classList.add('active');
             document.getElementById(btnId).classList.add('active');
         }
+
+        // Toggle Employee Joining Section
+        function toggleJoiningSection() {
+            if (empJoiningStatus.value === 'after') {
+                sectionJoinedBefore.style.display = 'none';
+                sectionJoinedAfter.style.display = 'block';
+            } else {
+                sectionJoinedBefore.style.display = 'block';
+                sectionJoinedAfter.style.display = 'none';
+            }
+            handleBasicChange();
+        }
         
         // Exact historical DA% schedule
         const daSchedule = [
@@ -659,11 +714,13 @@
                 yearOptions += `<option value="${y}">${y}</option>`;
             }
             
+            joiningYearSelect.innerHTML = yearOptions;
             promo1Year.innerHTML += yearOptions;
             promo2Year.innerHTML += yearOptions;
             promo3Year.innerHTML += yearOptions;
             endYearSelect.innerHTML = yearOptions;
 
+            joiningYearSelect.value = "2018";
             promo1Year.value = "2021";
             promo2Year.value = "2025";
             promo3Year.value = "none";
@@ -700,34 +757,46 @@
             return employeeLossPerYear;
         }
 
-        function handle2016BasicChange() {
-            const oldBasic = parseFloat(basic2016Input.value) || 0;
-            const includesIncrement = add2017Increment.checked;
+        function handleBasicChange() {
+            const isAfter = empJoiningStatus.value === 'after';
 
-            if(oldBasic > 0) {
-                let idaAmount = oldBasic * 1.195;
-                let subtotal = oldBasic + idaAmount;
-                let fitment = subtotal * 0.15;
-                let aggregate = subtotal + fitment;
-                
-                let base2017 = Math.ceil(Number(aggregate.toFixed(2)) / 10) * 10;
-                
-                if (includesIncrement) {
-                    let annualIncrement = base2017 * 0.03;
-                    let postIncrementBasic = base2017 + annualIncrement;
-                    base2017 = Math.ceil(Number(postIncrementBasic.toFixed(2)) / 10) * 10;
+            if (!isAfter) {
+                const oldBasic = parseFloat(basic2016Input.value) || 0;
+                const includesIncrement = add2017Increment.checked;
+
+                if(oldBasic > 0) {
+                    let idaAmount = oldBasic * 1.195;
+                    let subtotal = oldBasic + idaAmount;
+                    let fitment = subtotal * 0.15;
+                    let aggregate = subtotal + fitment;
+                    
+                    let base2017 = Math.ceil(Number(aggregate.toFixed(2)) / 10) * 10;
+                    
+                    if (includesIncrement) {
+                        let annualIncrement = base2017 * 0.03;
+                        let postIncrementBasic = base2017 + annualIncrement;
+                        base2017 = Math.ceil(Number(postIncrementBasic.toFixed(2)) / 10) * 10;
+                    }
+                    
+                    basicPay0Input.value = base2017;
+                    let inc1 = Math.ceil(Number((base2017 * 1.03).toFixed(2)) / 10) * 10;
+                    basicPay1Input.value = inc1;
+                    let inc2 = Math.ceil(Number((inc1 * 1.03).toFixed(2)) / 10) * 10;
+                    basicPay2Input.value = inc2;
                 }
-                
-                basicPay0Input.value = base2017;
-
-                let inc1 = Math.ceil(Number((base2017 * 1.03).toFixed(2)) / 10) * 10;
-                basicPay1Input.value = inc1;
-
-                let inc2 = Math.ceil(Number((inc1 * 1.03).toFixed(2)) / 10) * 10;
-                basicPay2Input.value = inc2;
-                
-                calculateAndRenderSheet();
+            } else {
+                // If they joined after, their joined basic is the starting point
+                const joinBasic = parseFloat(joiningBasicInput.value) || 0;
+                if(joinBasic > 0) {
+                    basicPay0Input.value = joinBasic;
+                    let inc1 = Math.ceil(Number((joinBasic * 1.03).toFixed(2)) / 10) * 10;
+                    basicPay1Input.value = inc1;
+                    let inc2 = Math.ceil(Number((inc1 * 1.03).toFixed(2)) / 10) * 10;
+                    basicPay2Input.value = inc2;
+                }
             }
+            
+            calculateAndRenderSheet();
         }
 
         function calculateAndRenderSheet() {
@@ -749,6 +818,7 @@
             const getsCCL = includeCCL.checked;
             const getsRounding = roundNextTen.checked;
             const getsHousingTaxLoss = includeHousingTax.checked;
+            const isAfter = empJoiningStatus.value === 'after';
             
             // Cafeteria Allowance Logic
             const cafePct = includeCafeteria.checked ? 0.35 : 0;
@@ -790,9 +860,13 @@
             let htmlCafe = '';
             let htmlCcl = ''; 
 
-            let currentYear = 2017;
-            let currentMonth = 0; 
-            let arrayIndex = 0; 
+            // Setup Timeline Starting Point
+            let currentYear = isAfter ? parseInt(joiningYearSelect.value) : 2017;
+            let currentMonth = isAfter ? parseInt(joiningMonthSelect.value) : 0; 
+            let startYear = currentYear; // Do not apply normal annual increment in the very first year of calculation
+            
+            let arrayIndex = (currentYear - 2017) * 12 + currentMonth;
+            if (arrayIndex < 0) arrayIndex = 0;
             
             let chartLabels = [];
             let chartData0 = [];
@@ -804,7 +878,7 @@
                 let incrementsThisMonth = 0;
                 let isPromoMonth = false;
 
-                if (currentMonth === 0 && currentYear > 2017) {
+                if (currentMonth === 0 && currentYear > startYear) {
                     incrementsThisMonth++;
                 }
 
@@ -1082,12 +1156,14 @@
             });
         }
 
-        basic2016Input.addEventListener('input', handle2016BasicChange);
-        add2017Increment.addEventListener('change', handle2016BasicChange);
+        empJoiningStatus.addEventListener('change', toggleJoiningSection);
+        basic2016Input.addEventListener('input', handleBasicChange);
+        joiningBasicInput.addEventListener('input', handleBasicChange);
+        add2017Increment.addEventListener('change', handleBasicChange);
 
         const otherInputs = [
             basicPay0Input, basicPay1Input, basicPay2Input, grossSalaryInput,
-            includeCafeteria,
+            includeCafeteria, joiningMonthSelect, joiningYearSelect,
             promo1Month, promo1Year, promo2Month, promo2Year, promo3Month, promo3Year,
             endMonthSelect, endYearSelect, includeSOA, includeCCL, includeHousingTax, roundNextTen
         ];
