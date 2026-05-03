@@ -27,3 +27,16 @@ messaging.onBackgroundMessage((payload) => {
 
   self.registration.showNotification(notificationTitle, notificationOptions);
 });
+
+// --- SENIOR EXPERT: Defensive Message Channel Guard ---
+// Absorbs all inter-SW messages (e.g. skip-waiting, workbox claims) gracefully.
+// Prevents "message channel closed before response was received" console error
+// that fires when a listener returns true (async intent) but the channel is
+// torn down before the response is delivered (count was 2 per page load).
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+  // All other messages are gracefully acknowledged without async channel retention.
+  // Returning nothing (void) prevents the browser from holding the channel open.
+});
